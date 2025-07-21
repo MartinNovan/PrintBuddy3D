@@ -4,7 +4,7 @@
              xmlns:local="using:PrintBuddy3D"
              xmlns:suki="using:SukiUI"
              xmlns:material="using:Material.Icons.Avalonia"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Dark">
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -12,7 +12,7 @@
   
     <Application.Styles>
         <StyleInclude Source="avares://SukiUI.Dock/Index.axaml" />
-        <suki:SukiTheme ThemeColor="Orange"/>
+        <suki:SukiTheme ThemeColor="Blue"/>
         <material:MaterialIconStyles/>
     </Application.Styles>
 </Application>

@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace PrintBuddy3D.Views.Pages;
 
-public partial class SettingsView : UserControl
+public partial class GuidesView : UserControl
 {
-    public SettingsView()
+    public GuidesView()
     {
         InitializeComponent();
     }

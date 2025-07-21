@@ -1,0 +1,88 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:material="using:Material.Icons.Avalonia"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:pages="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             xmlns:models="clr-namespace:PrintBuddy3D.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PrintBuddy3D.Views.Pages.PrintMaterialsView"
+             x:DataType="pages:PrintMaterialsViewModel">
+    <TabControl >
+        <TabItem Header="Filaments">
+            <DataGrid x:Name="FilamentsGrid"
+                      ItemsSource="{Binding Filaments}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" />
+                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
+                    <DataGridTextColumn Header="Diameter" Binding="{Binding Diameter}" />
+                    <DataGridTextColumn Header="Spool Weight" Binding="{Binding MaterialHousingWeight}" />
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
+                    <DataGridTextColumn Header="Density" Binding="{Binding Density}" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+    
+        <TabItem Header="Resins">
+            <DataGrid ItemsSource="{Binding Resins}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
+                    <DataGridTextColumn Header="Cartridge Weight" Binding="{Binding MaterialHousingWeight}" />
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+    
+        <TabItem Header="Powders">
+            <DataGrid ItemsSource="{Binding Powders}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
+                    <DataGridTextColumn Header="Cartridge Weight" Binding="{Binding MaterialHousingWeight}" />
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+    
+        <TabItem Header="Pellets">
+            <DataGrid ItemsSource="{Binding Pellets}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+        <TabItem Header="Add New">
+            <StackPanel Margin="10" Spacing="10">
+                <ComboBox SelectedItem="{Binding SelectedMaterialType}" ItemsSource="{Binding MaterialTypes}" />
+
+                <TextBox Watermark="Manufacture" Text="{Binding EditableMaterial.Manufacture}" />
+                <TextBox Watermark="Name" Text="{Binding EditableMaterial.Name}" />
+                <TextBox Watermark="Color" Text="{Binding EditableMaterial.Color}" />
+                <TextBox Watermark="Weight (g)" Text="{Binding EditableMaterial.Weight}" />
+                <TextBox Watermark="Price (Kč)" Text="{Binding EditableMaterial.Price}" />
+
+                <Button Content="Přidat materiál" Command="{Binding AddMaterialCommand}" />
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>

@@ -21,6 +21,7 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
         <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="Microsoft.Data.Sqlite" />
         <PackageReference Include="SukiUI" />
         <PackageReference Include="SukiUI.Dock" />
     </ItemGroup>

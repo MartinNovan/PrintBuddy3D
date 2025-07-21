@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using PrintBuddy3D.ViewModels;
+using PrintBuddy3D.ViewModels.Pages;
 using SukiUI.Controls;
+using SukiUI.Enums;
+using SukiUI.Models;
 
-namespace PrintBuddy3D;
+namespace PrintBuddy3D.Views;
 
 public partial class MainWindow : SukiWindow
 {
@@ -15,9 +14,20 @@ public partial class MainWindow : SukiWindow
         InitializeComponent();
         DataContext = new MainWindowViewModel();
     }
-
-    private void SettingButtonClicked(object? sender, RoutedEventArgs e)
+    
+    private void SelectedTheme(object? sender, SelectionChangedEventArgs e)
     {
-        SideMenu.SelectedItem = SideMenu.Items.OfType<SukiSideMenuItem>().FirstOrDefault(i => i.Header?.ToString() == "Settings");
+        if (DataContext is not MainWindowViewModel vm) return;
+        if (e.Source is not ComboBox comboBox) return;
+        if (comboBox.SelectedItem is not SukiColorTheme selectedTheme) return;
+        vm.ChangeTheme(selectedTheme);
+    }
+    
+    private void SelectedBackgroundStyle(object? sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+        if (e.Source is not ComboBox comboBox) return;
+        if (comboBox.SelectedItem is not SukiBackgroundStyle selectedStyle) return;
+        vm.ChangeBackgroundStyle(selectedStyle);
     }
 }

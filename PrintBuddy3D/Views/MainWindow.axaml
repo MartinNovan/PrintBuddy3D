@@ -6,9 +6,13 @@
                  xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
                  xmlns:material="using:Material.Icons.Avalonia"
                  xmlns:page="using:PrintBuddy3D.Views.Pages"
+                 xmlns:views="clr-namespace:PrintBuddy3D.Views"
+                 xmlns:models="https://github.com/kikipoulet/SukiUI"
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                 x:Class="PrintBuddy3D.MainWindow"
+                 x:Class="PrintBuddy3D.Views.MainWindow"
                  x:DataType="vm:MainWindowViewModel"
+                 CanPin="True"
+                 BackgroundStyle="{Binding BackgroundStyle}"
                  Title="PrintBuddy3D">
 
     <Design.DataContext>
@@ -21,77 +25,92 @@
     
     <suki:SukiWindow.RightWindowTitleBarControls>
         <Button Classes="WindowControlsButton">
-            <material:MaterialIcon Kind="Pin" />
+            <material:MaterialIcon Kind="Settings" />
+            <Button.Flyout>
+                <Flyout>
+                    <Panel>
+                        <Border Margin="20"
+                                BoxShadow="{DynamicResource SukiPopupShadow}"
+                                CornerRadius="20" />
+                        <Border MinWidth="350"
+                                Margin="20"
+                                Background="{DynamicResource SukiCardBackground}"
+                                BorderBrush="{DynamicResource SukiLightBorderBrush}"
+                                BorderThickness="1"
+                                ClipToBounds="True"
+                                CornerRadius="15">
+                            <Border Padding="15" Background="{DynamicResource PopupGradientBrush}">
+                                <StackPanel Margin="0,0,0,0" Spacing="20">
+                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+                                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="⚙ Settings" FontWeight="Bold" FontSize="20" Margin="0 0 0 10"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Theme: " HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Themes.ColorThemes}" SelectedItem="{Binding Themes.ActiveColorTheme}" SelectionChanged="SelectedTheme">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding DisplayName}" Foreground="{Binding PrimaryBrush}" />
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Background: " HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
+                                        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding BackgroundStyles}" SelectedItem="{Binding BackgroundStyle}" SelectionChanged="SelectedBackgroundStyle"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </Border>
+                    </Panel>
+                </Flyout>
+            </Button.Flyout>
         </Button>
-        
     </suki:SukiWindow.RightWindowTitleBarControls>
-        <suki:SukiSideMenu x:Name="SideMenu" IsSearchEnabled="True">
-            <suki:SukiSideMenu.Items>
-                <suki:SukiSideMenuItem Header="Home" Classes="Compact">
-                    <suki:SukiSideMenuItem.Icon>
-                        <material:MaterialIcon Kind="Home"/>
-                    </suki:SukiSideMenuItem.Icon>
-                    <suki:SukiSideMenuItem.PageContent>
-                        <page:HomeView/>
-                    </suki:SukiSideMenuItem.PageContent>
-                </suki:SukiSideMenuItem>
+    
+    <suki:SukiSideMenu x:Name="SideMenu" IsSearchEnabled="True">
+        <suki:SukiSideMenu.Items>
+            <suki:SukiSideMenuItem Header="Home" Classes="Compact">
+                <suki:SukiSideMenuItem.Icon>
+                    <material:MaterialIcon Kind="Home"/>
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <page:HomeView/>
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
 
-                <suki:SukiSideMenuItem Header="Printers" Classes="Compact">
-                    <suki:SukiSideMenuItem.Icon>
-                        <material:MaterialIcon Kind="Printer3d"/>
-                    </suki:SukiSideMenuItem.Icon>
-                    <suki:SukiSideMenuItem.PageContent>
-                        <page:PrintersView/>
-                    </suki:SukiSideMenuItem.PageContent>
-                </suki:SukiSideMenuItem>
-                
-                <suki:SukiSideMenuItem Header="Filaments" Classes="Compact">
-                    <suki:SukiSideMenuItem.Icon>
-                        <material:MaterialIcon Kind="FreehandLine"/>
-                    </suki:SukiSideMenuItem.Icon>
-                    <suki:SukiSideMenuItem.PageContent>
-                        <page:SettingsView/>
-                    </suki:SukiSideMenuItem.PageContent>
-                </suki:SukiSideMenuItem>
-                
-                <suki:SukiSideMenuItem Header="Guides" Classes="Compact">
-                    <suki:SukiSideMenuItem.Icon>
-                        <material:MaterialIcon Kind="Book"/>
-                    </suki:SukiSideMenuItem.Icon>
-                    <suki:SukiSideMenuItem.PageContent>
-                        <page:SettingsView/>
-                    </suki:SukiSideMenuItem.PageContent>
-                </suki:SukiSideMenuItem>
-                
-                <suki:SukiSideMenuItem Header="TroubleShoot" Classes="Compact">
-                    <suki:SukiSideMenuItem.Icon>
-                        <material:MaterialIcon Kind="Screwdriver"/>
-                    </suki:SukiSideMenuItem.Icon>
-                    <suki:SukiSideMenuItem.PageContent>
-                        <page:SettingsView/>
-                    </suki:SukiSideMenuItem.PageContent>
-                </suki:SukiSideMenuItem>
-                
-                <suki:SukiSideMenuItem Header="Settings" Classes="Compact">
-                    <suki:SukiSideMenuItem.Icon>
-                        <material:MaterialIcon Kind="Cog"/>
-                    </suki:SukiSideMenuItem.Icon>
-                    <suki:SukiSideMenuItem.PageContent>
-                        <page:SettingsView/>
-                    </suki:SukiSideMenuItem.PageContent>
-                </suki:SukiSideMenuItem>
-                
-            </suki:SukiSideMenu.Items>
-            <suki:SukiSideMenu.FooterContent>
-                <StackPanel Orientation="Horizontal" Spacing="8" Margin="8" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Button Classes="Basic" ToolTip.Tip="GitHub Repository" VerticalAlignment="Center" CommandParameter="https://github.com/kikipoulet/SukiUI">
-                        <material:MaterialIcon Kind="MicrosoftGithub" Width="20"/>
-                    </Button>
-                    <Button Classes="Basic" ToolTip.Tip="About" VerticalAlignment="Center">
-                        <material:MaterialIcon Kind="Info" Width="20"/>
-                    </Button>
-                </StackPanel>
-            </suki:SukiSideMenu.FooterContent>
-        </suki:SukiSideMenu>
-
+            <suki:SukiSideMenuItem Header="Printers" Classes="Compact">
+                <suki:SukiSideMenuItem.Icon>
+                    <material:MaterialIcon Kind="Printer3d"/>
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <page:PrintersView/>
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            
+            <suki:SukiSideMenuItem Header="Materials" Classes="Compact">
+                <suki:SukiSideMenuItem.Icon>
+                    <material:MaterialIcon Kind="FreehandLine"/>
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <page:PrintMaterialsView/>
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            
+            <suki:SukiSideMenuItem Header="Guides" Classes="Compact">
+                <suki:SukiSideMenuItem.Icon>
+                    <material:MaterialIcon Kind="Book"/>
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <page:GuidesView/>
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            
+        </suki:SukiSideMenu.Items>
+        <suki:SukiSideMenu.FooterContent>
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button Classes="Basic" ToolTip.Tip="GitHub Repository" VerticalAlignment="Center" Command="{Binding OpenWebsiteCommand}">
+                    <material:MaterialIcon Kind="MicrosoftGithub" Width="20"/>
+                </Button>
+                <Button Classes="Basic" ToolTip.Tip="About" VerticalAlignment="Center" Command="{Binding AboutWindowShowCommand}">
+                    <material:MaterialIcon Kind="Info" Width="20"/>
+                </Button>
+            </StackPanel>
+        </suki:SukiSideMenu.FooterContent>
+    </suki:SukiSideMenu>
 </suki:SukiWindow>
