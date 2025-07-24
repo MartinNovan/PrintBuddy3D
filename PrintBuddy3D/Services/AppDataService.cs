@@ -39,6 +39,9 @@ public class AppDataService
         if (OperatingSystem.IsWindows())
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
+        if (OperatingSystem.IsLinux())
+            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            
         if (OperatingSystem.IsAndroid())
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -61,8 +64,8 @@ public class AppDataService
             Value TEXT
         );
         
-        INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Theme","Red");
-        INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Background","Flat");
+        INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Theme","Blue");
+        INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Background","Gradient Soft");
         """;
 
         command.ExecuteNonQuery();
