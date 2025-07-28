@@ -8,7 +8,8 @@
              xmlns:models="clr-namespace:PrintBuddy3D.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.PrintMaterialsView"
-             x:DataType="pages:PrintMaterialsViewModel">
+             x:DataType="pages:PrintMaterialsViewModel"
+             x:Name="Root">
     <TabControl >
         <TabItem Header="Filaments">
             <DataGrid x:Name="FilamentsGrid"
@@ -21,10 +22,20 @@
                     <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" />
                     <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
                     <DataGridTextColumn Header="Diameter" Binding="{Binding Diameter}" />
-                    <DataGridTextColumn Header="Spool Weight" Binding="{Binding MaterialHousingWeight}" />
+                    <DataGridTextColumn Header="Spool Weight" Binding="{Binding SpoolWeight}" />
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
                     <DataGridTextColumn Header="Density" Binding="{Binding Density}" />
                     <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                    <DataGridTemplateColumn Width="Auto" Header=" ">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Classes="Basic Icon"
+                                        Click="RemoveFilamentOnClick">
+                                    <material:MaterialIcon Kind="Delete" Foreground="Red"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </TabItem>
@@ -36,52 +47,47 @@
                     <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                     <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
-                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
-                    <DataGridTextColumn Header="Cartridge Weight" Binding="{Binding MaterialHousingWeight}" />
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
                     <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                    <DataGridTemplateColumn Width="Auto" Header=" ">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Classes="Basic Icon"
+                                        Click="RemoveResinOnClick">
+                                    <material:MaterialIcon Kind="Delete" Foreground="Red"/>
+                                </Button>   
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </TabItem>
     
-        <TabItem Header="Powders">
-            <DataGrid ItemsSource="{Binding Powders}"
-                      AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
-                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
-                    <DataGridTextColumn Header="Cartridge Weight" Binding="{Binding MaterialHousingWeight}" />
-                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
-                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
-    
-        <TabItem Header="Pellets">
-            <DataGrid ItemsSource="{Binding Pellets}"
-                      AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
-                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
-                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
         <TabItem Header="Add New">
             <StackPanel Margin="10" Spacing="10">
-                <ComboBox SelectedItem="{Binding SelectedMaterialType}" ItemsSource="{Binding MaterialTypes}" />
-
-                <TextBox Watermark="Manufacture" Text="{Binding EditableMaterial.Manufacture}" />
-                <TextBox Watermark="Name" Text="{Binding EditableMaterial.Name}" />
-                <TextBox Watermark="Color" Text="{Binding EditableMaterial.Color}" />
-                <TextBox Watermark="Weight (g)" Text="{Binding EditableMaterial.Weight}" />
-                <TextBox Watermark="Price (Kč)" Text="{Binding EditableMaterial.Price}" />
-
-                <Button Content="Přidat materiál" Command="{Binding AddMaterialCommand}" />
+                <ComboBox SelectedItem="{Binding SelectedMaterialType}"
+                          ItemsSource="{Binding MaterialTypes}" />
+        
+                <!-- 📦 Inputs for Filament -->
+                <StackPanel IsVisible="{Binding IsFilamentSelected}">
+                    <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilament.Manufacture, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilament.Name, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewFilament.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewFilament.Weight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewFilament.Price, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Spool Weight" Text="{Binding NewFilament.SpoolWeight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Diameter" Text="{Binding NewFilament.Diameter, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Density" Text="{Binding NewFilament.Density, Mode=TwoWay}" />
+                </StackPanel>
+                <!-- 📦 Inputs for Resin -->
+                <StackPanel IsVisible="{Binding IsResinSelected}">
+                    <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewResin.Manufacture, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewResin.Name, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewResin.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewResin.Weight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewResin.Price, Mode=TwoWay}" />
+                </StackPanel>
+                <Button Content="Add material" Command="{Binding AddMaterialCommand}" />
             </StackPanel>
         </TabItem>
     </TabControl>

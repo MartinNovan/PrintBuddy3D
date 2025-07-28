@@ -1,7 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using SukiUI.Controls;
+﻿using SukiUI.Controls;
 
 namespace PrintBuddy3D.Views;
 

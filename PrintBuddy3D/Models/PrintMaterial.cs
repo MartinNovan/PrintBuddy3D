@@ -3,17 +3,18 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace PrintBuddy3D.Models;
+
 public class PrintMaterial : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public Guid Id { get; init; }
-    
-    private string _manufacture = string.Empty;
-    public string Manufacture
+    public Guid Id { get; } = Guid.NewGuid(); // Unique identifier for each print material
+
+    private string? _manufacture;
+    public string? Manufacture
     {
         get => _manufacture;
         set
@@ -26,8 +27,8 @@ public class PrintMaterial : INotifyPropertyChanged
         }
     }
 
-    private string _name = string.Empty;
-    public string Name
+    private string? _name;
+    public string? Name
     {
         get => _name;
         set
@@ -36,21 +37,6 @@ public class PrintMaterial : INotifyPropertyChanged
             {
                 _name = value;
                 OnPropertyChanged();
-            }
-        }
-    }
-
-    private MaterialType _materialType;
-    public MaterialType MaterialType
-    {
-        get => _materialType;
-        set
-        {
-            if (_materialType != value)
-            {
-                _materialType = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Length));
             }
         }
     }
@@ -69,13 +55,45 @@ public class PrintMaterial : INotifyPropertyChanged
         }
     }
 
-    private double? _diameter;
-    public double? Diameter
+    private int _weight;
+    public int Weight
+    {
+        get => _weight;
+        set
+        {
+            if (_weight != value && value >= 0) // Ensure weight is non-negative
+            {
+                _weight = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private double _price;
+    public double Price
+    {
+        get => _price;
+        set
+        {
+            if (Math.Abs(_price - value) > 0.0001 && value >= 0) // Ensure price is non-negative
+            {
+                _price = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+}
+
+public class Filament : PrintMaterial
+{
+    private double _diameter;
+    public double Diameter
     {
         get => _diameter;
         set
         {
-            if (_diameter != value)
+            if (value < 0) throw new ArgumentOutOfRangeException(nameof(Diameter), "Diameter must be greater than 0.");
+            if (Math.Abs(_diameter - value) > 0.0001)
             {
                 _diameter = value;
                 OnPropertyChanged();
@@ -84,13 +102,14 @@ public class PrintMaterial : INotifyPropertyChanged
         }
     }
 
-    private double? _density;
-    public double? Density
+    private double _density;
+    public double Density
     {
         get => _density;
         set
         {
-            if (_density != value)
+            if (value < 0) throw new ArgumentOutOfRangeException(nameof(Density), "Density must be greater than 0.");
+            if (Math.Abs(_density - value) > 0.0001 && value >= 0) // Avoid unnecessary updates
             {
                 _density = value;
                 OnPropertyChanged();
@@ -99,15 +118,15 @@ public class PrintMaterial : INotifyPropertyChanged
         }
     }
 
-    private int _materialHousingWeight;
-    public int MaterialHousingWeight
+    private int _spoolWeight;
+    public int SpoolWeight
     {
-        get => _materialHousingWeight;
+        get => _spoolWeight;
         set
         {
-            if (_materialHousingWeight != value)
+            if (_spoolWeight != value && value >= 0) // Ensure spool weight is non-negative
             {
-                _materialHousingWeight = value;
+                _spoolWeight = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(RemainingWeight));
                 OnPropertyChanged(nameof(Length));
@@ -115,105 +134,15 @@ public class PrintMaterial : INotifyPropertyChanged
         }
     }
 
-    private int? _weight;
-    public int? Weight
-    {
-        get => _weight;
-        set
-        {
-            if (_weight != value)
-            {
-                _weight = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(RemainingWeight));
-                OnPropertyChanged(nameof(Length));
-            }
-        }
-    }
+    public int? RemainingWeight => Weight - SpoolWeight;
 
-    public int? RemainingWeight => Weight.HasValue ? Weight.Value - MaterialHousingWeight : 0;
-
-    public double? Length => MaterialType == MaterialType.Filament && Diameter.HasValue && Density.HasValue && Weight.HasValue
-        ? (int?)((Weight.Value - MaterialHousingWeight) / (Math.PI * Math.Pow(Diameter.Value / 2, 2) * Density.Value))
-        : null;
-
-    private int? _price;
-    public int? Price
-    {
-        get => _price;
-        set
-        {
-            if (_price != value)
-            {
-                _price = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public PrintMaterial PrintMaterialFilament(string manufacture, string name, string? color = null, int? spoolWeight = null, double? diameter = null, double? density = null, int? weight = null, int? price = null)
-    {
-        return new PrintMaterial
-        {
-            Id = Guid.NewGuid(),
-            Manufacture = manufacture,
-            Name = name,
-            MaterialType = MaterialType.Filament,
-            Color = color,
-            MaterialHousingWeight = spoolWeight ?? 0,
-            Diameter = diameter,
-            Density = density,
-            Weight = weight,
-            Price = price
-        };
-    }
-    public PrintMaterial PrintMaterialResin(string manufacture, string name, string? color = null, int? cartridgeWeight = null, int? weight = null, int? price = null)
-    {
-        return new PrintMaterial
-        {
-            Id = Guid.NewGuid(),
-            Manufacture = manufacture,
-            Name = name,
-            MaterialType = MaterialType.Resin,
-            Color = color,
-            MaterialHousingWeight = cartridgeWeight ?? 0,
-            Weight = weight,
-            Price = price
-        };
-    }
-    public PrintMaterial PrintMaterialPowder(string manufacture, string name, string? color = null, int? cartridgeWeight = null, int? weight = null, int? price = null)
-    {
-        return new PrintMaterial
-        {
-            Id = Guid.NewGuid(),
-            Manufacture = manufacture,
-            Name = name,
-            MaterialType = MaterialType.Powder,
-            Color = color,
-            MaterialHousingWeight = cartridgeWeight ?? 0,
-            Weight = weight,
-            Price = price
-        };
-    }
-    public PrintMaterial PrintMaterialPellets(string manufacture, string name, string? color = null, int? weight = null, int? price = null)
-    {
-        return new PrintMaterial
-        {
-            Id = Guid.NewGuid(),
-            Manufacture = manufacture,
-            Name = name,
-            MaterialType = MaterialType.Pellets,
-            Color = color,
-            Weight = weight,
-            Price = price
-        };
-    }
+    public double? Length =>
+        Diameter > 0 && Density > 0
+            ? Math.Round((Weight - SpoolWeight) / (Math.PI * Math.Pow(Diameter / 2, 2) * Density), 2)
+            : null;
 }
 
-public enum MaterialType
+public class Resin : PrintMaterial
 {
-    Filament = 0,
-    Resin = 1,
-    Powder = 2,
-    Pellets = 3
+    
 }

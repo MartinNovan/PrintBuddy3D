@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Data.Sqlite;
-using SukiUI;
 using SukiUI.Enums;
-using SukiUI.Models;
 
 namespace PrintBuddy3D.Services;
 

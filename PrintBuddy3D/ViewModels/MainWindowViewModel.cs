@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Dynamic;
 using Avalonia.Collections;
-using Avalonia.Controls;
-using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Services;
 using PrintBuddy3D.ViewModels.Pages;
 using SukiUI;
-using SukiUI.Controls;
 using SukiUI.Enums;
 using SukiUI.Models;
 
