@@ -1,0 +1,68 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in PrintBuddy3D
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Clearly describe the bug. What did you do, what did you expect to happen, and what actually happened?
+      placeholder: |
+        Example: I clicked "Add Material", selected "Filament", and after hitting save, the app crashed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce the issue?
+      placeholder: |
+        1. Open the application
+        2. Go to "Add Material"
+        3. Choose "Filament"
+        4. Click Save
+        5. App crashes
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: You can find the version in the app title or from the release notes
+      placeholder: e.g. v1.2.0-beta
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Operating system
+      options:
+        - Windows 10
+        - Windows 11
+        - Linux (add distro below)
+        - macOS
+      description: Which OS are you using?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional info / logs
+      description: Include any logs, error messages, screenshots, or other helpful context
+      placeholder: |
+        Example:
+        ```
+        System.NullReferenceException: Object reference not set to an instance of an object
+        ```
+
+  - type: checkboxes
+    id: agree
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
