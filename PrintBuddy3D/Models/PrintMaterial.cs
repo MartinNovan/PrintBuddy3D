@@ -11,8 +11,8 @@ public class PrintMaterial : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public Guid Id { get; } = Guid.NewGuid(); // Unique identifier for each print material
-
+    public Guid Id { get; init; } = Guid.NewGuid(); // Unique identifier for each print material
+    public int DbHash { get; set; } // Hash for database tracking, used to detect changes
     private string? _manufacture;
     public string? Manufacture
     {
@@ -86,6 +86,24 @@ public class PrintMaterial : INotifyPropertyChanged
 
 public class Filament : PrintMaterial
 {
+    public int Hash
+    {
+        get
+        {
+            var hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Weight);
+            hash.Add(Price);
+            hash.Add(Manufacture);
+            hash.Add(Name);
+            hash.Add(Color);
+            hash.Add(Diameter);
+            hash.Add(Density);
+            hash.Add(SpoolWeight);
+            return hash.ToHashCode();
+        }
+    }
+
     private double _diameter;
     public double Diameter
     {
@@ -144,5 +162,19 @@ public class Filament : PrintMaterial
 
 public class Resin : PrintMaterial
 {
-    
+    public int Hash
+    {
+        get
+        {
+            var hash = new HashCode();
+            hash.Add(Id);
+            hash.Add(Weight);
+            hash.Add(Price);
+            hash.Add(Manufacture);
+            hash.Add(Name);
+            hash.Add(Color);
+            return hash.ToHashCode();
+        }
+    }
+
 }

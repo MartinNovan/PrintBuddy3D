@@ -57,3 +57,5 @@ nunit-*.xml
 .vs/
 .idea/
 .vscode/
+PrintBuddy3D.sln.DotSettings.user
+*.user

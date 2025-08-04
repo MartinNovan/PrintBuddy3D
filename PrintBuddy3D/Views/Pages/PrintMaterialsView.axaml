@@ -68,7 +68,7 @@
                 <ComboBox SelectedItem="{Binding SelectedMaterialType}"
                           ItemsSource="{Binding MaterialTypes}" />
         
-                <!-- 📦 Inputs for Filament -->
+                <!--Inputs for Filament-->
                 <StackPanel IsVisible="{Binding IsFilamentSelected}">
                     <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilament.Manufacture, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilament.Name, Mode=TwoWay}" />
@@ -79,7 +79,7 @@
                     <TextBox UseFloatingWatermark="True" Watermark="Diameter" Text="{Binding NewFilament.Diameter, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Density" Text="{Binding NewFilament.Density, Mode=TwoWay}" />
                 </StackPanel>
-                <!-- 📦 Inputs for Resin -->
+                <!--Inputs for Resin-->
                 <StackPanel IsVisible="{Binding IsResinSelected}">
                     <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewResin.Manufacture, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewResin.Name, Mode=TwoWay}" />

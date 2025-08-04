@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Models;
+using PrintBuddy3D.Services;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
@@ -35,12 +35,30 @@ public partial class PrintMaterialsViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsResinSelected));
     }
 
+    public PrintMaterialsViewModel()
+    {
+        LoadData();
+    }
+    
+    private async void LoadData()
+    {
+        try
+        {
+            Filaments = await PrintMaterialService.Instance.GetFilamentsAsync();
+            Resins = await PrintMaterialService.Instance.GetResinsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("There was error while loading filaments:" + ex);
+        }
+    }
+    
     [RelayCommand]
     private void AddMaterial()
     {
         if (SelectedMaterialType == "Filament")
         {
-            Filaments.Add(new Filament
+            var fil = new Filament
             {
                 Manufacture = string.IsNullOrEmpty(NewFilament.Manufacture) ? "Unknown" : NewFilament.Manufacture,
                 Name = string.IsNullOrEmpty(NewFilament.Name) ? "No Name" : NewFilament.Name,
@@ -50,28 +68,41 @@ public partial class PrintMaterialsViewModel : ViewModelBase
                 SpoolWeight = NewFilament.SpoolWeight > 0 ? NewFilament.SpoolWeight : 200, // Default to 200g if not set
                 Diameter = NewFilament.Diameter > 0 ? NewFilament.Diameter : 1.75, // Default to 1.75mm if not set
                 Density = NewFilament.Density > 0 ? NewFilament.Density : 1.24 // Default to 1.24g/cm³ if not set
-            });
+            };
+            PrintMaterialService.Instance.EditFilamentsAsync(fil);
+            fil.DbHash = fil.Hash;
+            Filaments.Add(fil);
         }
         else if (SelectedMaterialType == "Resin")
         {
-            Resins.Add(new Resin
+            var res = new Resin
             {
                 Manufacture = string.IsNullOrEmpty(NewResin.Manufacture) ? "Unknown" : NewResin.Manufacture,
                 Name = string.IsNullOrEmpty(NewResin.Name) ? "No Name" : NewResin.Name,
                 Color = string.IsNullOrEmpty(NewResin.Color) ? "No Color" : NewResin.Color,
                 Weight = NewResin.Weight > 0 ? NewResin.Weight : 1000, // Default to 1000g if not set
                 Price = NewResin.Price > 0 ? NewResin.Price : 0 // Default to 0.0 if not set
-            });
+            };
+            PrintMaterialService.Instance.EditResinsAsync(res);
+            res.DbHash = res.Hash;
+            Resins.Add(res);
         }
         // Clear the input fields after adding
         NewFilament = new Filament();
         NewResin = new Resin();
     }
+
     [RelayCommand]
     private void RemoveFilament(Filament filament)
-        => Filaments.Remove(filament);
+    {
+        PrintMaterialService.Instance.RemoveFilamentAsync(filament);
+        Filaments.Remove(filament);
+    }
 
     [RelayCommand]
     private void RemoveResin(Resin resin)
-        => Resins.Remove(resin);
+    {
+        PrintMaterialService.Instance.RemoveResinAsync(resin);
+        Resins.Remove(resin);
+    }
 }

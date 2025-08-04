@@ -12,7 +12,7 @@ public class AppDataService
     private const string FileName = "appdata.db";
     private const string BaseFolderName = "MartinNovan/PrintBuddy3D";
 
-    private string? _dbPath;
+    public readonly string? DbPath;
 
     public AppDataService()
     {
@@ -24,9 +24,9 @@ public class AppDataService
             Directory.CreateDirectory(fullFolderPath);
         }
 
-        _dbPath = Path.Combine(fullFolderPath, FileName);
+        DbPath = Path.Combine(fullFolderPath, FileName);
 
-        if (!File.Exists(_dbPath))
+        if (!File.Exists(DbPath))
         {
             InitializeDatabase();
         }
@@ -37,21 +37,18 @@ public class AppDataService
         if (OperatingSystem.IsWindows())
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-        if (OperatingSystem.IsLinux())
+        if (OperatingSystem.IsLinux() && OperatingSystem.IsAndroid() && OperatingSystem.IsMacOS())
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            
-        if (OperatingSystem.IsAndroid())
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
+       
         if (OperatingSystem.IsIOS())
             return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-        throw new PlatformNotSupportedException("Supported platforms are: Windows, Android, and iOS.");
+        throw new PlatformNotSupportedException("Supported platforms are: Windows, Linux, Android, and iOS.");
     }
 
     private void InitializeDatabase()
     {
-        using var connection = new SqliteConnection($"Data Source={_dbPath}");
+        using var connection = new SqliteConnection($"Data Source={DbPath}");
         connection.Open();
 
         var command = connection.CreateCommand();
@@ -64,6 +61,29 @@ public class AppDataService
         
         INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Theme","Blue");
         INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Background","Gradient Soft");
+               
+        CREATE TABLE IF NOT EXISTS Filaments (
+            Id GUID PRIMARY KEY,
+            Hash INTEGER,
+            Manufacture TEXT,
+            Name TEXT,
+            Color TEXT,
+            Weight INTEGER,
+            Price DOUBLE,
+            Diameter DOUBLE,
+            Density DOUBLE,
+            SpoolWeight INTEGER
+        );
+
+        CREATE TABLE IF NOT EXISTS Resins (
+            Id GUID PRIMARY KEY,
+            Hash INTEGER,
+            Manufacture TEXT,
+            Name TEXT,
+            Color TEXT,
+            Weight INTEGER,
+            Price DOUBLE
+        )
         """;
 
         command.ExecuteNonQuery();
@@ -71,7 +91,7 @@ public class AppDataService
 
     public void SaveConfigValue(string key, string value)
     {
-        using var connection = new SqliteConnection($"Data Source={_dbPath}");
+        using var connection = new SqliteConnection($"Data Source={DbPath}");
         connection.Open();
 
         var command = connection.CreateCommand();
@@ -88,7 +108,7 @@ public class AppDataService
 
     public SukiBackgroundStyle LoadBackground(string key)
     {
-        using var connection = new SqliteConnection($"Data Source={_dbPath}");
+        using var connection = new SqliteConnection($"Data Source={DbPath}");
         connection.Open();
 
         var command = connection.CreateCommand();
@@ -105,7 +125,7 @@ public class AppDataService
     }
     public SukiColor LoadTheme(string key)
     {
-        using var connection = new SqliteConnection($"Data Source={_dbPath}");
+        using var connection = new SqliteConnection($"Data Source={DbPath}");
         connection.Open();
 
         var command = connection.CreateCommand();
