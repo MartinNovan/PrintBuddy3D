@@ -67,7 +67,7 @@ public partial class PrintMaterialsViewModel : ViewModelBase
             {
                 Manufacture = string.IsNullOrEmpty(NewFilament.Manufacture) ? "Unknown" : NewFilament.Manufacture,
                 Name = string.IsNullOrEmpty(NewFilament.Name) ? "No Name" : NewFilament.Name,
-                Color = string.IsNullOrEmpty(NewFilament.Color) ? "No Firmware" : NewFilament.Color,
+                Color = string.IsNullOrEmpty(NewFilament.Color) ? "No Color" : NewFilament.Color,
                 Weight = NewFilament.Weight > 0 ? NewFilament.Weight : 1200, // Default to 1200g if not set
                 Price = NewFilament.Price > 0 ? NewFilament.Price : 0, // Default to 0 if not set
                 SpoolWeight = NewFilament.SpoolWeight > 0 ? NewFilament.SpoolWeight : 200, // Default to 200g if not set
@@ -84,7 +84,7 @@ public partial class PrintMaterialsViewModel : ViewModelBase
             {
                 Manufacture = string.IsNullOrEmpty(NewResin.Manufacture) ? "Unknown" : NewResin.Manufacture,
                 Name = string.IsNullOrEmpty(NewResin.Name) ? "No Name" : NewResin.Name,
-                Color = string.IsNullOrEmpty(NewResin.Color) ? "No Firmware" : NewResin.Color,
+                Color = string.IsNullOrEmpty(NewResin.Color) ? "No Color" : NewResin.Color,
                 Weight = NewResin.Weight > 0 ? NewResin.Weight : 1000, // Default to 1000g if not set
                 Price = NewResin.Price > 0 ? NewResin.Price : 0 // Default to 0.0 if not set
             };

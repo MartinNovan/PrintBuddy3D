@@ -39,8 +39,8 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                 DbHash = reader.GetInt32("Hash"),
                 Manufacture = reader.GetString("Manufacture"),
                 Name = reader.GetString("Name"),
-                Color = reader.GetString("Firmware"),
-                Weight = reader.GetInt32("ConnectionType"),
+                Color = reader.GetString("Color"),
+                Weight = reader.GetInt32("Weight"),
                 Price = reader.GetDouble("Price"),
                 SpoolWeight = reader.GetInt32("SpoolWeight"),
                 Diameter = reader.GetDouble("Diameter"),
@@ -66,14 +66,14 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
     
         await using var cmd = _dbConnection.CreateCommand();
         cmd.CommandText = @"
-            INSERT INTO Filaments (Id, Hash, Manufacture, Name, Firmware, ConnectionType, Price, SpoolWeight, Diameter, Density)
+            INSERT INTO Filaments (Id, Hash, Manufacture, Name, Color, Weight, Price, SpoolWeight, Diameter, Density)
             VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price, $spoolWeight, $diameter, $density)
             ON CONFLICT(Id) DO UPDATE SET
                 Hash = excluded.Hash,
                 Manufacture = excluded.Manufacture,
                 Name = excluded.Name,
-                Firmware = excluded.Firmware,
-                ConnectionType = excluded.ConnectionType,
+                Color = excluded.Color,
+                Weight = excluded.Weight,
                 Price = excluded.Price,
                 SpoolWeight = excluded.SpoolWeight,
                 Diameter = excluded.Diameter,
@@ -118,8 +118,8 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                 DbHash = reader.GetInt32("Hash"),
                 Manufacture = reader.GetString("Manufacture"),
                 Name = reader.GetString("Name"),
-                Color = reader.GetString("Firmware"),
-                Weight = reader.GetInt32("ConnectionType"),
+                Color = reader.GetString("Color"),
+                Weight = reader.GetInt32("Weight"),
                 Price = reader.GetDouble("Price")
             };
             resin.PropertyChanged += async (_, _) =>
@@ -139,14 +139,14 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         await _dbConnection.OpenAsync(ct);
 
         await using var command = _dbConnection.CreateCommand();
-        command.CommandText = @"INSERT INTO Resins (Id, Hash, Manufacture, Name, Firmware, ConnectionType, Price)
+        command.CommandText = @"INSERT INTO Resins (Id, Hash, Manufacture, Name, Color, Weight, Price)
                                 VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price)
                                 ON CONFLICT(Id) DO UPDATE SET
                                     Hash = excluded.Hash,
                                     Manufacture = excluded.Manufacture,
                                     Name = excluded.Name,
-                                    Firmware = excluded.Firmware,
-                                    ConnectionType = excluded.ConnectionType,
+                                    Color = excluded.Color,
+                                    Weight = excluded.Weight,
                                     Price = excluded.Price;";
         command.Parameters.AddWithValue("$id", resin.Id);
         command.Parameters.AddWithValue("$hash", resin.Hash);

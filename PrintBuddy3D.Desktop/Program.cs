@@ -1,7 +1,6 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.WebView.Desktop;
-using AvaloniaWebView;
 
 namespace PrintBuddy3D.Desktop;
 

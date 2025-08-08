@@ -28,8 +28,9 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Classes="Basic Icon"
-                                        Command="{Binding DataContext.RemoveFilamentCommand, ElementName=Root}"
-                                        CommandParameter="{Binding .}">
+                                        DataContext="{Binding $parent[UserControl].DataContext}"
+                                        Command="{Binding RemoveFilamentCommand, DataType=pages:PrintMaterialsViewModel}"
+                                        CommandParameter="{Binding $parent[DataGridRow].DataContext}">
                                     <material:MaterialIcon Kind="Delete" Foreground="Red"/>
                                 </Button>
                             </DataTemplate>
@@ -45,15 +46,16 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Firmware" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
                     <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
                     <DataGridTemplateColumn Width="Auto" Header=" ">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Classes="Basic Icon"
-                                        Command="{Binding DataContext.RemoveResinCommand, ElementName=Root}"
-                                        CommandParameter="{Binding .}">
+                                        DataContext="{Binding $parent[UserControl].DataContext}"
+                                        Command="{Binding RemoveResinCommand, DataType=pages:PrintMaterialsViewModel}"
+                                        CommandParameter="{Binding $parent[DataGridRow].DataContext}">
                                     <material:MaterialIcon Kind="Delete" Foreground="Red"/>
                                 </Button>
                             </DataTemplate>
@@ -72,7 +74,7 @@
                 <StackPanel IsVisible="{Binding IsFilamentSelected}">
                     <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilament.Manufacture, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilament.Name, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Firmware" Text="{Binding NewFilament.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewFilament.Color, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewFilament.Weight, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewFilament.Price, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Spool weight" Text="{Binding NewFilament.SpoolWeight, Mode=TwoWay}" />
@@ -83,7 +85,7 @@
                 <StackPanel IsVisible="{Binding IsResinSelected}">
                     <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewResin.Manufacture, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewResin.Name, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Firmware" Text="{Binding NewResin.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewResin.Color, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewResin.Weight, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewResin.Price, Mode=TwoWay}" />
                 </StackPanel>

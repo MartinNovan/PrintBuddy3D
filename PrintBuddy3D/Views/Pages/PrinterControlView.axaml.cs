@@ -1,9 +1,6 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using AvaloniaWebView;
 using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.ViewModels.Pages;
