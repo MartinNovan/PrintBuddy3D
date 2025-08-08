@@ -3,9 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:material="using:Material.Icons.Avalonia"
-             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:pages="clr-namespace:PrintBuddy3D.ViewModels.Pages"
-             xmlns:models="clr-namespace:PrintBuddy3D.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.PrintMaterialsView"
              x:DataType="pages:PrintMaterialsViewModel"
@@ -18,11 +16,11 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Firmware" Binding="{Binding Color}" />
                     <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" IsReadOnly="True" />
-                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Remaining weight ~" Binding="{Binding RemainingWeight}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Diameter" Binding="{Binding Diameter}" />
-                    <DataGridTextColumn Header="Spool Weight" Binding="{Binding SpoolWeight}" />
+                    <DataGridTextColumn Header="Spool weight" Binding="{Binding SpoolWeight}" />
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
                     <DataGridTextColumn Header="Density" Binding="{Binding Density}" />
                     <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
@@ -47,7 +45,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Firmware" Binding="{Binding Color}" />
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
                     <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
                     <DataGridTemplateColumn Width="Auto" Header=" ">
@@ -74,10 +72,10 @@
                 <StackPanel IsVisible="{Binding IsFilamentSelected}">
                     <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilament.Manufacture, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilament.Name, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewFilament.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Firmware" Text="{Binding NewFilament.Color, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewFilament.Weight, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewFilament.Price, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Spool Weight" Text="{Binding NewFilament.SpoolWeight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Spool weight" Text="{Binding NewFilament.SpoolWeight, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Diameter" Text="{Binding NewFilament.Diameter, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Density" Text="{Binding NewFilament.Density, Mode=TwoWay}" />
                 </StackPanel>
@@ -85,7 +83,7 @@
                 <StackPanel IsVisible="{Binding IsResinSelected}">
                     <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewResin.Manufacture, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewResin.Name, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewResin.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Firmware" Text="{Binding NewResin.Color, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewResin.Weight, Mode=TwoWay}" />
                     <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewResin.Price, Mode=TwoWay}" />
                 </StackPanel>

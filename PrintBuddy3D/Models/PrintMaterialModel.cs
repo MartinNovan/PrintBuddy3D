@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace PrintBuddy3D.Models;
 
-public class PrintMaterial : INotifyPropertyChanged
+public class PrintMaterialModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -84,7 +84,7 @@ public class PrintMaterial : INotifyPropertyChanged
     }
 }
 
-public class Filament : PrintMaterial
+public class Filament : PrintMaterialModel
 {
     public int Hash
     {
@@ -160,7 +160,7 @@ public class Filament : PrintMaterial
             : null;
 }
 
-public class Resin : PrintMaterial
+public class Resin : PrintMaterialModel
 {
     public int Hash
     {

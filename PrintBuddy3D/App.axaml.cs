@@ -1,14 +1,20 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using PrintBuddy3D.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using PrintBuddy3D.Services;
+using AvaloniaWebView;
 
 namespace PrintBuddy3D;
 
 public partial class App : Application
 {
+    public static IServiceProvider Services { get; private set; } = default!;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -16,6 +22,9 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        Services = ConfigureServices();
+        AvaloniaWebViewBuilder.Initialize(default);
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -23,11 +32,30 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new Views.MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = Services.GetRequiredService<MainWindowViewModel>()
             };
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static IServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+
+        // Services
+        services.AddSingleton<IAppDataService, AppDataService>();
+        services.AddSingleton<IPrintMaterialService, PrintMaterialService>();
+
+        // ViewModels
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<ViewModels.Pages.PrintersViewModel>();
+        services.AddSingleton<ViewModels.Pages.PrintMaterialsViewModel>();
+        services.AddSingleton<ViewModels.Pages.HomeViewModel>();
+        services.AddSingleton<ViewModels.Pages.GuidesViewModel>();
+        services.AddSingleton<ViewModels.Pages.PrinterControlViewModel>();
+
+        return services.BuildServiceProvider();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

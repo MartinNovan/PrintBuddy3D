@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Services;
 using PrintBuddy3D.ViewModels.Pages;
 using SukiUI;
@@ -19,13 +20,15 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private SukiTheme _themes;
     [ObservableProperty] private IAvaloniaReadOnlyList<SukiBackgroundStyle> _backgroundStyles;
 
-    public MainWindowViewModel()
+    private readonly IAppDataService _appDataService;
+    public MainWindowViewModel(IAppDataService appDataService)
     {
-        CurrentPage = new HomeViewModel();
+        _appDataService = appDataService;
+        CurrentPage = App.Services.GetRequiredService<HomeViewModel>();
         _themes = SukiTheme.GetInstance();
         _backgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
-        BackgroundStyle = AppDataService.Instance.LoadBackground("Background");
-        Themes.ChangeColorTheme(AppDataService.Instance.LoadTheme("Theme"));
+        BackgroundStyle = _appDataService.LoadBackground("Background");
+        Themes.ChangeColorTheme(_appDataService.LoadTheme("Theme"));
     }
 
     [RelayCommand]
@@ -60,13 +63,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (theme.DisplayName == Themes.ActiveColorTheme?.DisplayName) return;
         Themes.ChangeColorTheme(theme);
-        AppDataService.Instance.SaveConfigValue("Theme", theme.DisplayName);
+        _appDataService.SaveConfigValue("Theme", theme.DisplayName);
     }
     
     [RelayCommand]
     public void ChangeBackgroundStyle(SukiBackgroundStyle style)
     {
-        AppDataService.Instance.SaveConfigValue("Background", style.ToString());
+        _appDataService.SaveConfigValue("Background", style.ToString());
         BackgroundStyle = style;
     }
 }

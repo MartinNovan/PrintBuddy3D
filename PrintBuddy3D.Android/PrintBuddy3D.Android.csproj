@@ -20,7 +20,9 @@
     <ItemGroup>
         <PackageReference Include="Avalonia.Android"/>
         <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="SukiUI" />
+        <PackageReference Include="WebView.Avalonia.Android" />
         <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen"/>
     </ItemGroup>
 

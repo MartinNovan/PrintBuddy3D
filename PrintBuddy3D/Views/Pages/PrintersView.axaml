@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:material="using:Material.Icons.Avalonia"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:pages="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="PrintBuddy3D.Views.Pages.PrintersView">
+             x:Class="PrintBuddy3D.Views.Pages.PrintersView"
+             x:DataType="pages:PrintersViewModel">
         <suki:GlassCard Padding="16" Margin="20">
             <Grid RowDefinitions="Auto, *" RowSpacing="10" >
                 <Grid Grid.Row="0">
@@ -13,63 +15,80 @@
                     <Button Content="➕ Add Printer" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                 </Grid>
                 <ScrollViewer Grid.Row="1">
-                <WrapPanel >
-                    <suki:GlassCard Width="300" Height="350" IsInteractive="True" Margin="5">
-                        <Grid RowDefinitions="Auto ,*, Auto">
-                            <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
-                                <TextBlock Grid.Column="0" Text="Name" FontWeight="Bold" FontSize="20"/>
-                                <Button Grid.Column="1" Classes="Basic">
-                                        <material:MaterialIcon Kind="DotsVertical"/>
-                                    <Button.Flyout>
-                                        <Flyout>
-                                            <Panel>
-                                                <Border Margin="20"
-                                                        BoxShadow="{DynamicResource SukiPopupShadow}"
-                                                        CornerRadius="20" />
-                                                <Border
-                                                        Background="{DynamicResource SukiCardBackground}"
-                                                        BorderBrush="{DynamicResource SukiLightBorderBrush}"
-                                                        BorderThickness="1"
-                                                        ClipToBounds="True"
-                                                        CornerRadius="15">
-                                                <Grid RowDefinitions="Auto, Auto, Auto">
-                                                <Button Grid.Row="0" Margin="2" Classes="Basic" HorizontalAlignment="Left">
-                                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                                        <material:MaterialIcon Kind="Terminal" />
-                                                        <TextBlock Text="SSH" />
-                                                    </StackPanel>
-                                                </Button>
-                                                <Button Grid.Row="1" Margin="2" Classes="Basic" HorizontalAlignment="Left">
-                                                    <StackPanel Orientation="Horizontal" Spacing="4" >
-                                                        <material:MaterialIcon Kind="Edit" />
-                                                        <TextBlock Text="Edit" />
-                                                    </StackPanel>
-                                                </Button>
-                                                <Button Grid.Row="2" Margin="2" Classes="Basic" HorizontalAlignment="Left">
-                                                    <StackPanel Orientation="Horizontal" Spacing="4" >
-                                                        <material:MaterialIcon Kind="Trash" Foreground="Red"/>
-                                                        <TextBlock Text="Remove" Foreground="Red"/>
-                                                    </StackPanel>
-                                                </Button>
-                                            </Grid>
-                                                    </Border>
-                                            </Panel>
-                                        </Flyout>
-                                    </Button.Flyout>
-                                </Button>
-                            </Grid>
-                                <Image Grid.Row="1" Source="../../Assets/avalonia-logo.ico" VerticalAlignment="Top"/>
-                            <WrapPanel Grid.Row="2" Orientation="Vertical">
-                                <TextBlock Text="Status: Online"/>
-                                <TextBlock Text="E0: 33/60°C"/>
-                                <TextBlock Text="E1: 25/0°C"/>
-                                <TextBlock Text="Bed: 33/40°C"/>
-                                <TextBlock Text="Filament: PLA"/>
-                                <TextBlock Text="Speed: 500 mm/s"/>
-                            </WrapPanel>
-                        </Grid>
-                    </suki:GlassCard>
-                </WrapPanel>
+                    <ItemsControl ItemsSource="{Binding Printers}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <suki:GlassCard Width="300" Height="350" IsInteractive="True" Margin="5">
+                                    <Grid RowDefinitions="Auto ,*, Auto">
+                                        <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       FontWeight="Bold"
+                                                       FontSize="20"/>
+                                            <Button Grid.Column="1" Classes="Basic">
+                                                <material:MaterialIcon Kind="DotsVertical"/>
+                                                <Button.Flyout>
+                                                    <Flyout>
+                                                        <Panel>
+                                                            <Border Margin="20"
+                                                                    BoxShadow="{DynamicResource SukiPopupShadow}"
+                                                                    CornerRadius="20" />
+                                                            <Border
+                                                                    Background="{DynamicResource SukiCardBackground}"
+                                                                    BorderBrush="{DynamicResource SukiLightBorderBrush}"
+                                                                    BorderThickness="1"
+                                                                    ClipToBounds="True"
+                                                                    CornerRadius="15">
+                                                            <Grid RowDefinitions="Auto, Auto, Auto">
+                                                            <Button Grid.Row="0" Margin="2" Classes="Basic" HorizontalAlignment="Left">
+                                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                                    <material:MaterialIcon Kind="Terminal" />
+                                                                    <TextBlock Text="SSH" />
+                                                                </StackPanel>
+                                                            </Button>
+                                                            <Button Grid.Row="1" Margin="2" Classes="Basic" HorizontalAlignment="Left">
+                                                                <StackPanel Orientation="Horizontal" Spacing="4" >
+                                                                    <material:MaterialIcon Kind="Edit" />
+                                                                    <TextBlock Text="Edit" />
+                                                                </StackPanel>
+                                                            </Button>
+                                                            <Button Grid.Row="2" Margin="2" Classes="Basic" HorizontalAlignment="Left">
+                                                                <StackPanel Orientation="Horizontal" Spacing="4" >
+                                                                    <material:MaterialIcon Kind="Trash" Foreground="Red"/>
+                                                                    <TextBlock Text="Remove" Foreground="Red"/>
+                                                                </StackPanel>
+                                                            </Button>
+                                                        </Grid>
+                                                                </Border>
+                                                        </Panel>
+                                                    </Flyout>
+                                                </Button.Flyout>
+                                            </Button>
+                                        </Grid>
+
+                                        <Image Grid.Row="1"
+                                               Source="{Binding ImagePath}"
+                                               VerticalAlignment="Top"/>
+
+                                        <WrapPanel Grid.Row="2" Orientation="Vertical">
+                                            <TextBlock Text="{Binding Status}"/>
+                                            <TextBlock Text="{Binding E0Temp}"/>
+                                            <!--TextBlock Text="{Binding E1Temp}"/-->
+                                            <TextBlock Text="{Binding BedTemp}"/>
+                                            <TextBlock Text="{Binding Filament}"/>
+                                            <TextBlock Text="{Binding Speed}"/>
+                                        </WrapPanel>
+                                    </Grid>
+                                </suki:GlassCard>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </ScrollViewer>
             </Grid>
         </suki:GlassCard>

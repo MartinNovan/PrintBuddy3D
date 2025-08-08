@@ -4,8 +4,6 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
-                 xmlns:material="using:Material.Icons.Avalonia"
-                 xmlns:page="using:PrintBuddy3D.Views.Pages"
                  mc:Ignorable="d"
                  x:Class="PrintBuddy3D.Views.AboutWindow"
                  x:DataType="vm:AboutWindowViewModel"

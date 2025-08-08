@@ -20,6 +20,8 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="WebView.Avalonia.Desktop" />
     </ItemGroup>
 
     <ItemGroup>

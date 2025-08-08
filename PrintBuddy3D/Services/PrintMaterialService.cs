@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,17 +7,27 @@ using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
 
-public class PrintMaterialService
+public interface IPrintMaterialService
 {
-    public static PrintMaterialService Instance { get; } = new();
+    Task<ObservableCollection<Filament>> GetFilamentsAsync(CancellationToken ct = default);
+    Task UpsertFilamentAsync(Filament filament, CancellationToken ct = default);
+    Task RemoveFilamentAsync(Filament filament, CancellationToken ct = default);
     
+    Task<ObservableCollection<Resin>> GetResinsAsync(CancellationToken ct = default);
+    Task UpsertResinAsync(Resin resin, CancellationToken ct = default);
+    Task RemoveResinAsync(Resin resin, CancellationToken ct = default);
+}
+
+public class PrintMaterialService(IAppDataService appDataService) : IPrintMaterialService
+{
+    private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
+
     public async Task<ObservableCollection<Filament>> GetFilamentsAsync(CancellationToken ct = default)
     {
         var filaments = new ObservableCollection<Filament>();
-        await using var connection = new SqliteConnection($"Data Source={AppDataService.Instance.DbPath}");
-        await connection.OpenAsync(ct);
+        await _dbConnection.OpenAsync(ct);
         
-        await using var command = connection.CreateCommand();
+        await using var command = _dbConnection.CreateCommand();
         command.CommandText = "SELECT * FROM Filaments";
         
         await using var reader = await command.ExecuteReaderAsync(ct);
@@ -30,8 +39,8 @@ public class PrintMaterialService
                 DbHash = reader.GetInt32("Hash"),
                 Manufacture = reader.GetString("Manufacture"),
                 Name = reader.GetString("Name"),
-                Color = reader.GetString("Color"),
-                Weight = reader.GetInt32("Weight"),
+                Color = reader.GetString("Firmware"),
+                Weight = reader.GetInt32("ConnectionType"),
                 Price = reader.GetDouble("Price"),
                 SpoolWeight = reader.GetInt32("SpoolWeight"),
                 Diameter = reader.GetDouble("Diameter"),
@@ -53,19 +62,18 @@ public class PrintMaterialService
     }
     public async Task UpsertFilamentAsync(Filament filament, CancellationToken ct = default)
     {
-        await using var connection = new SqliteConnection($"Data Source={AppDataService.Instance.DbPath}");
-        await connection.OpenAsync(ct);
+        await _dbConnection.OpenAsync(ct);
     
-        await using var cmd = connection.CreateCommand();
+        await using var cmd = _dbConnection.CreateCommand();
         cmd.CommandText = @"
-            INSERT INTO Filaments (Id, Hash, Manufacture, Name, Color, Weight, Price, SpoolWeight, Diameter, Density)
+            INSERT INTO Filaments (Id, Hash, Manufacture, Name, Firmware, ConnectionType, Price, SpoolWeight, Diameter, Density)
             VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price, $spoolWeight, $diameter, $density)
             ON CONFLICT(Id) DO UPDATE SET
                 Hash = excluded.Hash,
                 Manufacture = excluded.Manufacture,
                 Name = excluded.Name,
-                Color = excluded.Color,
-                Weight = excluded.Weight,
+                Firmware = excluded.Firmware,
+                ConnectionType = excluded.ConnectionType,
                 Price = excluded.Price,
                 SpoolWeight = excluded.SpoolWeight,
                 Diameter = excluded.Diameter,
@@ -86,10 +94,9 @@ public class PrintMaterialService
 
     public async Task RemoveFilamentAsync(Filament filament, CancellationToken ct = default)
     {
-        await using var connection = new SqliteConnection($"Data Source={AppDataService.Instance.DbPath}");
-        await connection.OpenAsync(ct);
+        await _dbConnection.OpenAsync(ct);
 
-        await using var command = connection.CreateCommand();
+        await using var command = _dbConnection.CreateCommand();
         command.CommandText = "DELETE FROM Filaments WHERE Id = $id";
         command.Parameters.AddWithValue("$id", filament.Id);
         await command.ExecuteNonQueryAsync(ct);
@@ -98,10 +105,9 @@ public class PrintMaterialService
     public async Task<ObservableCollection<Resin>> GetResinsAsync(CancellationToken ct = default)
     {
         var resins = new ObservableCollection<Resin>();
-        await using var connection = new SqliteConnection($"Data Source={AppDataService.Instance.DbPath}");
-        await connection.OpenAsync(ct);
+        await _dbConnection.OpenAsync(ct);
 
-        await using var command = connection.CreateCommand();
+        await using var command = _dbConnection.CreateCommand();
         command.CommandText = "SELECT * FROM Resins";
         await using var reader = await command.ExecuteReaderAsync(ct);
         while (await reader.ReadAsync(ct))
@@ -112,8 +118,8 @@ public class PrintMaterialService
                 DbHash = reader.GetInt32("Hash"),
                 Manufacture = reader.GetString("Manufacture"),
                 Name = reader.GetString("Name"),
-                Color = reader.GetString("Color"),
-                Weight = reader.GetInt32("Weight"),
+                Color = reader.GetString("Firmware"),
+                Weight = reader.GetInt32("ConnectionType"),
                 Price = reader.GetDouble("Price")
             };
             resin.PropertyChanged += async (_, _) =>
@@ -130,18 +136,17 @@ public class PrintMaterialService
     }
     public async Task UpsertResinAsync(Resin resin, CancellationToken ct = default)
     {
-        await using var connection = new SqliteConnection($"Data Source={AppDataService.Instance.DbPath}");
-        await connection.OpenAsync(ct);
+        await _dbConnection.OpenAsync(ct);
 
-        await using var command = connection.CreateCommand();
-        command.CommandText = @"INSERT INTO Resins (Id, Hash, Manufacture, Name, Color, Weight, Price)
+        await using var command = _dbConnection.CreateCommand();
+        command.CommandText = @"INSERT INTO Resins (Id, Hash, Manufacture, Name, Firmware, ConnectionType, Price)
                                 VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price)
                                 ON CONFLICT(Id) DO UPDATE SET
                                     Hash = excluded.Hash,
                                     Manufacture = excluded.Manufacture,
                                     Name = excluded.Name,
-                                    Color = excluded.Color,
-                                    Weight = excluded.Weight,
+                                    Firmware = excluded.Firmware,
+                                    ConnectionType = excluded.ConnectionType,
                                     Price = excluded.Price;";
         command.Parameters.AddWithValue("$id", resin.Id);
         command.Parameters.AddWithValue("$hash", resin.Hash);
@@ -156,10 +161,9 @@ public class PrintMaterialService
 
     public async Task RemoveResinAsync(Resin resin, CancellationToken ct = default)
     {
-        await using var connection = new SqliteConnection($"Data Source={AppDataService.Instance.DbPath}");
-        await connection.OpenAsync(ct);
+        await _dbConnection.OpenAsync(ct);
 
-        await using var command = connection.CreateCommand();
+        await using var command = _dbConnection.CreateCommand();
         command.CommandText = "DELETE FROM Resins WHERE Id = $id";
         command.Parameters.AddWithValue("$id", resin.Id);
         await command.ExecuteNonQueryAsync(ct);

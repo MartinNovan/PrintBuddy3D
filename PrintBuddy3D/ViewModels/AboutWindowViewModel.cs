@@ -1,6 +1,6 @@
 ﻿namespace PrintBuddy3D.ViewModels;
 
-public class AboutWindowViewModel : ViewModelBase
+public partial class AboutWindowViewModel : ViewModelBase
 {
     
 }

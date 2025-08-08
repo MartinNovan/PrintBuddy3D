@@ -6,8 +6,6 @@
                  xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
                  xmlns:material="using:Material.Icons.Avalonia"
                  xmlns:page="using:PrintBuddy3D.Views.Pages"
-                 xmlns:views="clr-namespace:PrintBuddy3D.Views"
-                 xmlns:models="https://github.com/kikipoulet/SukiUI"
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                  x:Class="PrintBuddy3D.Views.MainWindow"
                  x:DataType="vm:MainWindowViewModel"
