@@ -12,7 +12,7 @@ public class AppDataService
     private const string FileName = "appdata.db";
     private const string BaseFolderName = "MartinNovan/PrintBuddy3D";
 
-    public readonly string? DbPath;
+    public readonly string DbPath;
 
     public AppDataService()
     {
@@ -37,13 +37,13 @@ public class AppDataService
         if (OperatingSystem.IsWindows())
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-        if (OperatingSystem.IsLinux() && OperatingSystem.IsAndroid() && OperatingSystem.IsMacOS())
+        if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-       
+
         if (OperatingSystem.IsIOS())
             return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-        throw new PlatformNotSupportedException("Supported platforms are: Windows, Linux, Android, and iOS.");
+        throw new PlatformNotSupportedException("Supported platforms are: Windows, Linux, Android, macOS and iOS.");
     }
 
     private void InitializeDatabase()

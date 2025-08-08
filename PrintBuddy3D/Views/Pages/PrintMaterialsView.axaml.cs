@@ -12,19 +12,4 @@ public partial class PrintMaterialsView : UserControl
         InitializeComponent();
         DataContext = new PrintMaterialsViewModel();
     }
-
-    private void RemoveFilamentOnClick(object? sender, RoutedEventArgs e)
-    {
-        if( DataContext is not PrintMaterialsViewModel vm) return;
-        if (sender is not Button button) return;
-        if (button.DataContext is not Filament filament) return;
-        vm.RemoveFilamentCommand.Execute(filament);
-    }
-    private void RemoveResinOnClick(object? sender, RoutedEventArgs e)
-    {
-        if (DataContext is not PrintMaterialsViewModel vm) return;
-        if (sender is not Button button) return;
-        if (button.DataContext is not Resin resin) return;
-        vm.RemoveResinCommand.Execute(resin);
-    }
 }

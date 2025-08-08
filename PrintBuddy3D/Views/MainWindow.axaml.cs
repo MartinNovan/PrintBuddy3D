@@ -11,7 +11,6 @@ public partial class MainWindow : SukiWindow
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new MainWindowViewModel();
     }
     
     private void SelectedTheme(object? sender, SelectionChangedEventArgs e)

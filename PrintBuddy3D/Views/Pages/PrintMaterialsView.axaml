@@ -19,8 +19,8 @@
                     <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                     <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
-                    <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" />
-                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" />
+                    <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Remaining Weight ~" Binding="{Binding RemainingWeight}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Diameter" Binding="{Binding Diameter}" />
                     <DataGridTextColumn Header="Spool Weight" Binding="{Binding SpoolWeight}" />
                     <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
@@ -30,7 +30,8 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Classes="Basic Icon"
-                                        Click="RemoveFilamentOnClick">
+                                        Command="{Binding DataContext.RemoveFilamentCommand, ElementName=Root}"
+                                        CommandParameter="{Binding .}">
                                     <material:MaterialIcon Kind="Delete" Foreground="Red"/>
                                 </Button>
                             </DataTemplate>
@@ -53,9 +54,10 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Classes="Basic Icon"
-                                        Click="RemoveResinOnClick">
+                                        Command="{Binding DataContext.RemoveResinCommand, ElementName=Root}"
+                                        CommandParameter="{Binding .}">
                                     <material:MaterialIcon Kind="Delete" Foreground="Red"/>
-                                </Button>   
+                                </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

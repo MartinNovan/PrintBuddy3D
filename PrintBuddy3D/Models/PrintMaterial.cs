@@ -110,7 +110,7 @@ public class Filament : PrintMaterial
         get => _diameter;
         set
         {
-            if (value < 0) throw new ArgumentOutOfRangeException(nameof(Diameter), "Diameter must be greater than 0.");
+            if (value <= 0) throw new ArgumentOutOfRangeException(nameof(Diameter), "Diameter must be greater than 0.");
             if (Math.Abs(_diameter - value) > 0.0001)
             {
                 _diameter = value;
@@ -126,8 +126,8 @@ public class Filament : PrintMaterial
         get => _density;
         set
         {
-            if (value < 0) throw new ArgumentOutOfRangeException(nameof(Density), "Density must be greater than 0.");
-            if (Math.Abs(_density - value) > 0.0001 && value >= 0) // Avoid unnecessary updates
+            if (value <= 0) throw new ArgumentOutOfRangeException(nameof(Density), "Density must be greater than 0.");
+            if (Math.Abs(_density - value) > 0.0001)
             {
                 _density = value;
                 OnPropertyChanged();

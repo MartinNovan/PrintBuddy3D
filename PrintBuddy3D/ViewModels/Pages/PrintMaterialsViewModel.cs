@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks; // added
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Models;
@@ -54,7 +55,7 @@ public partial class PrintMaterialsViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    private void AddMaterial()
+    private async Task AddMaterial()
     {
         if (SelectedMaterialType == "Filament")
         {
@@ -69,7 +70,7 @@ public partial class PrintMaterialsViewModel : ViewModelBase
                 Diameter = NewFilament.Diameter > 0 ? NewFilament.Diameter : 1.75, // Default to 1.75mm if not set
                 Density = NewFilament.Density > 0 ? NewFilament.Density : 1.24 // Default to 1.24g/cm³ if not set
             };
-            PrintMaterialService.Instance.EditFilamentsAsync(fil);
+            await PrintMaterialService.Instance.UpsertFilamentAsync(fil);
             fil.DbHash = fil.Hash;
             Filaments.Add(fil);
         }
@@ -83,7 +84,7 @@ public partial class PrintMaterialsViewModel : ViewModelBase
                 Weight = NewResin.Weight > 0 ? NewResin.Weight : 1000, // Default to 1000g if not set
                 Price = NewResin.Price > 0 ? NewResin.Price : 0 // Default to 0.0 if not set
             };
-            PrintMaterialService.Instance.EditResinsAsync(res);
+            await PrintMaterialService.Instance.UpsertResinAsync(res);
             res.DbHash = res.Hash;
             Resins.Add(res);
         }
@@ -93,16 +94,16 @@ public partial class PrintMaterialsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void RemoveFilament(Filament filament)
+    private async Task RemoveFilament(Filament filament)
     {
-        PrintMaterialService.Instance.RemoveFilamentAsync(filament);
+        await PrintMaterialService.Instance.RemoveFilamentAsync(filament);
         Filaments.Remove(filament);
     }
 
     [RelayCommand]
-    private void RemoveResin(Resin resin)
+    private async Task RemoveResin(Resin resin)
     {
-        PrintMaterialService.Instance.RemoveResinAsync(resin);
+        await PrintMaterialService.Instance.RemoveResinAsync(resin);
         Resins.Remove(resin);
     }
 }
