@@ -13,7 +13,7 @@
             <ToggleSwitch Click="SwitchModes" IsChecked="False"/>
         </StackPanel>
         <Grid Grid.Row="1" x:Name="WebPanel" IsVisible="False">
-            <WebView x:Name="WebView" Url="{Binding Url}"/>
+            <WebView x:Name="WebView" Url="{Binding Printer.Address}"/>
             <Label Content="WebView does not load correctly!"/>
         </Grid>
     </Grid>

@@ -72,22 +72,22 @@
         
                 <!--Inputs for Filament-->
                 <StackPanel IsVisible="{Binding IsFilamentSelected}">
-                    <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilament.Manufacture, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilament.Name, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewFilament.Color, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewFilament.Weight, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewFilament.Price, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Spool weight" Text="{Binding NewFilament.SpoolWeight, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Diameter" Text="{Binding NewFilament.Diameter, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Density" Text="{Binding NewFilament.Density, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilamentModel.Manufacture, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilamentModel.Name, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewFilamentModel.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewFilamentModel.Weight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewFilamentModel.Price, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Spool weight" Text="{Binding NewFilamentModel.SpoolWeight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Diameter" Text="{Binding NewFilamentModel.Diameter, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Density" Text="{Binding NewFilamentModel.Density, Mode=TwoWay}" />
                 </StackPanel>
                 <!--Inputs for Resin-->
                 <StackPanel IsVisible="{Binding IsResinSelected}">
-                    <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewResin.Manufacture, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewResin.Name, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewResin.Color, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewResin.Weight, Mode=TwoWay}" />
-                    <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewResin.Price, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewResinModel.Manufacture, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewResinModel.Name, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewResinModel.Color, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewResinModel.Weight, Mode=TwoWay}" />
+                    <TextBox UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewResinModel.Price, Mode=TwoWay}" />
                 </StackPanel>
                 <Button Content="Add material" Command="{Binding AddMaterialCommand}" />
             </StackPanel>

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using Avalonia.Media.Imaging;
 
 namespace PrintBuddy3D.Models;
 
@@ -51,7 +55,7 @@ public class PrinterModel : INotifyPropertyChanged
         get => _connectionType;
         set
         {
-            if (_connectionType == value)
+            if (_connectionType != value)
             {
                 _connectionType = value;
                 OnPropertyChanged();
@@ -128,11 +132,35 @@ public class PrinterModel : INotifyPropertyChanged
             }
         }
     }
+
+    public Bitmap? Image
+    {
+        get
+        {
+            if (ImagePath != null) return new(ImagePath);
+            return null;
+        }
+    }
+
+    private ObservableCollection<FilamentModel> _filament;
+    public ObservableCollection<FilamentModel> Filament
+    {
+        get => _filament;
+        set
+        {
+            if (_filament != value)
+            {
+                _filament = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     
-    private string? Status { get; set; } = "Ready"; // Status of the printer, e.g., "Ready", "Printing", "Oflline", "Not Ready" <- not ready is for printers that use filament sensors, so they are not ready until filament is loaded
+    
+    
+    public string? Status { get; set; } = "Ready"; // Status of the printer, e.g., "Ready", "Printing", "Offline", "Not Ready", "Done"
     public int E0Temp { get; set; } = 30;
     public int BedTemp { get; set; } = 30;
-    public string Filament { get; set; } = "PLA";
     public int Speed { get; set; } = 500;
 
 }

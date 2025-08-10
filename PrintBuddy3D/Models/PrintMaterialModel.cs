@@ -84,7 +84,7 @@ public class PrintMaterialModel : INotifyPropertyChanged
     }
 }
 
-public class Filament : PrintMaterialModel
+public class FilamentModel : PrintMaterialModel
 {
     public int Hash
     {
@@ -160,7 +160,7 @@ public class Filament : PrintMaterialModel
             : null;
 }
 
-public class Resin : PrintMaterialModel
+public class ResinModel : PrintMaterialModel
 {
     public int Hash
     {

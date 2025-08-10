@@ -9,22 +9,22 @@ namespace PrintBuddy3D.Services;
 
 public interface IPrintMaterialService
 {
-    Task<ObservableCollection<Filament>> GetFilamentsAsync(CancellationToken ct = default);
-    Task UpsertFilamentAsync(Filament filament, CancellationToken ct = default);
-    Task RemoveFilamentAsync(Filament filament, CancellationToken ct = default);
+    Task<ObservableCollection<FilamentModel>> GetFilamentsAsync(CancellationToken ct = default);
+    Task UpsertFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default);
+    Task RemoveFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default);
     
-    Task<ObservableCollection<Resin>> GetResinsAsync(CancellationToken ct = default);
-    Task UpsertResinAsync(Resin resin, CancellationToken ct = default);
-    Task RemoveResinAsync(Resin resin, CancellationToken ct = default);
+    Task<ObservableCollection<ResinModel>> GetResinsAsync(CancellationToken ct = default);
+    Task UpsertResinAsync(ResinModel resinModel, CancellationToken ct = default);
+    Task RemoveResinAsync(ResinModel resinModel, CancellationToken ct = default);
 }
 
 public class PrintMaterialService(IAppDataService appDataService) : IPrintMaterialService
 {
     private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
 
-    public async Task<ObservableCollection<Filament>> GetFilamentsAsync(CancellationToken ct = default)
+    public async Task<ObservableCollection<FilamentModel>> GetFilamentsAsync(CancellationToken ct = default)
     {
-        var filaments = new ObservableCollection<Filament>();
+        var filaments = new ObservableCollection<FilamentModel>();
         await _dbConnection.OpenAsync(ct);
         
         await using var command = _dbConnection.CreateCommand();
@@ -33,7 +33,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         await using var reader = await command.ExecuteReaderAsync(ct);
         while (await reader.ReadAsync(ct))
         {
-            var filament = new Filament
+            var filament = new FilamentModel
             {
                 Id = reader.GetGuid("Id"),
                 DbHash = reader.GetInt32("Hash"),
@@ -60,7 +60,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         }
         return filaments;
     }
-    public async Task UpsertFilamentAsync(Filament filament, CancellationToken ct = default)
+    public async Task UpsertFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default)
     {
         await _dbConnection.OpenAsync(ct);
     
@@ -78,33 +78,33 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                 SpoolWeight = excluded.SpoolWeight,
                 Diameter = excluded.Diameter,
                 Density = excluded.Density;";
-        cmd.Parameters.AddWithValue("$id", filament.Id);
-        cmd.Parameters.AddWithValue("$hash", filament.Hash);
-        cmd.Parameters.AddWithValue("$manufacture", filament.Manufacture);
-        cmd.Parameters.AddWithValue("$name", filament.Name);
-        cmd.Parameters.AddWithValue("$color", filament.Color);
-        cmd.Parameters.AddWithValue("$weight", filament.Weight);
-        cmd.Parameters.AddWithValue("$price", filament.Price);
-        cmd.Parameters.AddWithValue("$spoolWeight", filament.SpoolWeight);
-        cmd.Parameters.AddWithValue("$diameter", filament.Diameter);
-        cmd.Parameters.AddWithValue("$density", filament.Density);
+        cmd.Parameters.AddWithValue("$id", filamentModel.Id);
+        cmd.Parameters.AddWithValue("$hash", filamentModel.Hash);
+        cmd.Parameters.AddWithValue("$manufacture", filamentModel.Manufacture);
+        cmd.Parameters.AddWithValue("$name", filamentModel.Name);
+        cmd.Parameters.AddWithValue("$color", filamentModel.Color);
+        cmd.Parameters.AddWithValue("$weight", filamentModel.Weight);
+        cmd.Parameters.AddWithValue("$price", filamentModel.Price);
+        cmd.Parameters.AddWithValue("$spoolWeight", filamentModel.SpoolWeight);
+        cmd.Parameters.AddWithValue("$diameter", filamentModel.Diameter);
+        cmd.Parameters.AddWithValue("$density", filamentModel.Density);
     
         await cmd.ExecuteNonQueryAsync(ct);
     }
 
-    public async Task RemoveFilamentAsync(Filament filament, CancellationToken ct = default)
+    public async Task RemoveFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default)
     {
         await _dbConnection.OpenAsync(ct);
 
         await using var command = _dbConnection.CreateCommand();
         command.CommandText = "DELETE FROM Filaments WHERE Id = $id";
-        command.Parameters.AddWithValue("$id", filament.Id);
+        command.Parameters.AddWithValue("$id", filamentModel.Id);
         await command.ExecuteNonQueryAsync(ct);
     }
     
-    public async Task<ObservableCollection<Resin>> GetResinsAsync(CancellationToken ct = default)
+    public async Task<ObservableCollection<ResinModel>> GetResinsAsync(CancellationToken ct = default)
     {
-        var resins = new ObservableCollection<Resin>();
+        var resins = new ObservableCollection<ResinModel>();
         await _dbConnection.OpenAsync(ct);
 
         await using var command = _dbConnection.CreateCommand();
@@ -112,7 +112,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         await using var reader = await command.ExecuteReaderAsync(ct);
         while (await reader.ReadAsync(ct))
         {
-            var resin = new Resin()
+            var resin = new ResinModel()
             {
                 Id = reader.GetGuid("Id"),
                 DbHash = reader.GetInt32("Hash"),
@@ -134,7 +134,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         }
         return resins;
     }
-    public async Task UpsertResinAsync(Resin resin, CancellationToken ct = default)
+    public async Task UpsertResinAsync(ResinModel resinModel, CancellationToken ct = default)
     {
         await _dbConnection.OpenAsync(ct);
 
@@ -148,24 +148,24 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                                     Color = excluded.Color,
                                     Weight = excluded.Weight,
                                     Price = excluded.Price;";
-        command.Parameters.AddWithValue("$id", resin.Id);
-        command.Parameters.AddWithValue("$hash", resin.Hash);
-        command.Parameters.AddWithValue("$manufacture", resin.Manufacture);
-        command.Parameters.AddWithValue("$name", resin.Name);
-        command.Parameters.AddWithValue("$color", resin.Color);
-        command.Parameters.AddWithValue("$weight", resin.Weight);
-        command.Parameters.AddWithValue("$price", resin.Price);
+        command.Parameters.AddWithValue("$id", resinModel.Id);
+        command.Parameters.AddWithValue("$hash", resinModel.Hash);
+        command.Parameters.AddWithValue("$manufacture", resinModel.Manufacture);
+        command.Parameters.AddWithValue("$name", resinModel.Name);
+        command.Parameters.AddWithValue("$color", resinModel.Color);
+        command.Parameters.AddWithValue("$weight", resinModel.Weight);
+        command.Parameters.AddWithValue("$price", resinModel.Price);
 
         await command.ExecuteNonQueryAsync(ct);
     }
 
-    public async Task RemoveResinAsync(Resin resin, CancellationToken ct = default)
+    public async Task RemoveResinAsync(ResinModel resinModel, CancellationToken ct = default)
     {
         await _dbConnection.OpenAsync(ct);
 
         await using var command = _dbConnection.CreateCommand();
         command.CommandText = "DELETE FROM Resins WHERE Id = $id";
-        command.Parameters.AddWithValue("$id", resin.Id);
+        command.Parameters.AddWithValue("$id", resinModel.Id);
         await command.ExecuteNonQueryAsync(ct);
     }
 }

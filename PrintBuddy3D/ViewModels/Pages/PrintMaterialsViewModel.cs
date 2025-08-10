@@ -11,24 +11,24 @@ namespace PrintBuddy3D.ViewModels.Pages;
 public partial class PrintMaterialsViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private ObservableCollection<Filament> _filaments = new();
+    private ObservableCollection<FilamentModel> _filaments = new();
     [ObservableProperty]
-    private ObservableCollection<Resin> _resins = new();
+    private ObservableCollection<ResinModel> _resins = new();
     [ObservableProperty] 
     private ObservableCollection<String> _materialTypes = new()
     {
-        "Filament",
+        "FilamentModel",
         "Resin"
     };
     [ObservableProperty]
-    private String? _selectedMaterialType = "Filament";
+    private String? _selectedMaterialType = "FilamentModel";
 
     [ObservableProperty] 
-    private Filament _newFilament = new();
+    private FilamentModel _newFilamentModel = new();
     [ObservableProperty] 
-    private Resin _newResin = new();
+    private ResinModel _newResinModel = new();
 
-    public bool IsFilamentSelected => SelectedMaterialType == "Filament";
+    public bool IsFilamentSelected => SelectedMaterialType == "FilamentModel";
     public bool IsResinSelected => SelectedMaterialType == "Resin";
     
     private readonly IPrintMaterialService _printMaterialService;
@@ -61,18 +61,18 @@ public partial class PrintMaterialsViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddMaterial()
     {
-        if (SelectedMaterialType == "Filament")
+        if (SelectedMaterialType == "FilamentModel")
         {
-            var fil = new Filament
+            var fil = new FilamentModel
             {
-                Manufacture = string.IsNullOrEmpty(NewFilament.Manufacture) ? "Unknown" : NewFilament.Manufacture,
-                Name = string.IsNullOrEmpty(NewFilament.Name) ? "No Name" : NewFilament.Name,
-                Color = string.IsNullOrEmpty(NewFilament.Color) ? "No Color" : NewFilament.Color,
-                Weight = NewFilament.Weight > 0 ? NewFilament.Weight : 1200, // Default to 1200g if not set
-                Price = NewFilament.Price > 0 ? NewFilament.Price : 0, // Default to 0 if not set
-                SpoolWeight = NewFilament.SpoolWeight > 0 ? NewFilament.SpoolWeight : 200, // Default to 200g if not set
-                Diameter = NewFilament.Diameter > 0 ? NewFilament.Diameter : 1.75, // Default to 1.75mm if not set
-                Density = NewFilament.Density > 0 ? NewFilament.Density : 1.24 // Default to 1.24g/cm³ if not set
+                Manufacture = string.IsNullOrEmpty(NewFilamentModel.Manufacture) ? "Unknown" : NewFilamentModel.Manufacture,
+                Name = string.IsNullOrEmpty(NewFilamentModel.Name) ? "No Name" : NewFilamentModel.Name,
+                Color = string.IsNullOrEmpty(NewFilamentModel.Color) ? "No Color" : NewFilamentModel.Color,
+                Weight = NewFilamentModel.Weight > 0 ? NewFilamentModel.Weight : 1200, // Default to 1200g if not set
+                Price = NewFilamentModel.Price > 0 ? NewFilamentModel.Price : 0, // Default to 0 if not set
+                SpoolWeight = NewFilamentModel.SpoolWeight > 0 ? NewFilamentModel.SpoolWeight : 200, // Default to 200g if not set
+                Diameter = NewFilamentModel.Diameter > 0 ? NewFilamentModel.Diameter : 1.75, // Default to 1.75mm if not set
+                Density = NewFilamentModel.Density > 0 ? NewFilamentModel.Density : 1.24 // Default to 1.24g/cm³ if not set
             };
             await _printMaterialService.UpsertFilamentAsync(fil);
             fil.DbHash = fil.Hash;
@@ -80,34 +80,34 @@ public partial class PrintMaterialsViewModel : ViewModelBase
         }
         else if (SelectedMaterialType == "Resin")
         {
-            var res = new Resin
+            var res = new ResinModel
             {
-                Manufacture = string.IsNullOrEmpty(NewResin.Manufacture) ? "Unknown" : NewResin.Manufacture,
-                Name = string.IsNullOrEmpty(NewResin.Name) ? "No Name" : NewResin.Name,
-                Color = string.IsNullOrEmpty(NewResin.Color) ? "No Color" : NewResin.Color,
-                Weight = NewResin.Weight > 0 ? NewResin.Weight : 1000, // Default to 1000g if not set
-                Price = NewResin.Price > 0 ? NewResin.Price : 0 // Default to 0.0 if not set
+                Manufacture = string.IsNullOrEmpty(NewResinModel.Manufacture) ? "Unknown" : NewResinModel.Manufacture,
+                Name = string.IsNullOrEmpty(NewResinModel.Name) ? "No Name" : NewResinModel.Name,
+                Color = string.IsNullOrEmpty(NewResinModel.Color) ? "No Color" : NewResinModel.Color,
+                Weight = NewResinModel.Weight > 0 ? NewResinModel.Weight : 1000, // Default to 1000g if not set
+                Price = NewResinModel.Price > 0 ? NewResinModel.Price : 0 // Default to 0.0 if not set
             };
             await _printMaterialService.UpsertResinAsync(res);
             res.DbHash = res.Hash;
             Resins.Add(res);
         }
         // Clear the input fields after adding
-        NewFilament = new Filament();
-        NewResin = new Resin();
+        NewFilamentModel = new FilamentModel();
+        NewResinModel = new ResinModel();
     }
 
     [RelayCommand]
-    private async Task RemoveFilament(Filament filament)
+    private async Task RemoveFilament(FilamentModel filamentModel)
     {
-        await _printMaterialService.RemoveFilamentAsync(filament);
-        Filaments.Remove(filament);
+        await _printMaterialService.RemoveFilamentAsync(filamentModel);
+        Filaments.Remove(filamentModel);
     }
 
     [RelayCommand]
-    private async Task RemoveResin(Resin resin)
+    private async Task RemoveResin(ResinModel resinModel)
     {
-        await _printMaterialService.RemoveResinAsync(resin);
-        Resins.Remove(resin);
+        await _printMaterialService.RemoveResinAsync(resinModel);
+        Resins.Remove(resinModel);
     }
 }

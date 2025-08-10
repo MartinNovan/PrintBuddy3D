@@ -23,7 +23,7 @@
         <suki:GlassCard Grid.Row="1">
             <StackPanel Spacing="8">
                 <TextBlock Text="🔔 Notifications" FontWeight="Bold" FontSize="16"/>
-                <TextBlock Text="⚠️ Printer A: Filament runout"/>
+                <TextBlock Text="⚠️ Printer A: FilamentModel runout"/>
                 <TextBlock Text="✅ Printer B: Benchy finished (3 min ago)"/>
             </StackPanel>
         </suki:GlassCard>
