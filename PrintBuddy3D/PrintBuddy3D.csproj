@@ -31,5 +31,6 @@
         <PackageReference Include="SukiUI.Dock" />
         <PackageReference Include="WebView.Avalonia" />
         <PackageReference Include="WebView.Avalonia.Desktop" />
+        <PackageReference Include="WebViewControl-Avalonia" />
     </ItemGroup>
 </Project>

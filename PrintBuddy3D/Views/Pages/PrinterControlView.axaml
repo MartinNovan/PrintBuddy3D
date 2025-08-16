@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:webview="clr-namespace:WebViewControl;assembly=WebViewControl.Avalonia"
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:material="using:Material.Icons.Avalonia"
@@ -19,7 +20,8 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" x:Name="WebPanel" IsVisible="False">
-            <WebView x:Name="WebView" Url="{Binding Printer.Address}"/>
+            <webview:WebView Focusable="True" Address="{Binding Printer.Address}"/>
+            <!--WebView x:Name="WebView" Url="{Binding Printer.Address}"/-->
             <Label Content="WebView does not load correctly!"/>
         </Grid>
     </Grid>

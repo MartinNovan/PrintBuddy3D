@@ -53,7 +53,6 @@ public partial class App : Application
         services.AddSingleton<ViewModels.Pages.PrintMaterialsViewModel>();
         services.AddSingleton<ViewModels.Pages.HomeViewModel>();
         services.AddSingleton<ViewModels.Pages.GuidesViewModel>();
-        services.AddSingleton<ViewModels.Pages.StackPagePrintersViewModel>();
 
         return services.BuildServiceProvider();
     }

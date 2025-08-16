@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using AvaloniaWebView;
+using WebViewControl;
 using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.ViewModels.Pages;
 
@@ -25,6 +25,7 @@ public partial class PrinterControlView : UserControl
         // TODO: Find a better solution. (probably won't find one)
         try
         {
+            /*
             var parent = WebView.Parent as Panel;
             if (parent is null) return;
 
@@ -38,7 +39,7 @@ public partial class PrinterControlView : UserControl
                 Console.WriteLine(printerAddress);
                 if (printerAddress != null) WebView.Url = new Uri(printerAddress);
             }
-            parent.Children.Add(WebView);
+            parent.Children.Add(WebView);*/
         }
         catch (Exception ex)
         {

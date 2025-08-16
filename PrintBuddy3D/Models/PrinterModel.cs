@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace PrintBuddy3D.Models;
 
@@ -122,7 +123,16 @@ public class PrinterModel : INotifyPropertyChanged
     private string? _imagePath;
     public string? ImagePath
     {
-        get => _imagePath;
+        get
+        {
+            if (_imagePath == null && !File.Exists(_imagePath))
+            {
+                if (Firmware == "Klipper") return "avares://PrintBuddy3D/Assets/klipper-logo.png";
+                if (Firmware == "Marlin") return "avares://PrintBuddy3D/Assets/marlin-outrun-nf-500.png";
+                return "avares://PrintBuddy3D/Assets/other-printer-logo.png";
+            }
+            return _imagePath;
+        }
         set
         {
             if (_imagePath != value)
@@ -133,11 +143,16 @@ public class PrinterModel : INotifyPropertyChanged
         }
     }
 
-    public Bitmap? Image
-    {
+    public Bitmap? Image {
         get
         {
-            if (ImagePath != null) return new(ImagePath);
+            if (ImagePath != null && ImagePath.StartsWith("avares://"))
+            {
+                var uri = new Uri(ImagePath);
+                using var stream = AssetLoader.Open(uri);
+                return new Bitmap(stream);
+            }
+            if (File.Exists(ImagePath)) return new Bitmap(ImagePath);
             return null;
         }
     }
