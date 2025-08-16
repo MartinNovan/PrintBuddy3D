@@ -8,11 +8,11 @@ using Avalonia.Platform;
 
 namespace PrintBuddy3D.Models;
 
-public class PrinterModel : INotifyPropertyChanged
+public sealed class PrinterModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
@@ -156,8 +156,8 @@ public class PrinterModel : INotifyPropertyChanged
         }
     }
 
-    private ObservableCollection<FilamentModel> _filament;
-    public ObservableCollection<FilamentModel> Filament
+    private ObservableCollection<FilamentModel>? _filament;
+    public ObservableCollection<FilamentModel>? Filament
     {
         get => _filament;
         set

@@ -17,18 +17,18 @@ public partial class PrintMaterialsViewModel : ViewModelBase
     [ObservableProperty] 
     private ObservableCollection<String> _materialTypes = new()
     {
-        "FilamentModel",
+        "Filament",
         "Resin"
     };
     [ObservableProperty]
-    private String? _selectedMaterialType = "FilamentModel";
+    private String? _selectedMaterialType = "Filament";
 
     [ObservableProperty] 
     private FilamentModel _newFilamentModel = new();
     [ObservableProperty] 
     private ResinModel _newResinModel = new();
 
-    public bool IsFilamentSelected => SelectedMaterialType == "FilamentModel";
+    public bool IsFilamentSelected => SelectedMaterialType == "Filament";
     public bool IsResinSelected => SelectedMaterialType == "Resin";
     
     private readonly IPrintMaterialService _printMaterialService;

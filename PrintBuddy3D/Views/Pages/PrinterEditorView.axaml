@@ -1,0 +1,17 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PrintBuddy3D.Views.Pages.PrinterEditorView"
+             x:DataType="vm:PrinterEditorViewModel">
+    <Grid RowDefinitions="Auto, *">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <Button Classes="Basic" Grid.Column="0" Command="{Binding BackCommand}">
+                <material:MaterialIcon Kind="ArrowBack"/>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

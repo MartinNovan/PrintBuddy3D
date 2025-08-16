@@ -8,6 +8,7 @@ using PrintBuddy3D.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Services;
 using AvaloniaWebView;
+using SukiUI.Dialogs;
 
 namespace PrintBuddy3D;
 
@@ -46,6 +47,7 @@ public partial class App : Application
         // Services
         services.AddSingleton<IAppDataService, AppDataService>();
         services.AddSingleton<IPrintMaterialService, PrintMaterialService>();
+        services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
 
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();

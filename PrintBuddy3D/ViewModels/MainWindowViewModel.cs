@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Services;
 using PrintBuddy3D.ViewModels.Pages;
 using SukiUI;
+using SukiUI.Dialogs;
 using SukiUI.Enums;
 using SukiUI.Models;
 
@@ -19,10 +20,12 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private SukiBackgroundStyle _backgroundStyle;
     [ObservableProperty] private SukiTheme _themes;
     [ObservableProperty] private IAvaloniaReadOnlyList<SukiBackgroundStyle> _backgroundStyles;
-
+    
+    public ISukiDialogManager DialogManager { get; }
     private readonly IAppDataService _appDataService;
-    public MainWindowViewModel(IAppDataService appDataService)
+    public MainWindowViewModel(IAppDataService appDataService, ISukiDialogManager dialogManager)
     {
+        DialogManager = dialogManager;
         _appDataService = appDataService;
         CurrentPage = App.Services.GetRequiredService<HomeViewModel>();
         _themes = SukiTheme.GetInstance();

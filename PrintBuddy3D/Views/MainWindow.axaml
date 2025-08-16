@@ -15,7 +15,9 @@
     <suki:SukiWindow.LogoContent>
         <Image Source="../Assets/avalonia-logo.ico" Height="15"/>
     </suki:SukiWindow.LogoContent>
-    
+    <suki:SukiWindow.Hosts>
+        <suki:SukiDialogHost Manager="{Binding DialogManager}" />
+    </suki:SukiWindow.Hosts>
     <suki:SukiWindow.RightWindowTitleBarControls>
         <Button Classes="WindowControlsButton">
             <material:MaterialIcon Kind="Settings" />
