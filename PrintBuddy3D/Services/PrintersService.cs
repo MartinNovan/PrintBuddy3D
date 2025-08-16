@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Microsoft.Data.Sqlite;
-using PrintBuddy3D.Models;
+﻿using Microsoft.Data.Sqlite;
 
 namespace PrintBuddy3D.Services;
 

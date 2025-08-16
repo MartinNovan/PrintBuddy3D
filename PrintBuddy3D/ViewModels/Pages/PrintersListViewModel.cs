@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
-using Avalonia.Media.Imaging;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Dock.Model.Core;
 using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Models;
-using PrintBuddy3D.Views;
-using PrintBuddy3D.Views.Pages;
 using SukiUI.Controls;
-using SukiUI.Controls.Experimental.DesktopEnvironment;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
