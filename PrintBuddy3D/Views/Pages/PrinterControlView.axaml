@@ -2,16 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:pages="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:material="using:Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlView"
-             x:DataType="pages:PrinterControlViewModel">
+             x:DataType="vm:PrinterControlViewModel">
     <Grid RowDefinitions="Auto, *">
-        <StackPanel Orientation="Horizontal">
-            <Label Content="Web mode:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <ToggleSwitch Click="SwitchModes" IsChecked="False"/>
-        </StackPanel>
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <Button Classes="Basic" Grid.Column="0" Command="{Binding BackCommand}">
+                <material:MaterialIcon Kind="ArrowBack"/>
+            </Button>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Label Content="Web mode:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ToggleSwitch Click="SwitchModes" IsChecked="False"/>
+            </StackPanel>
+        </Grid>
         <Grid Grid.Row="1" x:Name="WebPanel" IsVisible="False">
             <WebView x:Name="WebView" Url="{Binding Printer.Address}"/>
             <Label Content="WebView does not load correctly!"/>

@@ -1,13 +1,25 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Dock.Model.Core;
+using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Models;
+using PrintBuddy3D.Views;
+using PrintBuddy3D.Views.Pages;
+using SukiUI.Controls;
+using SukiUI.Controls.Experimental.DesktopEnvironment;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public class PrintersViewModel
+public partial class PrintersListViewModel : ObservableObject, ISukiStackPageTitleProvider
 {
+    public string Title { get; } = "Printers List";
     public ObservableCollection<PrinterModel> Printers { get; set; } = new()
     {
         new PrinterModel
@@ -62,5 +74,22 @@ public class PrintersViewModel
             ImagePath = "C:\\Users\\mnova\\Documents\\GitHub\\PrintBuddy3D\\PrintBuddy3D\\Assets\\Pictures\\marlin-outrun-nf-500.png"
         }
     };
+    [ObservableProperty]
+    private object? currentContent;
     
+    public PrintersListViewModel()
+    {
+        CurrentContent = this; 
+    }
+    
+    [RelayCommand]
+    private void OpenPrinterControl(PrinterModel printer)
+    {
+        CurrentContent = new PrinterControlViewModel(printer, GoBack);
+    }
+
+    private void GoBack()
+    {
+        CurrentContent = App.Services.GetRequiredService<PrintersListViewModel>(); 
+    }
 }

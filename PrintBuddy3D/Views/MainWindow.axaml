@@ -1,4 +1,4 @@
-<suki:SukiWindow xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:vm="using:PrintBuddy3D.ViewModels"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,16 +9,11 @@
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                  x:Class="PrintBuddy3D.Views.MainWindow"
                  x:DataType="vm:MainWindowViewModel"
-                 CanPin="True"
-                 BackgroundStyle="{Binding BackgroundStyle}"
-                 Title="PrintBuddy3D">
-
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-    
+                 Title="PrintBuddy3D"
+                 Width="1280"
+                 Height="720">
     <suki:SukiWindow.LogoContent>
-        <!-- Logo -->
+        <Image Source="../Assets/avalonia-logo.ico" Height="15"/>
     </suki:SukiWindow.LogoContent>
     
     <suki:SukiWindow.RightWindowTitleBarControls>
@@ -60,8 +55,7 @@
             </Button.Flyout>
         </Button>
     </suki:SukiWindow.RightWindowTitleBarControls>
-    
-    <suki:SukiSideMenu x:Name="SideMenu" IsSearchEnabled="True">
+    <suki:SukiSideMenu x:Name="SideMenu" >
         <suki:SukiSideMenu.Items>
             <suki:SukiSideMenuItem Header="Home" Classes="Compact">
                 <suki:SukiSideMenuItem.Icon>
@@ -77,7 +71,7 @@
                     <material:MaterialIcon Kind="Printer3d"/>
                 </suki:SukiSideMenuItem.Icon>
                 <suki:SukiSideMenuItem.PageContent>
-                    <page:PrintersView/>
+                    <page:PrintersListView/>
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             
@@ -98,7 +92,6 @@
                     <page:GuidesView/>
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
-            
         </suki:SukiSideMenu.Items>
         <suki:SukiSideMenu.FooterContent>
             <StackPanel Orientation="Horizontal" Spacing="8" Margin="8" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -111,4 +104,5 @@
             </StackPanel>
         </suki:SukiSideMenu.FooterContent>
     </suki:SukiSideMenu>
-</suki:SukiWindow>
+</Window>
+

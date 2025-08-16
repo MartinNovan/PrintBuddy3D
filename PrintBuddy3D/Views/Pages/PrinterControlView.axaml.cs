@@ -9,11 +9,10 @@ namespace PrintBuddy3D.Views.Pages;
 
 public partial class PrinterControlView : UserControl
 {
-    private bool _isWebModeEnabled = false;
+    private bool _isWebModeEnabled;
     public PrinterControlView()
     {
         InitializeComponent();
-        DataContext = App.Services.GetRequiredService<PrinterControlViewModel>();
     }
 
     // This is a test, need to be edited to use the VM and get the URL from it.
@@ -24,17 +23,29 @@ public partial class PrinterControlView : UserControl
         // This is a workaround to force the WebView to load succesfully.
         // Also mby i will leave it like this, bcs this will be second option to connect to the printer.
         // TODO: Find a better solution. (probably won't find one)
-        var parent = WebView.Parent as Panel;
-        if (parent is null) return;
+        try
+        {
+            var parent = WebView.Parent as Panel;
+            if (parent is null) return;
 
-        parent.Children.Remove(WebView);
+            parent.Children.Remove(WebView);
 
-        WebView = new WebView();
-        WebView.Url = new Uri("http://klipper.local");
-
-        parent.Children.Add(WebView);
+            WebView = new WebView();
+            var printersListVm = App.Services.GetRequiredService<PrintersListViewModel>();
+            if (printersListVm.CurrentContent is PrinterControlViewModel printerControlVm)
+            {
+                var printerAddress = printerControlVm.Printer.Address;
+                Console.WriteLine(printerAddress);
+                if (printerAddress != null) WebView.Url = new Uri(printerAddress);
+            }
+            parent.Children.Add(WebView);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error while reloading WebView: " + ex.Message);
+        }
     }
-
+    
     private void SwitchModes(object? sender, RoutedEventArgs e)
     {
         _isWebModeEnabled = !_isWebModeEnabled;
