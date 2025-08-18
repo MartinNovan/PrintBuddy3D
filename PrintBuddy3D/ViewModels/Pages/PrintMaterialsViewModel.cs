@@ -42,10 +42,10 @@ public partial class PrintMaterialsViewModel : ViewModelBase
     public PrintMaterialsViewModel(IPrintMaterialService printMaterialService)
     {
         _printMaterialService = printMaterialService;
-        LoadData();
+        LoadFilaments();
     }
     
-    private async void LoadData()
+    private async void LoadFilaments()
     {
         try
         {

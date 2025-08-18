@@ -10,6 +10,7 @@ using SukiUI;
 using SukiUI.Dialogs;
 using SukiUI.Enums;
 using SukiUI.Models;
+using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels;
 
@@ -22,9 +23,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private IAvaloniaReadOnlyList<SukiBackgroundStyle> _backgroundStyles;
     
     public ISukiDialogManager DialogManager { get; }
+    public ISukiToastManager ToastManager { get; }
     private readonly IAppDataService _appDataService;
-    public MainWindowViewModel(IAppDataService appDataService, ISukiDialogManager dialogManager)
+    public MainWindowViewModel(IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
+        ToastManager = toastManager;
         DialogManager = dialogManager;
         _appDataService = appDataService;
         CurrentPage = App.Services.GetRequiredService<HomeViewModel>();

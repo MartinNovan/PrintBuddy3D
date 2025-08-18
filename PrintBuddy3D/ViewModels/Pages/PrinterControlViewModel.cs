@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Models;
@@ -26,6 +27,24 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void SwitchModes()
     {
+        //TODO: find suitable webview for linux or find other solution to open web interface in app
+        if (OperatingSystem.IsLinux())
+        {
+            try
+            {
+                using var process = new Process();
+                process.StartInfo = new ProcessStartInfo
+                {
+                    FileName = Printer.Address,
+                    UseShellExecute = true
+                };
+                process.Start();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error when opening URL: {ex.Message}");
+            }
+        }
         IsWebModeEnabled = !IsWebModeEnabled;
     }
 }

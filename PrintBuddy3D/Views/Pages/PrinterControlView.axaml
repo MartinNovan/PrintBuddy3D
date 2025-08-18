@@ -19,7 +19,12 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" x:Name="WebPanel" IsVisible="{Binding IsWebModeEnabled}">
-            <WebView x:Name="WebView" Url="{Binding Printer.Address}"/>
+            <OnPlatform>
+                <OnPlatform.Windows>
+                    <!--WebView on Linux doesnt work correctly, Linux will be opening browser for webmode until solution is found-->
+                    <WebView x:Name="WebView" Url="{Binding Printer.FullAddress}"/>
+                </OnPlatform.Windows>
+            </OnPlatform>
             <Label Content="WebView does not load correctly!"/>
         </Grid>
     </Grid>

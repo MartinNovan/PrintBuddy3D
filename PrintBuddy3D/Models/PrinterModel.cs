@@ -5,6 +5,8 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Microsoft.Extensions.DependencyInjection;
+using PrintBuddy3D.ViewModels.Pages;
 
 namespace PrintBuddy3D.Models;
 
@@ -62,6 +64,21 @@ public sealed class PrinterModel : INotifyPropertyChanged
             }
         }
     }
+
+    private string? _prefix;
+    public string? Prefix
+    {
+        get => _prefix;
+        set
+        {
+            if (_prefix != value)
+            {
+                _prefix = value;
+                OnPropertyChanged();
+                OnPropertyChanged(FullAddress);
+            }
+        }
+    }
     
     private string? _address;
     public string? Address
@@ -71,7 +88,24 @@ public sealed class PrinterModel : INotifyPropertyChanged
         {
             if (_address != value)
             {
-                _address = value;
+                _address = value?.Replace("http://", "").Replace("https://", "");
+                OnPropertyChanged();
+                OnPropertyChanged(FullAddress);
+            }
+        }
+    }
+    
+    public string? FullAddress => $"{Prefix}{Address}";
+    
+    private string? _hostUserName;
+    public string? HostUserName
+    {
+        get => _hostUserName;
+        set
+        {
+            if (_hostUserName != value)
+            {
+                _hostUserName = value;
                 OnPropertyChanged();
             }
         }
@@ -171,10 +205,21 @@ public sealed class PrinterModel : INotifyPropertyChanged
     }
     
     
-    
-    public string? Status { get; set; } = "Ready"; // Status of the printer, e.g., "Ready", "Printing", "Offline", "Not Ready", "Done"
+    private string? _status;
+    public string? Status
+    {
+        get => _status;
+        set
+        {
+            if (_status != value)
+            {
+                _status = value;
+                OnPropertyChanged();
+            }
+        }
+    } // Status of the printer, e.g., "Online", "Printing", "Offline", "Done", "Idle"
     public int E0Temp { get; set; } = 30;
     public int BedTemp { get; set; } = 30;
     public int Speed { get; set; } = 500;
-
+    public object? CurrentJob { get; set; } // Current job being printed, can be a string or a more complex object
 }

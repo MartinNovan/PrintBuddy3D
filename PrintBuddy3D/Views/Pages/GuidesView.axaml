@@ -9,31 +9,15 @@
         <Grid>
             <suki:SukiSideMenu IsSearchEnabled="True">
                 <suki:SukiSideMenu.Items>
-                
-                    <suki:SukiSideMenuItem Classes="Compact" Header="Collection">
+                    <suki:SukiSideMenuItem Classes="Compact" Header="App usage">
                         <suki:SukiSideMenuItem.Icon>
-                            <PathIcon Width="13"
-                                      Height="13"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Data="{x:Static suki:Icons.Search}"
-                                      Foreground="{DynamicResource SukiLowText}" />
                         </suki:SukiSideMenuItem.Icon>
                         <suki:SukiSideMenuItem.PageContent>
                             <Panel />
                         </suki:SukiSideMenuItem.PageContent>
                         <suki:SukiSideMenuItem.Items>
-        
-        
-        
                             <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
                                 <suki:SukiSideMenuItem.Icon>
-                                    <PathIcon Width="13"
-                                              Height="13"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Data="{x:Static suki:Icons.Search}"
-                                              Foreground="{DynamicResource SukiLowText}" />
                                 </suki:SukiSideMenuItem.Icon>
                                 <suki:SukiSideMenuItem.PageContent>
                                     <Panel />
@@ -52,72 +36,7 @@
                                     <Panel />
                                 </suki:SukiSideMenuItem.PageContent>
                             </suki:SukiSideMenuItem>
-        
-        
-        
                         </suki:SukiSideMenuItem.Items>
-                    </suki:SukiSideMenuItem>
-        
-                    <suki:SukiSideMenuItem Classes="Compact" Header="Collection">
-                        <suki:SukiSideMenuItem.Icon>
-                            <PathIcon Width="13"
-                                      Height="13"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Data="{x:Static suki:Icons.Search}"
-                                      Foreground="{DynamicResource SukiLowText}" />
-                        </suki:SukiSideMenuItem.Icon>
-                        <suki:SukiSideMenuItem.PageContent>
-                            <Panel />
-                        </suki:SukiSideMenuItem.PageContent>
-                        <suki:SukiSideMenuItem.Items>
-        
-        
-        
-                            <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
-                                <suki:SukiSideMenuItem.Icon>
-                                    <PathIcon Width="13"
-                                              Height="13"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Data="{x:Static suki:Icons.Search}"
-                                              Foreground="{DynamicResource SukiLowText}" />
-                                </suki:SukiSideMenuItem.Icon>
-                                <suki:SukiSideMenuItem.PageContent>
-                                    <Panel />
-                                </suki:SukiSideMenuItem.PageContent>
-                            </suki:SukiSideMenuItem>
-                            <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
-                                <suki:SukiSideMenuItem.Icon>
-                                    <PathIcon Width="13"
-                                              Height="13"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Data="{x:Static suki:Icons.Search}"
-                                              Foreground="{DynamicResource SukiLowText}" />
-                                </suki:SukiSideMenuItem.Icon>
-                                <suki:SukiSideMenuItem.PageContent>
-                                    <Panel />
-                                </suki:SukiSideMenuItem.PageContent>
-                            </suki:SukiSideMenuItem>
-        
-        
-        
-                        </suki:SukiSideMenuItem.Items>
-                    </suki:SukiSideMenuItem>
-        
-                    <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
-                        <suki:SukiSideMenuItem.Icon>
-                            <PathIcon Width="13"
-                                      Height="13"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Data="{x:Static suki:Icons.Search}"
-                                      Foreground="{DynamicResource SukiLowText}" />
-                        </suki:SukiSideMenuItem.Icon>
-                        <suki:SukiSideMenuItem.PageContent>
-                            <Panel />
-                        </suki:SukiSideMenuItem.PageContent>
                     </suki:SukiSideMenuItem>
                 </suki:SukiSideMenu.Items>
             </suki:SukiSideMenu>

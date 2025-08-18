@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewmodel="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:DataType="viewmodel:HomeViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.HomeView">
@@ -11,20 +12,36 @@
     <Grid RowDefinitions="Auto,*" RowSpacing="5" Margin="5">
         
         <suki:GlassCard Grid.Row="0" >
-            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto, Auto" ColumnSpacing="5" RowSpacing="5">
+            <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto, Auto" ColumnSpacing="5" RowSpacing="5">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="🖨️ Printers Summary" FontWeight="Bold" FontSize="16" Grid.ColumnSpan="4"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Online: 2"  />
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="Offline: 3" />
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="Printing: 5" />
-                <TextBlock Grid.Row="1" Grid.Column="3" Text="Done: 4" />
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"><TextBlock Text="Online: "/><TextBlock Text="{Binding OnlinePrintersCount}"/></StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"><TextBlock Text="Offline: "/><TextBlock Text="{Binding OfflinePrintersCount}"/></StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal"><TextBlock Text="Printing: "/><TextBlock Text="{Binding PrintingPrintersCount}"/></StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal"><TextBlock Text="Done: "/><TextBlock Text="{Binding DonePrintersCount}"/></StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="4" Orientation="Horizontal"><TextBlock Text="Idle: "/><TextBlock Text="{Binding IdlePrintersCount}"/></StackPanel>
             </Grid>
         </suki:GlassCard>
 
         <suki:GlassCard Grid.Row="1">
             <StackPanel Spacing="8">
                 <TextBlock Text="🔔 Notifications" FontWeight="Bold" FontSize="16"/>
-                <TextBlock Text="⚠️ Printer A: FilamentModel runout"/>
-                <TextBlock Text="✅ Printer B: Benchy finished (3 min ago)"/>
+                <DataGrid ItemsSource="{Binding NotificationMessages}" HeadersVisibility="None" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding}" Width="*"/>
+                        <DataGridTemplateColumn Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Classes="Basic Icon"
+                                            DataContext="{Binding $parent[UserControl].DataContext}"
+                                            Command="{Binding RemoveNotificationCommand, DataType=viewmodel:HomeViewModel}"
+                                            CommandParameter="{Binding $parent[DataGridRow].DataContext}">
+                                        <avalonia:MaterialIcon Kind="Close" Foreground="Red"/>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
         </suki:GlassCard>
     </Grid>
