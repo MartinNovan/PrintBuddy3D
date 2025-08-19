@@ -49,6 +49,7 @@ public partial class App : Application
         services.AddSingleton<IAppDataService, AppDataService>();
         services.AddSingleton<IPrintMaterialService, PrintMaterialService>();
         services.AddSingleton<IPrintersService, PrintersService>();
+        services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
 

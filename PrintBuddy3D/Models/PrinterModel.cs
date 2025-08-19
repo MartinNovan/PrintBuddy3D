@@ -5,8 +5,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Microsoft.Extensions.DependencyInjection;
-using PrintBuddy3D.ViewModels.Pages;
 
 namespace PrintBuddy3D.Models;
 
@@ -203,9 +201,11 @@ public sealed class PrinterModel : INotifyPropertyChanged
             }
         }
     }
+
+    public string? PreviousStatus { get; private set; } // Previous status of the printer, used to track changes
     
-    
-    private string? _status;
+    private string? _status = "None"; // Default status is Offline, can be changed to Online, Printing, Done, Idle, etc.
+
     public string? Status
     {
         get => _status;
@@ -213,6 +213,7 @@ public sealed class PrinterModel : INotifyPropertyChanged
         {
             if (_status != value)
             {
+                PreviousStatus = _status;
                 _status = value;
                 OnPropertyChanged();
             }

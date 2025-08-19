@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Avalonia.Controls.Notifications;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
-using Material.Icons.Avalonia;
-using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Models;
-using SukiUI.Enums;
 using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels.Pages;
@@ -24,12 +20,10 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<string> _notificationMessages = new();
 
     private readonly ISukiToastManager _sukiToastManager;
-    private readonly PrintersListViewModel _printersVm;
+
     public HomeViewModel(ISukiToastManager toastManager)
     {
         _sukiToastManager = toastManager;
-        _printersVm = App.Services.GetRequiredService<PrintersListViewModel>();
-        RefreshPrintersCount();
     }
 
     [RelayCommand]
@@ -41,35 +35,69 @@ public partial class HomeViewModel : ViewModelBase
         }
     }
     
-    public void RefreshPrintersCount()
-    {
-        OnlinePrintersCount = _printersVm.Printers?.Count(p => p.Status == "Online") ?? 0;
-        OfflinePrintersCount = _printersVm.Printers?.Count(p => p.Status == "Offline") ?? 0;
-        PrintingPrintersCount = _printersVm.Printers?.Count(p => p.Status == "Printing") ?? 0;
-        DonePrintersCount = _printersVm.Printers?.Count(p => p.Status == "Done") ?? 0;
-        IdlePrintersCount = _printersVm.Printers?.Count(p => p.Status == "Idle") ?? 0;
-    }
     private readonly Dictionary<string, string> _statusMessages = new()
     {
         { "Online", "🟢 Printer is now online." },
         { "Offline", "🔴 Printer went offline." },
         { "Done", "✅ Printer finished printing {0}." },
-        { "Printing", "🖨️ Printer started printing {0}." }
+        { "Printing", "🖨️ Printer is printing {0}." }
     };
 
-    public void RecieveNotification(PrinterModel printer)
+    public void UpdateStatus(PrinterModel printer)
     {
         if (_statusMessages.TryGetValue(printer.Status ?? "", out var template))
         {
+            switch (printer.Status)
+            {
+                case "Online":
+                    OnlinePrintersCount += 1;
+                    break;
+                case "Offline":
+                    OfflinePrintersCount += 1;
+                    break;
+                case "Printing":
+                    PrintingPrintersCount += 1;
+                    break;
+                case "Done":
+                    DonePrintersCount += 1;
+                    break;
+                case "Idle":
+                    IdlePrintersCount += 1;
+                    break;
+            }
+            if (printer.PreviousStatus != null && _statusMessages.TryGetValue(printer.PreviousStatus, out var previousTemplate))
+            {
+                switch (printer.PreviousStatus)
+                {
+                    case "Online":
+                        OnlinePrintersCount -= 1;
+                        break;
+                    case "Offline":
+                        OfflinePrintersCount -= 1;
+                        break;
+                    case "Printing":
+                        PrintingPrintersCount -= 1;
+                        break;
+                    case "Done":
+                        DonePrintersCount -= 1;
+                        break;
+                    case "Idle":
+                        IdlePrintersCount -= 1;
+                        break;
+                }
+            }
+            if (printer is { Status: "Offline", PreviousStatus: "None" }) return; //to avoid showing a notification when the printer is offline from the start of the app
             string message = string.Format(template, printer.CurrentJob);
             NotificationMessages.Insert(0,message);
-            _sukiToastManager.CreateToast()
-                .WithTitle(printer.Name ?? "Unnamed printer")
-                .WithContent(message)
-                .OfType(NotificationType.Information)
-                .Dismiss().ByClicking()
-                .Dismiss().After(TimeSpan.FromSeconds(10))
-                .Queue();
+            Dispatcher.UIThread.InvokeAsync(() =>
+                _sukiToastManager.CreateToast()
+                    .WithTitle(printer.Name ?? "Unnamed printer")
+                    .WithContent(message)
+                    .OfType(NotificationType.Information)
+                    .Dismiss().ByClicking()
+                    .Dismiss().After(TimeSpan.FromSeconds(10))
+                    .Queue()
+                );
         }
     }
     

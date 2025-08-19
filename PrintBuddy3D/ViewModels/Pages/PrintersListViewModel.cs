@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
@@ -21,7 +18,7 @@ public partial class PrintersListViewModel : ObservableObject
     private readonly ISukiDialogManager _dialogManager;
     private DispatcherTimer? _refreshTimer;
     private readonly IPrintersService _printersService;
-    
+
     [ObservableProperty] private ObservableCollection<PrinterModel> _printers;
     [ObservableProperty] private object? _currentContent;
     
@@ -31,17 +28,6 @@ public partial class PrintersListViewModel : ObservableObject
         _printersService = printersService;
         CurrentContent = this;
         _ = LoadPrinters();
-        foreach (var printerModel in Printers.Where(p => p.Status == "Offline"))
-            printerModel.Status = "Online";
-        Thread.Sleep(200);
-        foreach (var printerModel in Printers.Where(p => p.Status == "Idle"))
-            printerModel.Status = "Offline";
-        Thread.Sleep(200);
-        foreach (var printerModel in Printers.Where(p => p.Status == "Done"))
-            printerModel.Status = "Idle";
-        Thread.Sleep(200);
-        foreach (var printerModel in Printers.Where(p => p.Status == "Printing"))
-            printerModel.Status = "Done";
     }
 
     
@@ -123,42 +109,10 @@ public partial class PrintersListViewModel : ObservableObject
         CurrentContent = App.Services.GetRequiredService<PrintersListViewModel>(); 
     }
     
-    private void Printer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        try
-        {
-            if (e.PropertyName == nameof(PrinterModel.Status))
-            {
-                if (_refreshTimer == null)
-                {
-                    _refreshTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; // 100ms interval to prevent UI collapse during rapid updates
-                    _refreshTimer.Tick += (s, args) =>
-                    {
-                        _refreshTimer.Stop();
-                        _refreshTimer = null;
-                        // Functions to refresh UI on Home page
-                        App.Services.GetRequiredService<HomeViewModel>().RefreshPrintersCount();
-                        var printer = (PrinterModel)sender!;
-                        App.Services.GetRequiredService<HomeViewModel>().RecieveNotification(printer);
-                    };
-                }
-                _refreshTimer.Stop();
-                _refreshTimer.Start();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
 
     private async Task LoadPrinters()
     {
         var printers = await _printersService.GetPrintersAsync();
-        foreach (var printer in printers)
-        {
-            printer.PropertyChanged += Printer_PropertyChanged;
-        }
         Printers = printers;
     }
 }
