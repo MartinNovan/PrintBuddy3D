@@ -24,8 +24,12 @@
                     <!--WebView on Linux doesnt work correctly, Linux will be opening browser for webmode until solution is found-->
                     <WebView x:Name="WebView" Url="{Binding Printer.FullAddress}"/>
                 </OnPlatform.Windows>
+                <OnPlatform.Linux>
+                    <!--Label to prevent null value error-->
+                    <Label/>
+                </OnPlatform.Linux>
             </OnPlatform>
-            <Label Content="WebView does not load correctly!"/>
+            <Label Content="{Binding ErrorMessage}"/>
         </Grid>
     </Grid>
 </UserControl>

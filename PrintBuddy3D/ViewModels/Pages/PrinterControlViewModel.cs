@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Models;
@@ -12,6 +13,7 @@ public partial class PrinterControlViewModel : ObservableObject
     private readonly Action _goBack;
     
     [ObservableProperty] private bool _isWebModeEnabled;
+    [ObservableProperty] private string _errorMessage = "WebView does not load properly!";
     public PrinterControlViewModel(PrinterModel printer, Action goBack)
     {
         Printer = printer;
@@ -28,14 +30,16 @@ public partial class PrinterControlViewModel : ObservableObject
     private void SwitchModes()
     {
         //TODO: find suitable webview for linux or find other solution to open web interface in app
-        if (OperatingSystem.IsLinux())
+        IsWebModeEnabled = !IsWebModeEnabled;
+        if (OperatingSystem.IsLinux() && IsWebModeEnabled)
         {
             try
             {
+                ErrorMessage = "WebView is not supported on Linux. Opening browser instead...";
                 using var process = new Process();
                 process.StartInfo = new ProcessStartInfo
                 {
-                    FileName = Printer.Address,
+                    FileName = Printer.FullAddress,
                     UseShellExecute = true
                 };
                 process.Start();
@@ -45,6 +49,5 @@ public partial class PrinterControlViewModel : ObservableObject
                 Debug.WriteLine($"Error when opening URL: {ex.Message}");
             }
         }
-        IsWebModeEnabled = !IsWebModeEnabled;
     }
 }
