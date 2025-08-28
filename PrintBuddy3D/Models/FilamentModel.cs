@@ -4,11 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace PrintBuddy3D.Models;
 
-public class PrintMaterialModel : INotifyPropertyChanged
+public class FilamentModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     public Guid Id { get; init; } = Guid.NewGuid(); // Unique identifier for each print material
@@ -82,10 +82,6 @@ public class PrintMaterialModel : INotifyPropertyChanged
             }
         }
     }
-}
-
-public class FilamentModel : PrintMaterialModel
-{
     public int Hash
     {
         get
@@ -158,23 +154,4 @@ public class FilamentModel : PrintMaterialModel
         Diameter > 0 && Density > 0
             ? Math.Round((Weight - SpoolWeight) / (Math.PI * Math.Pow(Diameter / 2, 2) * Density), 2)
             : null;
-}
-
-public class ResinModel : PrintMaterialModel
-{
-    public int Hash
-    {
-        get
-        {
-            var hash = new HashCode();
-            hash.Add(Id);
-            hash.Add(Weight);
-            hash.Add(Price);
-            hash.Add(Manufacture);
-            hash.Add(Name);
-            hash.Add(Color);
-            return hash.ToHashCode();
-        }
-    }
-
 }

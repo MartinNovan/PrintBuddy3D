@@ -78,12 +78,12 @@
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             
-            <suki:SukiSideMenuItem Header="Materials" Classes="Compact">
+            <suki:SukiSideMenuItem Header="Filaments" Classes="Compact">
                 <suki:SukiSideMenuItem.Icon>
                     <material:MaterialIcon Kind="FreehandLine"/>
                 </suki:SukiSideMenuItem.Icon>
                 <suki:SukiSideMenuItem.PageContent>
-                    <page:PrintMaterialsView/>
+                    <page:FilamentsView/>
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             

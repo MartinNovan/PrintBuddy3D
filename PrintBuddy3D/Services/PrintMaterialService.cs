@@ -12,10 +12,6 @@ public interface IPrintMaterialService
     Task<ObservableCollection<FilamentModel>> GetFilamentsAsync(CancellationToken ct = default);
     Task UpsertFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default);
     Task RemoveFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default);
-    
-    Task<ObservableCollection<ResinModel>> GetResinsAsync(CancellationToken ct = default);
-    Task UpsertResinAsync(ResinModel resinModel, CancellationToken ct = default);
-    Task RemoveResinAsync(ResinModel resinModel, CancellationToken ct = default);
 }
 
 public class PrintMaterialService(IAppDataService appDataService) : IPrintMaterialService
@@ -26,10 +22,10 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
     {
         var filaments = new ObservableCollection<FilamentModel>();
         await _dbConnection.OpenAsync(ct);
-        
+
         await using var command = _dbConnection.CreateCommand();
         command.CommandText = "SELECT * FROM Filaments";
-        
+
         await using var reader = await command.ExecuteReaderAsync(ct);
         while (await reader.ReadAsync(ct))
         {
@@ -46,7 +42,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                 Diameter = reader.GetDouble("Diameter"),
                 Density = reader.GetDouble("Density")
             };
-        
+
             filament.PropertyChanged += async (_, _) =>
             {
                 if (filament.Hash != filament.DbHash)
@@ -55,20 +51,23 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                     filament.DbHash = filament.Hash;
                 }
             };
-        
+
             filaments.Add(filament);
         }
+
         return filaments;
     }
+
     public async Task UpsertFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default)
     {
         await _dbConnection.OpenAsync(ct);
-    
+
         await using var cmd = _dbConnection.CreateCommand();
         cmd.CommandText = @"
             INSERT INTO Filaments (Id, Hash, Manufacture, Name, Color, Weight, Price, SpoolWeight, Diameter, Density)
             VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price, $spoolWeight, $diameter, $density)
             ON CONFLICT(Id) DO UPDATE SET
+                PrinterId = excluded.PrinterId,
                 Hash = excluded.Hash,
                 Manufacture = excluded.Manufacture,
                 Name = excluded.Name,
@@ -88,7 +87,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         cmd.Parameters.AddWithValue("$spoolWeight", filamentModel.SpoolWeight);
         cmd.Parameters.AddWithValue("$diameter", filamentModel.Diameter);
         cmd.Parameters.AddWithValue("$density", filamentModel.Density);
-    
+
         await cmd.ExecuteNonQueryAsync(ct);
     }
 
@@ -99,73 +98,6 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
         await using var command = _dbConnection.CreateCommand();
         command.CommandText = "DELETE FROM Filaments WHERE Id = $id";
         command.Parameters.AddWithValue("$id", filamentModel.Id);
-        await command.ExecuteNonQueryAsync(ct);
-    }
-    
-    public async Task<ObservableCollection<ResinModel>> GetResinsAsync(CancellationToken ct = default)
-    {
-        var resins = new ObservableCollection<ResinModel>();
-        await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
-        command.CommandText = "SELECT * FROM Resins";
-        await using var reader = await command.ExecuteReaderAsync(ct);
-        while (await reader.ReadAsync(ct))
-        {
-            var resin = new ResinModel()
-            {
-                Id = reader.GetGuid("Id"),
-                DbHash = reader.GetInt32("Hash"),
-                Manufacture = reader.GetString("Manufacture"),
-                Name = reader.GetString("Name"),
-                Color = reader.GetString("Color"),
-                Weight = reader.GetInt32("Weight"),
-                Price = reader.GetDouble("Price")
-            };
-            resin.PropertyChanged += async (_, _) =>
-            {
-                if (resin.Hash != resin.DbHash)
-                {
-                    await UpsertResinAsync(resin, ct);
-                    resin.DbHash = resin.Hash;
-                }
-            };
-            resins.Add(resin);
-        }
-        return resins;
-    }
-    public async Task UpsertResinAsync(ResinModel resinModel, CancellationToken ct = default)
-    {
-        await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
-        command.CommandText = @"INSERT INTO Resins (Id, Hash, Manufacture, Name, Color, Weight, Price)
-                                VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price)
-                                ON CONFLICT(Id) DO UPDATE SET
-                                    Hash = excluded.Hash,
-                                    Manufacture = excluded.Manufacture,
-                                    Name = excluded.Name,
-                                    Color = excluded.Color,
-                                    Weight = excluded.Weight,
-                                    Price = excluded.Price;";
-        command.Parameters.AddWithValue("$id", resinModel.Id);
-        command.Parameters.AddWithValue("$hash", resinModel.Hash);
-        command.Parameters.AddWithValue("$manufacture", resinModel.Manufacture);
-        command.Parameters.AddWithValue("$name", resinModel.Name);
-        command.Parameters.AddWithValue("$color", resinModel.Color);
-        command.Parameters.AddWithValue("$weight", resinModel.Weight);
-        command.Parameters.AddWithValue("$price", resinModel.Price);
-
-        await command.ExecuteNonQueryAsync(ct);
-    }
-
-    public async Task RemoveResinAsync(ResinModel resinModel, CancellationToken ct = default)
-    {
-        await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
-        command.CommandText = "DELETE FROM Resins WHERE Id = $id";
-        command.Parameters.AddWithValue("$id", resinModel.Id);
         await command.ExecuteNonQueryAsync(ct);
     }
 }

@@ -4,11 +4,11 @@ using PrintBuddy3D.ViewModels.Pages;
 
 namespace PrintBuddy3D.Views.Pages;
 
-public partial class PrintMaterialsView : UserControl
+public partial class FilamentsView : UserControl
 {
-    public PrintMaterialsView()
+    public FilamentsView()
     {
         InitializeComponent();
-        DataContext = App.Services.GetRequiredService<PrintMaterialsViewModel>();
+        DataContext = App.Services.GetRequiredService<FilamentsViewModel>();
     }
 }

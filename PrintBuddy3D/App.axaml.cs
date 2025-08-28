@@ -56,7 +56,7 @@ public partial class App : Application
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();
         services.AddSingleton<ViewModels.Pages.PrintersListViewModel>();
-        services.AddSingleton<ViewModels.Pages.PrintMaterialsViewModel>();
+        services.AddSingleton<ViewModels.Pages.FilamentsViewModel>();
         services.AddSingleton<ViewModels.Pages.HomeViewModel>();
         services.AddSingleton<ViewModels.Pages.GuidesViewModel>();
 

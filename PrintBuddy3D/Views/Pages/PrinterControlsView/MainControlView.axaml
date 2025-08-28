@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dockControls="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsView"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="dockControls:MainControlViewModel"
+             x:Class="PrintBuddy3D.Views.Pages.PrinterControlsView.MainControlView">
+    <Grid
+        RowDefinitions="*,25">
+        <ContentControl
+            Content="{Binding ActiveDockable}"
+            Margin="4"
+            Grid.Row="0"/>
+        <TextBlock
+            Text="{Binding FocusedDockable}"
+            Margin="4"
+            Grid.Row="1"/>
+    </Grid>
+</UserControl>

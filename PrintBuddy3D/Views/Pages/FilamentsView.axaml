@@ -1,0 +1,56 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:material="using:Material.Icons.Avalonia"
+             xmlns:pages="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PrintBuddy3D.Views.Pages.FilamentsView"
+             x:DataType="pages:FilamentsViewModel"
+             x:Name="Root">
+    <TabControl >
+        <TabItem Header="Filaments">
+            <DataGrid x:Name="FilamentsGrid"
+                      ItemsSource="{Binding Filaments}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Firmware" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Remaining weight ~" Binding="{Binding RemainingWeight}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Diameter" Binding="{Binding Diameter}" />
+                    <DataGridTextColumn Header="Spool weight" Binding="{Binding SpoolWeight}" />
+                    <DataGridTextColumn Header="Weight" Binding="{Binding Weight}" />
+                    <DataGridTextColumn Header="Density" Binding="{Binding Density}" />
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
+                    <DataGridTemplateColumn Width="Auto" Header=" ">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Classes="Basic Icon"
+                                        DataContext="{Binding $parent[UserControl].DataContext}"
+                                        Command="{Binding RemoveFilamentCommand, DataType=pages:FilamentsViewModel}"
+                                        CommandParameter="{Binding $parent[DataGridRow].DataContext}">
+                                    <material:MaterialIcon Kind="Delete" Foreground="Red"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+        <TabItem Header="Add New">
+            <StackPanel Margin="10" >
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Manufacture" Text="{Binding NewFilamentModel.Manufacture, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Name" Text="{Binding NewFilamentModel.Name, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Color" Text="{Binding NewFilamentModel.Color, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Weight (g)" Text="{Binding NewFilamentModel.Weight, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Price" Text="{Binding NewFilamentModel.Price, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Spool weight" Text="{Binding NewFilamentModel.SpoolWeight, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Diameter" Text="{Binding NewFilamentModel.Diameter, Mode=TwoWay}" />
+                <TextBox Margin="5,2" UseFloatingWatermark="True" Watermark="Density" Text="{Binding NewFilamentModel.Density, Mode=TwoWay}" />
+                <Button Margin="5" Content="Add material" Command="{Binding AddMaterialCommand}" />
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>

@@ -23,6 +23,11 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
+        <PackageReference Include="Dock.Avalonia" />
+        <PackageReference Include="Dock.Model" />
+        <PackageReference Include="Dock.Model.Avalonia" />
+        <PackageReference Include="Dock.Model.Mvvm" />
+        <PackageReference Include="Dock.Serializer" />
         <PackageReference Include="Markdown.Avalonia" />
         <PackageReference Include="Material.Icons.Avalonia" />
         <PackageReference Include="Microsoft.Data.Sqlite" />

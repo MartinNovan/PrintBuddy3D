@@ -13,12 +13,43 @@
             <Button Classes="Basic" Grid.Column="0" Command="{Binding BackCommand}">
                 <material:MaterialIcon Kind="ArrowBack"/>
             </Button>
+            <StackPanel Grid.Column="1"
+                Orientation="Horizontal"
+                HorizontalAlignment="Left"
+                Spacing="5">
+                <Button
+                    ToolTip.Tip="Open Layout"
+                    Classes="Basic"
+                    Width="30"
+                    Height="30"
+                    Command="{Binding OpenLayoutCommand}">
+                    <material:MaterialIcon
+                        Width="20"
+                        Height="20"
+                        Kind="File"/>
+                </Button>
+                <Button
+                    ToolTip.Tip="Save layout as"
+                    Classes="Basic"
+                    Width="30"
+                    Height="30"
+                    x:Name="FileSaveLayout"
+                    Command="{Binding SaveLayoutCommand}">
+                    <material:MaterialIcon
+                        Width="20"
+                        Height="20"
+                        Kind="ContentSave"/>
+                </Button>
+            </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <Label Content="Web mode:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <ToggleSwitch Command="{Binding SwitchModesCommand}" IsChecked="False"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" x:Name="WebPanel" IsVisible="{Binding IsWebModeEnabled}">
+        <Grid Grid.Row="1" IsVisible="{Binding !IsWebModeEnabled}" >
+            <DockControl Layout="{Binding Layout}" Margin="4"/>
+        </Grid>
+        <Grid Grid.Row="1" IsVisible="{Binding IsWebModeEnabled}">
             <OnPlatform>
                 <OnPlatform.Windows>
                     <!--WebView on Linux doesnt work correctly, Linux will be opening browser for webmode until solution is found-->

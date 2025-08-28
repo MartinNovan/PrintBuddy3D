@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
@@ -24,47 +25,45 @@ public class PrintersService(IAppDataService appDataService) : IPrintersService
         {
             new()
             {
-                Name = "Printer 1",
-                Firmware = "Klipper",
-                ConnectionType = "WiFi",
-                DbHash = 123456,
-                Address = "http://klipper.local",
-                Prefix = "http://",
+                Name = "Klipper 1",
+                Firmware = PrinterEnums.Firmware.Klipper,
+                Address = "klipper.local",
+                Prefix = PrinterEnums.Prefix.http,
                 HostUserName = "klipper",
             },
             new()
             {
-                Name = "Printer 1",
-                Firmware = "Klipper",
-                ConnectionType = "WiFi",
-                DbHash = 123456,
-                Prefix = "http://",
-                Address = "http://10.0.0.88",
+                Name = "Klipper 2",
+                Firmware = PrinterEnums.Firmware.Klipper,
+                Prefix = PrinterEnums.Prefix.http,
+                Address = "10.0.0.88",
                 HostUserName = "klipper",
             },
             new()
             {
-                Name = "Printer 2",
-                Firmware = "Marlin",
-                ConnectionType = "USB",
-                SerialPort = "Com3",
-                DbHash = 654321,
+                Name = "Klipper 3",
+                Firmware = PrinterEnums.Firmware.Klipper,
+                Prefix = PrinterEnums.Prefix.http,
+                Address = "marvy.local",
+                HostUserName = "marvy",
             },
             new()
             {
-                Name = "Printer 2",
-                Firmware = "Marlin",
-                ConnectionType = "USB",
-                SerialPort = "Com3",
-                DbHash = 654321,
+                Name = "Marlin 1",
+                Firmware = PrinterEnums.Firmware.Marlin,
+                LastSerialPort = "Com3",
             },
             new()
             {
-                Name = "Printer 2",
-                Firmware = "Marlin",
-                ConnectionType = "USB",
-                SerialPort = "Com3",
-                DbHash = 654321,
+                Name = "Marlin 2",
+                Firmware = PrinterEnums.Firmware.Marlin,
+                LastSerialPort = "Com3",
+            },
+            new()
+            {
+                Name = "Marlin 3",
+                Firmware = PrinterEnums.Firmware.Marlin,
+                LastSerialPort = "Com3",
             }
         };
         foreach (var printer in printers)

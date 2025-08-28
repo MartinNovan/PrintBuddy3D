@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 using PrintBuddy3D.Services;
 using SukiUI.Dialogs;
@@ -51,7 +52,7 @@ public partial class PrintersListViewModel : ObservableObject
             .WithTitle("SSH Connection Error")
             .WithActionButton("Dismiss", _ => { }, true)
             .Dismiss().ByClickingBackground();
-        if (String.IsNullOrEmpty(printer.Address) || printer.Firmware != "Klipper")
+        if (String.IsNullOrEmpty(printer.Address) || printer.Firmware != PrinterEnums.Firmware.Klipper)
         {
             dialog.WithContent("SSH connection is only available for Klipper firmware printers with a valid address. Please check the printer settings.").TryShow();
             return;

@@ -15,12 +15,17 @@
     <PackageVersion Include="Avalonia.Browser" Version="11.3.2" />
     <PackageVersion Include="Avalonia.Android" Version="11.3.2" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="Dock.Avalonia" Version="11.3.0.2" />
+    <PackageVersion Include="Dock.Model" Version="11.3.0.2" />
+    <PackageVersion Include="Dock.Model.Avalonia" Version="11.3.0.2" />
+    <PackageVersion Include="Dock.Model.Mvvm" Version="11.3.0.2" />
+    <PackageVersion Include="Dock.Serializer" Version="11.3.0.2" />
     <PackageVersion Include="Markdown.Avalonia" Version="11.0.3-a1" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="3.0.0-preview3.1" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.0-preview.7.25380.108" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.7.25380.108" />
-    <PackageVersion Include="SukiUI" Version="6.0.3-nightly20250810" />
-    <PackageVersion Include="SukiUI.Dock" Version="6.0.3-nightly20250810" />
+    <PackageVersion Include="SukiUI" Version="6.0.4-nightly20250823" />
+    <PackageVersion Include="SukiUI.Dock" Version="6.0.4-nightly20250823" />
     <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Android" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />

@@ -83,16 +83,6 @@ public class AppDataService : IAppDataService
                 Density DOUBLE,
                 SpoolWeight INTEGER
             );
-
-            CREATE TABLE IF NOT EXISTS Resins (
-                Id GUID PRIMARY KEY,
-                Hash INTEGER,
-                Manufacture TEXT,
-                Name TEXT,
-                Firmware TEXT,
-                ConnectionType INTEGER,
-                Price DOUBLE
-            );
             """;
             command.ExecuteNonQuery();
         }
