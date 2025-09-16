@@ -14,7 +14,7 @@
             </Button>
         </Grid>
         <StackPanel Grid.Row="1">
-                
+            
         </StackPanel>
     </Grid>
 </UserControl>

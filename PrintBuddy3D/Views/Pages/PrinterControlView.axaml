@@ -22,6 +22,7 @@
                     Classes="Basic"
                     Width="30"
                     Height="30"
+                    IsVisible="{Binding !IsWebModeEnabled}"
                     Command="{Binding OpenLayoutCommand}">
                     <material:MaterialIcon
                         Width="20"
@@ -33,6 +34,7 @@
                     Classes="Basic"
                     Width="30"
                     Height="30"
+                    IsVisible="{Binding !IsWebModeEnabled}"
                     x:Name="FileSaveLayout"
                     Command="{Binding SaveLayoutCommand}">
                     <material:MaterialIcon

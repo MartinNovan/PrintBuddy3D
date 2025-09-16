@@ -25,12 +25,12 @@ public partial class MainWindowViewModel : ViewModelBase
     public ISukiDialogManager DialogManager { get; }
     public ISukiToastManager ToastManager { get; }
     private readonly IAppDataService _appDataService;
-    public MainWindowViewModel(IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
+    public MainWindowViewModel(HomeViewModel viewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
         ToastManager = toastManager;
         DialogManager = dialogManager;
         _appDataService = appDataService;
-        CurrentPage = App.Services.GetRequiredService<HomeViewModel>();
+        CurrentPage = viewModel;
         _themes = SukiTheme.GetInstance();
         _backgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
         BackgroundStyle = _appDataService.LoadBackground("Background");

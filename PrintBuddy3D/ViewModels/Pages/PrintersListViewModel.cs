@@ -107,7 +107,7 @@ public partial class PrintersListViewModel : ObservableObject
 
     private void GoBack()
     {
-        CurrentContent = App.Services.GetRequiredService<PrintersListViewModel>(); 
+        CurrentContent = this; 
     }
     
 

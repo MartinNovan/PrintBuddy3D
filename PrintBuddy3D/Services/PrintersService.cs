@@ -14,11 +14,9 @@ public interface IPrintersService
     Task<ObservableCollection<PrinterModel>> GetPrintersAsync();
 }
 
-public class PrintersService(IAppDataService appDataService) : IPrintersService
+public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
 {
     private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
-    private readonly INotificationService _notificationService = App.Services.GetRequiredService<INotificationService>();
-    
     public Task<ObservableCollection<PrinterModel>> GetPrintersAsync()
     {
         var printers = new ObservableCollection<PrinterModel>()
@@ -102,7 +100,7 @@ public class PrintersService(IAppDataService appDataService) : IPrintersService
             if (e.PropertyName == nameof(PrinterModel.Status))
             {
                 var printer = (PrinterModel)sender!;
-                _notificationService.UpdateStatus(printer);
+                notificationService.UpdateStatus(printer);
             }
         }
         catch (Exception ex)
