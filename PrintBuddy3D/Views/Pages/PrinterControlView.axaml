@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
-             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:material="using:Material.Icons.Avalonia"
              xmlns:controls="clr-namespace:PrintBuddy3D.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -45,8 +44,8 @@
                 </Button>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal">
-                <Label Content="Web mode:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ToggleSwitch Command="{Binding SwitchModesCommand}" IsChecked="False"/>
+                <Label Content="Web mode:" IsVisible="{Binding IsWebModeSupported}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ToggleSwitch Command="{Binding SwitchModesCommand}" IsVisible="{Binding IsWebModeSupported}" IsChecked="False"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" IsVisible="{Binding !IsWebModeEnabled}" >
@@ -55,12 +54,11 @@
         <Grid Grid.Row="1" IsVisible="{Binding IsWebModeEnabled}">
             <OnPlatform>
                 <OnPlatform.Windows>
-                    <!--WebView on Linux doesnt work correctly, Linux will be opening browser for webmode until solution is found-->
                     <WebView Url="{Binding Printer.FullAddress}"/>
                 </OnPlatform.Windows>
                 <OnPlatform.Linux>
-                    <!--Label to prevent null value error-->
-                    <controls:GtkWebViewHost Url="{Binding Printer.FullAddress}"/>
+                    <!--Use custom made webview for linux, because none of the nuget packages works-->
+                    <controls:GtkWebView Url="{Binding Printer.FullAddress}"/>
                 </OnPlatform.Linux>
             </OnPlatform>
             <Label Content="{Binding ErrorMessage}"/>

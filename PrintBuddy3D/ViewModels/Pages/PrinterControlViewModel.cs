@@ -17,6 +17,7 @@ using Dock.Model.Core;
 using PrintBuddy3D.Models;
 using Dock.Serializer;
 using PrintBuddy3D.Controls;
+using PrintBuddy3D.Enums;
 using PrintBuddy3D.Views.Pages.PrinterControlsView;
 using WebviewGtk;
 
@@ -31,6 +32,7 @@ public partial class PrinterControlViewModel : ObservableObject
     
     [ObservableProperty] private IRootDock? _layout;
     [ObservableProperty] private bool _isWebModeEnabled;
+    [ObservableProperty] private bool _isWebModeSupported;
     [ObservableProperty] private string _errorMessage = "WebView does not load properly!";
     public PrinterControlViewModel(PrinterModel printer, Action goBack)
     {
@@ -38,6 +40,7 @@ public partial class PrinterControlViewModel : ObservableObject
         _factory = new DockFactory(this);
         Printer = printer;
         _goBack = goBack;
+        IsWebModeSupported = Printer.Firmware == PrinterEnums.Firmware.Klipper;
         
         Layout = _factory.CreateLayout();
 
@@ -140,19 +143,7 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void SwitchModes()
     {
-        //TODO: find suitable webview for linux or find other solution to open web interface in app
         IsWebModeEnabled = !IsWebModeEnabled;
-        if (OperatingSystem.IsLinux() && IsWebModeEnabled)
-        {
-            try
-            {
-                //WebkitGtkWrapper.RunWebkit(new Uri(Printer.FullAddress));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error when opening URL: {ex.Message}");
-            }
-        }
     }
     
     internal static class StorageService

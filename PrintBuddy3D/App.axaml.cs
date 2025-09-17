@@ -13,7 +13,7 @@ using SukiUI.Toasts;
 
 namespace PrintBuddy3D;
 
-public partial class App : Application
+public class App : Application
 {
     public static IServiceProvider Services { get; private set; } = default!;
 

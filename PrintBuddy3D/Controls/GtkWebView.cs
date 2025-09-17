@@ -1,6 +1,6 @@
-// GtkWebViewHost.cs
+// GtkWebView.cs
 // Embed WebKitGTK WebView into Avalonia via NativeControlHost (Linux X11)
-// Single-file implementation: GtkManager + GtkWebViewHost control.
+// Single-file implementation: GtkManager + GtkWebView control.
 // NOTE: This code targets Linux with libgtk-3 and libwebkit2gtk-4.1 installed and Avalonia on X11.
 
 using System;
@@ -261,10 +261,10 @@ namespace PrintBuddy3D.Controls
     /// Limitations: requires X11 backend; Wayland is not supported. The control owns native resources and
     /// cleans them up in DestroyNativeControlCore.
     /// </summary>
-    public class GtkWebViewHost : NativeControlHost
+    public class GtkWebView : NativeControlHost
     {
         public static readonly StyledProperty<string> UrlProperty =
-            AvaloniaProperty.Register<GtkWebViewHost, string>(nameof(Url));
+            AvaloniaProperty.Register<GtkWebView, string>(nameof(Url));
 
         private GtkPlugWithWebView? _nativePlug;
 
@@ -280,7 +280,7 @@ namespace PrintBuddy3D.Controls
         {
             // Parent must be provided and be an XID kind
             if (parent == null)
-                throw new InvalidOperationException("Native parent handle is required for GtkWebViewHost on Linux/X11.");
+                throw new InvalidOperationException("Native parent handle is required for GtkWebView on Linux/X11.");
 
             // Get the raw handle (boxed if value type)
             object handleObj = parent.Handle;
