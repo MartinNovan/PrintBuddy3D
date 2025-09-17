@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -15,7 +16,9 @@ using Dock.Model.Controls;
 using Dock.Model.Core;
 using PrintBuddy3D.Models;
 using Dock.Serializer;
+using PrintBuddy3D.Controls;
 using PrintBuddy3D.Views.Pages.PrinterControlsView;
+using WebviewGtk;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
@@ -143,14 +146,7 @@ public partial class PrinterControlViewModel : ObservableObject
         {
             try
             {
-                ErrorMessage = "WebView is not supported on Linux. Opening browser instead...";
-                using var process = new Process();
-                process.StartInfo = new ProcessStartInfo
-                {
-                    FileName = Printer.FullAddress,
-                    UseShellExecute = true
-                };
-                process.Start();
+                //WebkitGtkWrapper.RunWebkit(new Uri(Printer.FullAddress));
             }
             catch (Exception ex)
             {

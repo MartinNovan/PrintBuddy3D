@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:material="using:Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:PrintBuddy3D.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlView"
              x:DataType="vm:PrinterControlViewModel">
@@ -55,11 +56,11 @@
             <OnPlatform>
                 <OnPlatform.Windows>
                     <!--WebView on Linux doesnt work correctly, Linux will be opening browser for webmode until solution is found-->
-                    <WebView x:Name="WebView" Url="{Binding Printer.FullAddress}"/>
+                    <WebView Url="{Binding Printer.FullAddress}"/>
                 </OnPlatform.Windows>
                 <OnPlatform.Linux>
                     <!--Label to prevent null value error-->
-                    <Label/>
+                    <controls:GtkWebViewHost Url="{Binding Printer.FullAddress}"/>
                 </OnPlatform.Linux>
             </OnPlatform>
             <Label Content="{Binding ErrorMessage}"/>

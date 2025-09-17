@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -36,5 +37,11 @@
         <PackageReference Include="SukiUI.Dock" />
         <PackageReference Include="WebView.Avalonia" />
         <PackageReference Include="WebView.Avalonia.Desktop" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="WebviewGtk">
+        <HintPath>..\..\..\..\.nuget\packages\webviewgtk\0.2.0\lib\net9.0\WebviewGtk.dll</HintPath>
+      </Reference>
     </ItemGroup>
 </Project>
