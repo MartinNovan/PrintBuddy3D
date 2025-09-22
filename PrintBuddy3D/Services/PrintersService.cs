@@ -13,6 +13,13 @@ public interface IPrintersService
     Task<ObservableCollection<PrinterModel>> GetPrintersAsync();
 }
 
+public interface IPrinterControlService
+{
+    void SendCommand(string command);
+    void Move();
+    void Home();
+    void SetTemperature(int temp);
+}
 public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
 {
     private readonly SqliteConnection _dbConnection = appDataService.DbConnection;

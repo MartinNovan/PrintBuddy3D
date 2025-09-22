@@ -63,6 +63,7 @@ public class App : Application
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
+        services.AddSingleton<PrinterControlViewModel>();
 
         // ViewModels and Views
         windowViews.AddView<MainWindow, MainWindowViewModel>(services);
@@ -77,6 +78,7 @@ public class App : Application
         windowViews.AddView<MainControlView, MainControlViewModel>(services);
         windowViews.AddView<MovementControlView, MovementControlViewModel>(services);
         windowViews.AddView<TemperatureControlView, TemperatureControlViewModel>(services);
+        windowViews.AddView<PrinterConsoleControlView, PrinterConsoleControlViewModel>(services);
 
         return (services.BuildServiceProvider(), windowViews);
     }

@@ -1,12 +1,11 @@
 ﻿using Avalonia.Controls;
 
-namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView
+namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
+
+public partial class MovementControlView : UserControl
 {
-    public partial class MovementControlView : UserControl
+    public MovementControlView()
     {
-        public MovementControlView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

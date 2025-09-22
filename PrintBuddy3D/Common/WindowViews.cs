@@ -15,7 +15,6 @@ public class WindowViews
     public WindowViews AddView<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>(ServiceCollection services)
-        where TView : ContentControl
     {
         var viewType = typeof(TView);
         var viewModelType = typeof(TViewModel);

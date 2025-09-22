@@ -6,14 +6,5 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="printerControlsDockView:MainControlViewModel"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlsDockView.MainControlView">
-    <Grid RowDefinitions="*,25">
-        <TextBlock
-            Text="{Binding FocusedDockable}"
-            Margin="4"
-            Grid.Row="1"/>
-        <DockControl
-            Grid.Row="0"
-            Margin="4"
-            Layout="{Binding ActiveDockable}" />
-    </Grid>
+
 </UserControl>

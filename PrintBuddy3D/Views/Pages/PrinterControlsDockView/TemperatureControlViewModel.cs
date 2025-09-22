@@ -1,9 +1,8 @@
 ﻿
 using Dock.Model.Mvvm.Controls;
 
-namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView
+namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
+
+public class TemperatureControlViewModel : Tool
 {
-    public class TemperatureControlViewModel : Document
-    {
-    }
 }

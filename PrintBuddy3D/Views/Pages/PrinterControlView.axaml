@@ -56,9 +56,15 @@
                         Kind="Reload"/>
                 </Button>
             </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                <Label Content="Web mode:" IsVisible="{Binding IsWebModeSupported}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ToggleSwitch Command="{Binding SwitchModesCommand}" IsVisible="{Binding IsWebModeSupported}" IsChecked="False"/>
+            <StackPanel Grid.Column="2"  Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding !IsWebModeSupported}">
+                <Label Content="Port:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ComboBox/>
+                <Label Content="Baudrate:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Baudrates}" SelectedItem="{Binding SelectedBaudrate, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding IsWebModeSupported}">
+                <Label Content="Web mode:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ToggleSwitch Command="{Binding SwitchModesCommand}" IsChecked="False"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" IsVisible="{Binding !IsWebModeEnabled}" >

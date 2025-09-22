@@ -1,8 +1,7 @@
 ﻿using Dock.Model.Mvvm.Controls;
 
-namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView
+namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
+
+public class MovementControlViewModel : Tool
 {
-    public class MovementControlViewModel : Document
-    {
-    }
 }

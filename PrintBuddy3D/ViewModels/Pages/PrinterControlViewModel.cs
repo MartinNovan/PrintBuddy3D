@@ -15,6 +15,7 @@ using Dock.Model.Core;
 using PrintBuddy3D.Models;
 using Dock.Serializer;
 using PrintBuddy3D.Enums;
+using PrintBuddy3D.Services;
 using PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
 namespace PrintBuddy3D.ViewModels.Pages;
@@ -22,6 +23,7 @@ namespace PrintBuddy3D.ViewModels.Pages;
 public partial class PrinterControlViewModel : ObservableObject
 {
     public PrinterModel Printer { get; }
+    public readonly IPrinterControlService PrinterControlService;
     private readonly Action _goBack;
     private readonly IDockSerializer _serializer;
     private readonly IFactory _factory;
@@ -30,6 +32,10 @@ public partial class PrinterControlViewModel : ObservableObject
     [ObservableProperty] private bool _isWebModeEnabled;
     [ObservableProperty] private bool _isWebModeSupported;
     [ObservableProperty] private string _errorMessage = "WebView does not load properly!";
+    [ObservableProperty] private List<int> _baudrates = new() { 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000 };
+    [ObservableProperty] private int? _selectedBaudrate;
+    
+    
     public PrinterControlViewModel(PrinterModel printer, Action goBack)
     {
         _serializer = new DockSerializer(typeof(AvaloniaList<>));
@@ -37,6 +43,13 @@ public partial class PrinterControlViewModel : ObservableObject
         Printer = printer;
         _goBack = goBack;
         IsWebModeSupported = Printer.Firmware == PrinterEnums.Firmware.Klipper;
+        
+        PrinterControlService = printer.Firmware switch
+        {
+            PrinterEnums.Firmware.Marlin => new MarlinPrinterControlService(Printer),
+            PrinterEnums.Firmware.Klipper => new KlipperPrinterControlService(Printer),
+            _ => throw new NotSupportedException("Unsupported firmware")
+        };
         
         Layout = _factory.CreateLayout();
 
@@ -51,6 +64,11 @@ public partial class PrinterControlViewModel : ObservableObject
         {
             root.Navigate.Execute("Home");
         }
+    }
+    
+    partial void OnSelectedBaudrateChanged(int? value)
+    {
+        Printer.BaudRate = value ?? Printer.BaudRate;
     }
     
     [RelayCommand]
