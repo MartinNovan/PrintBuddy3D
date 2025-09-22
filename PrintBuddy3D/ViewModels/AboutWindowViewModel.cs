@@ -1,6 +1,8 @@
-﻿namespace PrintBuddy3D.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public partial class AboutWindowViewModel : ViewModelBase
+namespace PrintBuddy3D.ViewModels;
+
+public partial class AboutWindowViewModel : ObservableObject
 {
     
 }

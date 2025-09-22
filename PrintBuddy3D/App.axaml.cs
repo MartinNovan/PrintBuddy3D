@@ -10,12 +10,20 @@ using PrintBuddy3D.Services;
 using AvaloniaWebView;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
+using PrintBuddy3D.Common;
+using PrintBuddy3D.Views.Pages.PrinterControlsDockView;
+using PrintBuddy3D.Views.Pages;
+using PrintBuddy3D.Views;
+using PrintBuddy3D.ViewModels.Pages;
+
+
 
 namespace PrintBuddy3D;
 
 public class App : Application
 {
     public static IServiceProvider Services { get; private set; } = default!;
+    public static WindowViews WindowViews { get; private set; } = default!;
 
     public override void Initialize()
     {
@@ -24,7 +32,9 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        Services = ConfigureServices();
+        var (services, windowViews) = ConfigureServices();
+        Services = services;
+        WindowViews = windowViews;
         AvaloniaWebViewBuilder.Initialize(default);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -32,7 +42,7 @@ public class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new Views.MainWindow
+            desktop.MainWindow = new MainWindow
             {
                 DataContext = Services.GetRequiredService<MainWindowViewModel>()
             };
@@ -41,9 +51,10 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private static IServiceProvider ConfigureServices()
+    private static (IServiceProvider, WindowViews) ConfigureServices()
     {
         var services = new ServiceCollection();
+        var windowViews = new WindowViews();
 
         // Services
         services.AddSingleton<IAppDataService, AppDataService>();
@@ -53,14 +64,21 @@ public class App : Application
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
 
-        // ViewModels
-        services.AddSingleton<MainWindowViewModel>();
-        services.AddSingleton<ViewModels.Pages.PrintersListViewModel>();
-        services.AddSingleton<ViewModels.Pages.FilamentsViewModel>();
-        services.AddSingleton<ViewModels.Pages.HomeViewModel>();
-        services.AddSingleton<ViewModels.Pages.GuidesViewModel>();
+        // ViewModels and Views
+        windowViews.AddView<MainWindow, MainWindowViewModel>(services);
+        windowViews.AddView<PrintersListView, PrintersListViewModel>(services);
+        windowViews.AddView<FilamentsView, FilamentsViewModel>(services);
+        windowViews.AddView<HomeView, HomeViewModel>(services);
+        windowViews.AddView<GuidesView, GuidesViewModel>(services);
+        windowViews.AddView<PrinterControlView, PrinterControlViewModel>(services);
+        windowViews.AddView<PrinterEditorView, PrinterEditorViewModel>(services);
+        
+        // Dock control ViewModels and Views
+        windowViews.AddView<MainControlView, MainControlViewModel>(services);
+        windowViews.AddView<MovementControlView, MovementControlViewModel>(services);
+        windowViews.AddView<TemperatureControlView, TemperatureControlViewModel>(services);
 
-        return services.BuildServiceProvider();
+        return (services.BuildServiceProvider(), windowViews);
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

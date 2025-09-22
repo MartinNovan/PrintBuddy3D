@@ -3,10 +3,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 using PrintBuddy3D.Services;
@@ -17,7 +15,6 @@ namespace PrintBuddy3D.ViewModels.Pages;
 public partial class PrintersListViewModel : ObservableObject
 {
     private readonly ISukiDialogManager _dialogManager;
-    private DispatcherTimer? _refreshTimer;
     private readonly IPrintersService _printersService;
 
     [ObservableProperty] private ObservableCollection<PrinterModel> _printers;

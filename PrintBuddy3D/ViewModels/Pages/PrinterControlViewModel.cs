@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -16,10 +14,8 @@ using Dock.Model.Controls;
 using Dock.Model.Core;
 using PrintBuddy3D.Models;
 using Dock.Serializer;
-using PrintBuddy3D.Controls;
 using PrintBuddy3D.Enums;
-using PrintBuddy3D.Views.Pages.PrinterControlsView;
-using WebviewGtk;
+using PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
@@ -62,90 +58,94 @@ public partial class PrinterControlViewModel : ObservableObject
     {
         _goBack();
     }
-    
-    
-        [RelayCommand]
-        private async Task SaveLayout()
-        {
-            var storageProvider = StorageService.GetStorageProvider();
-
-            var file = await storageProvider!.SaveFilePickerAsync(new FilePickerSaveOptions
-            {
-                Title = "Save layout",
-                FileTypeChoices = GetOpenLayoutFileTypes(),
-                SuggestedFileName = "layout",
-                DefaultExtension = "json",
-                ShowOverwritePrompt = true
-            });
-
-            if (file is not null)
-            {
-                try
-                {
-                    await using var stream = await file.OpenWriteAsync();
-
-                    if (Layout is not null)
-                    {
-                        _serializer.Save(stream, Layout);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
-        }
-
-        [RelayCommand]
-        private async Task OpenLayout()
-        {
-            var storageProvider = StorageService.GetStorageProvider();
-
-            var result = await storageProvider!.OpenFilePickerAsync(
-                new FilePickerOpenOptions
-                {
-                    Title = "Open layout",
-                    FileTypeFilter = GetOpenLayoutFileTypes(),
-                    AllowMultiple = false
-                });
-
-            var file = result.FirstOrDefault();
-
-            if (file is not null)
-            {
-                try
-                {
-                    await using var stream = await file.OpenReadAsync();
-                    using var reader = new StreamReader(stream);
-
-                    var layout = _serializer.Load<IRootDock?>(stream);
-
-                    if (layout is not null)
-                    {
-                        _factory!.InitLayout(layout);
-                        Layout = layout;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
-        }
-        
-        private static List<FilePickerFileType> GetOpenLayoutFileTypes()
-            =>
-            [
-                StorageService.Json,
-                StorageService.All
-            ];
-
     [RelayCommand]
     private void SwitchModes()
     {
         IsWebModeEnabled = !IsWebModeEnabled;
     }
-    
+
+    [RelayCommand]
+    private void ResetLayout()
+    {
+        Layout = _factory.CreateLayout();
+        if (Layout != null)
+        {
+            _factory.InitLayout(Layout);
+            if (Layout is { } root)
+            {
+                root.Navigate.Execute("Home");
+            }
+        }
+    }
+    [RelayCommand]
+    private async Task SaveLayout()
+    {
+        var storageProvider = StorageService.GetStorageProvider();
+        var file = await storageProvider!.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save layout",
+            FileTypeChoices = GetOpenLayoutFileTypes(),
+            SuggestedFileName = "layout",
+            DefaultExtension = "json",
+            ShowOverwritePrompt = true
+        });
+
+        if (file is not null)
+        {
+            try
+            {
+                await using var stream = await file.OpenWriteAsync();
+
+                if (Layout is not null)
+                {
+                    _serializer.Save(stream, Layout);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenLayout()
+    {
+        var storageProvider = StorageService.GetStorageProvider();
+
+        var result = await storageProvider!.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "Open layout",
+                FileTypeFilter = GetOpenLayoutFileTypes(),
+                AllowMultiple = false
+            });
+
+        var file = result.FirstOrDefault();
+
+        if (file is not null)
+        {
+            try
+            {
+                await using var stream = await file.OpenReadAsync();
+                using var reader = new StreamReader(stream);
+
+                var layout = _serializer.Load<IRootDock?>(stream);
+
+                if (layout is not null)
+                {
+                    _factory.InitLayout(layout);
+                    Layout = layout;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+        
+    private static List<FilePickerFileType> GetOpenLayoutFileTypes() => [ StorageService.Json, StorageService.All];
     internal static class StorageService
     {
         public static FilePickerFileType All { get; } = new("All")
@@ -179,7 +179,6 @@ public partial class PrinterControlViewModel : ObservableObject
                     return topLevel.StorageProvider;
                 }
             }
-
             return null;
         }
     }

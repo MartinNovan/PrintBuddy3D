@@ -42,6 +42,19 @@
                         Height="20"
                         Kind="ContentSave"/>
                 </Button>
+                <Button
+                    ToolTip.Tip="Reset to default layout"
+                    Classes="Basic"
+                    Width="30"
+                    Height="30"
+                    IsVisible="{Binding !IsWebModeEnabled}"
+                    x:Name="ResetLayout"
+                    Command="{Binding ResetLayoutCommand}">
+                    <material:MaterialIcon
+                        Width="20"
+                        Height="20"
+                        Kind="Reload"/>
+                </Button>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <Label Content="Web mode:" IsVisible="{Binding IsWebModeSupported}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -49,7 +62,7 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" IsVisible="{Binding !IsWebModeEnabled}" >
-            <DockControl Layout="{Binding Layout}" Margin="4"/>
+            <DockControl Layout="{Binding Layout}" Margin="4" />
         </Grid>
         <Grid Grid.Row="1" IsVisible="{Binding IsWebModeEnabled}">
             <OnPlatform>

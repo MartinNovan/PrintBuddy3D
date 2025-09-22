@@ -1,0 +1,41 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:dockControls="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsDockView"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="dockControls:MovementControlViewModel"
+             x:Class="PrintBuddy3D.Views.Pages.PrinterControlsDockView.TemperatureControlView">
+    <ScrollViewer Classes="Stack">
+        <StackPanel Margin="15,15">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+      
+                <suki:GlassCard CornerRadius="10" Padding="12,8">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <avalonia:MaterialIcon Kind="Error" Foreground="Red" Width="16" Height="16" />
+                        <TextBlock FontWeight="DemiBold" Foreground="{DynamicResource SukiLowText}" Text="2 Errors"></TextBlock>
+                    </StackPanel>
+     
+                </suki:GlassCard>
+                <suki:GlassCard CornerRadius="10" Padding="12,8">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <avalonia:MaterialIcon Kind="WarningCircle" Foreground="Orange" Width="16" Height="16" />
+                        <TextBlock FontWeight="DemiBold" Foreground="{DynamicResource SukiLowText}" Text="2 Warnings"></TextBlock>
+                    </StackPanel>
+     
+                </suki:GlassCard>
+                <suki:GlassCard CornerRadius="10" Padding="12,8">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <avalonia:MaterialIcon Kind="InformationCircle" Foreground="{DynamicResource SukiPrimaryColor}" Width="16" Height="16" />
+                        <TextBlock FontWeight="DemiBold" Foreground="{DynamicResource SukiLowText}" Text="0 Messages"></TextBlock>
+                    </StackPanel>
+     
+                </suki:GlassCard>
+            </StackPanel>
+    
+            <DataGrid Name="DG" Margin="0,10" AutoGenerateColumns="True"></DataGrid>
+        </StackPanel>
+    </ScrollViewer> 
+</UserControl>

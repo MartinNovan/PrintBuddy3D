@@ -69,7 +69,7 @@ public sealed class PrinterModel : INotifyPropertyChanged
         }
     }
     
-    public string MarlinFirmwareUuid { get; set; } // Unique identifier for Marlin firmware. Used to distinguish Marlin printers with the same serial port. Can be found using M115. Will be assigned when the printer is connected for the first time.
+    public string? MarlinFirmwareUuid { get; set; } // Unique identifier for Marlin firmware. Used to distinguish Marlin printers with the same serial port. Can be found using M115. Will be assigned when the printer is connected for the first time.
     
     private PrinterEnums.Prefix? _prefix;
     public PrinterEnums.Prefix? Prefix // e.g., "http://" or "https://", is used for webview access

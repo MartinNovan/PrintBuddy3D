@@ -10,7 +10,7 @@ using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class HomeViewModel : ViewModelBase
+public partial class HomeViewModel : ObservableObject
 {
     [ObservableProperty] private int _onlinePrintersCount;
     [ObservableProperty] private int _offlinePrintersCount;
@@ -65,7 +65,7 @@ public partial class HomeViewModel : ViewModelBase
                     IdlePrintersCount += 1;
                     break;
             }
-            if (printer.PreviousStatus != null && _statusMessages.TryGetValue(printer.PreviousStatus, out var previousTemplate))
+            if (printer.PreviousStatus != null && _statusMessages.TryGetValue(printer.PreviousStatus, out _))
             {
                 switch (printer.PreviousStatus)
                 {

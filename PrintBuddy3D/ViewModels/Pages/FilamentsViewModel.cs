@@ -8,7 +8,7 @@ using PrintBuddy3D.Services;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class FilamentsViewModel : ViewModelBase
+public partial class FilamentsViewModel : ObservableObject
 {
     [ObservableProperty]
     private ObservableCollection<FilamentModel> _filaments = new();

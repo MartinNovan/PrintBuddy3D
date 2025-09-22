@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Services;
 using PrintBuddy3D.ViewModels.Pages;
 using SukiUI;
@@ -14,9 +13,9 @@ using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ObservableObject
 {
-    [ObservableProperty] private ViewModelBase _currentPage;
+    [ObservableProperty] private ObservableObject _currentPage;
     [ObservableProperty] private bool _isAlwaysOnTop;
     [ObservableProperty] private SukiBackgroundStyle _backgroundStyle;
     [ObservableProperty] private SukiTheme _themes;

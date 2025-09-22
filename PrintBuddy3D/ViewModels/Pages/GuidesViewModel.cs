@@ -1,6 +1,8 @@
-﻿namespace PrintBuddy3D.ViewModels.Pages;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public partial class GuidesViewModel
+namespace PrintBuddy3D.ViewModels.Pages;
+
+public partial class GuidesViewModel : ObservableObject
 {
     
 }

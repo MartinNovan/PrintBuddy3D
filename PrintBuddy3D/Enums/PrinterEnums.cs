@@ -13,8 +13,8 @@ public class PrinterEnums
 
     public enum Prefix
     {
-        http,
-        https
+        Http,
+        Https
     }
 
     public enum Status

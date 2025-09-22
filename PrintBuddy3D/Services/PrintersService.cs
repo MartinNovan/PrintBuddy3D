@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 
@@ -26,14 +25,14 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
                 Name = "Klipper 1",
                 Firmware = PrinterEnums.Firmware.Klipper,
                 Address = "klipper.local",
-                Prefix = PrinterEnums.Prefix.http,
+                Prefix = PrinterEnums.Prefix.Http,
                 HostUserName = "klipper",
             },
             new()
             {
                 Name = "Klipper 2",
                 Firmware = PrinterEnums.Firmware.Klipper,
-                Prefix = PrinterEnums.Prefix.http,
+                Prefix = PrinterEnums.Prefix.Http,
                 Address = "10.0.0.88",
                 HostUserName = "klipper",
             },
@@ -41,8 +40,8 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
             {
                 Name = "Klipper 3",
                 Firmware = PrinterEnums.Firmware.Klipper,
-                Prefix = PrinterEnums.Prefix.http,
-                Address = "marvy.local",
+                Prefix = PrinterEnums.Prefix.Https,
+                Address = "google.com",
                 HostUserName = "marvy",
             },
             new()
