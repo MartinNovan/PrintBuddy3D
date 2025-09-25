@@ -20,6 +20,7 @@
     <PackageVersion Include="Dock.Model.Avalonia" Version="11.3.0.2" />
     <PackageVersion Include="Dock.Model.Mvvm" Version="11.3.0.2" />
     <PackageVersion Include="Dock.Serializer" Version="11.3.0.2" />
+    <PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc6.1" />
     <PackageVersion Include="Markdown.Avalonia" Version="11.0.3-a1" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="3.0.0-preview3.1" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.0-preview.7.25380.108" />

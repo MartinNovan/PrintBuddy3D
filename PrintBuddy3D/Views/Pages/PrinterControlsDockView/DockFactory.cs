@@ -14,7 +14,7 @@ public class DockFactory(PrinterControlViewModel context) : Factory
     private IRootDock? _rootDock;
     public override IRootDock CreateLayout()
     {
-        var movementControlViewModel = new MovementControlViewModel
+        var movementControlViewModel = new MovementControlViewModel(context.PrinterControlService)
         { 
             Id = "MovementControl",
             Title = "Movement Control",
@@ -23,7 +23,7 @@ public class DockFactory(PrinterControlViewModel context) : Factory
             CanClose = false,
         };
 
-        var temperatureControlViewModel = new TemperatureControlViewModel
+        var temperatureControlViewModel = new TemperatureControlViewModel(context.PrinterControlService, context.Printer)
         { 
             Id = "TemperatureControl",
             Title = "Temperature Control",

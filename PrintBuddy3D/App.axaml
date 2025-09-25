@@ -4,7 +4,6 @@
              xmlns:suki="using:SukiUI"
              xmlns:material="using:Material.Icons.Avalonia"
              xmlns:common="clr-namespace:PrintBuddy3D.Common"
-             xmlns:dockControls="using:Dock.Avalonia.Controls"
              RequestedThemeVariant="Dark">
 
     <Application.DataTemplates>

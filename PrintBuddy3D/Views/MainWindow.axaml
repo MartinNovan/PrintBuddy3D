@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+<suki:SukiWindow xmlns="https://github.com/avaloniaui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:vm="using:PrintBuddy3D.ViewModels"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,7 +11,9 @@
                  x:DataType="vm:MainWindowViewModel"
                  Title="PrintBuddy3D"
                  Width="1280"
-                 Height="720">
+                 Height="720"
+                 TransparencyLevelHint="None"
+                 Background="{DynamicResource ThemeBackgroundBrush}">
     <suki:SukiWindow.LogoContent>
         <Image Source="../Assets/avalonia-logo.ico" Height="15"/>
     </suki:SukiWindow.LogoContent>
@@ -107,5 +109,4 @@
             </StackPanel>
         </suki:SukiSideMenu.FooterContent>
     </suki:SukiSideMenu>
-</Window>
-
+</suki:SukiWindow>
