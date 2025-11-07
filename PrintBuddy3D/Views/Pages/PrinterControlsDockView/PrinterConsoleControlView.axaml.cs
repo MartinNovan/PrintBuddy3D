@@ -1,8 +1,5 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
-using Dock.Model.Mvvm.Controls;
 
 namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 

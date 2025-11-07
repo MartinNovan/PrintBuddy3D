@@ -13,7 +13,8 @@
                  Width="1280"
                  Height="720"
                  TransparencyLevelHint="None"
-                 Background="{DynamicResource ThemeBackgroundBrush}">
+                 BackgroundStyle="{Binding BackgroundStyle}"
+                 BackgroundAnimationEnabled="True">
     <suki:SukiWindow.LogoContent>
         <Image Source="../Assets/avalonia-logo.ico" Height="15"/>
     </suki:SukiWindow.LogoContent>

@@ -10,9 +10,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.PrintersListView"
              x:DataType="vm:PrintersListViewModel">
-    <Design.DataContext>
-        <page:PrintersListView/>
-    </Design.DataContext>
     <Grid>
         <ContentControl Content="{Binding CurrentContent}">
             <ContentControl.DataTemplates>
@@ -97,7 +94,6 @@
                                                     <Image Grid.Row="1"
                                                            Source="{Binding Image}"
                                                            VerticalAlignment="Top"/>
-                            
                                                     <WrapPanel Grid.Row="2" Orientation="Vertical">
                                                         <TextBlock Text="{Binding Status}"/>
                                                         <TextBlock Text="{Binding E0Temp}"/>

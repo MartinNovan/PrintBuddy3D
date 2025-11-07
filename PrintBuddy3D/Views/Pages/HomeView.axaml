@@ -12,19 +12,21 @@
     <Grid RowDefinitions="Auto,*" RowSpacing="5" Margin="5">
         
         <suki:GlassCard Grid.Row="0" >
-            <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto, Auto" ColumnSpacing="5" RowSpacing="5">
+            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto, Auto" ColumnSpacing="5" RowSpacing="5">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="🖨️ Printers Summary" FontWeight="Bold" FontSize="16" Grid.ColumnSpan="4"/>
-                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"><TextBlock Text="Online: "/><TextBlock Text="{Binding OnlinePrintersCount}"/></StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"><TextBlock Text="Offline: "/><TextBlock Text="{Binding OfflinePrintersCount}"/></StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"><TextBlock Text="Offline: "/><TextBlock Text="{Binding OfflinePrintersCount}"/></StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"><TextBlock Text="Stand by: "/><TextBlock Text="{Binding StandByPrintersCount}"/></StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal"><TextBlock Text="Printing: "/><TextBlock Text="{Binding PrintingPrintersCount}"/></StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal"><TextBlock Text="Done: "/><TextBlock Text="{Binding DonePrintersCount}"/></StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="4" Orientation="Horizontal"><TextBlock Text="Idle: "/><TextBlock Text="{Binding IdlePrintersCount}"/></StackPanel>
             </Grid>
         </suki:GlassCard>
 
         <suki:GlassCard Grid.Row="1">
             <StackPanel Spacing="8">
-                <TextBlock Text="🔔 Notifications" FontWeight="Bold" FontSize="16"/>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" Text="🔔 Notifications" FontWeight="Bold" FontSize="16" TextAlignment="Center" VerticalAlignment="Center"/>
+                    <Button Grid.Column="2" Foreground="Red" Content="Clear all" Command="{Binding RemoveAllNotificationCommand}"/>
+                </Grid>
                 <DataGrid ItemsSource="{Binding NotificationMessages}" HeadersVisibility="None" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding}" Width="*"/>

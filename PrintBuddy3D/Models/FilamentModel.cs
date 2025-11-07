@@ -1,16 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace PrintBuddy3D.Models;
 
-public class FilamentModel : INotifyPropertyChanged
+public class FilamentModel : ModelBase
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
     public Guid Id { get; init; } = Guid.NewGuid(); // Unique identifier for each print material
     public int DbHash { get; set; } // Hash for database tracking, used to detect changes
     private string? _manufacture;

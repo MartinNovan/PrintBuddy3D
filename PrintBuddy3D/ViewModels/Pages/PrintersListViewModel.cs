@@ -16,14 +16,16 @@ public partial class PrintersListViewModel : ObservableObject
 {
     private readonly ISukiDialogManager _dialogManager;
     private readonly IPrintersService _printersService;
+    private readonly IPrinterMonitoringService _printerMonitoringService;
 
     [ObservableProperty] private ObservableCollection<PrinterModel> _printers;
     [ObservableProperty] private object? _currentContent;
     
-    public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService)
+    public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService)
     {
         _dialogManager = dialogManager;
         _printersService = printersService;
+        _printerMonitoringService = printerMonitoringService;
         CurrentContent = this;
         _ = LoadPrinters();
     }
@@ -110,7 +112,7 @@ public partial class PrintersListViewModel : ObservableObject
 
     private async Task LoadPrinters()
     {
-        var printers = await _printersService.GetPrintersAsync();
-        Printers = printers;
+        Printers = await _printersService.GetPrintersAsync();
+        _printerMonitoringService.Start(Printers);
     }
 }

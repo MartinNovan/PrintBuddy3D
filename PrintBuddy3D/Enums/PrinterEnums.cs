@@ -6,7 +6,7 @@ public class PrinterEnums
     {
         Marlin,
         Klipper,
-        //OctoPrint, - need to check how I will handle it
+        //OctoPrint, - need to check how to implement it
         //RepRapFirmware, - need more knowledge about it, for now it is not supported
         //mby some other in the future
     }
@@ -19,11 +19,6 @@ public class PrinterEnums
 
     public enum Status
     {
-        //Marlin Status
-        Connected, //Printer is connected with USB
-        Disconnected, //Printer is not connected with USB
-        //Klipper Status
-        Online,
         Offline,
         Busy, //Used when printer is doing activity but at the same time it doesn't print
         StandBy, //Used when there is no activity from printer

@@ -1,22 +1,13 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using PrintBuddy3D.Enums;
 
 namespace PrintBuddy3D.Models;
 
-public sealed class PrinterModel : INotifyPropertyChanged
+public sealed class PrinterModel : ModelBase
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    
     public Guid Id { get; init; } = Guid.NewGuid(); // Unique identifier for each printer
     
     public int DbHash { get; set; } // Hash for database tracking, used to detect changes easily
@@ -36,7 +27,6 @@ public sealed class PrinterModel : INotifyPropertyChanged
             hash.Add(BaudRate);
             hash.Add(SerialNumber);
             hash.Add(ImagePath);
-            hash.Add(IsMultiFilament);
             return hash.ToHashCode();
         }
     }
@@ -203,14 +193,12 @@ public sealed class PrinterModel : INotifyPropertyChanged
             return null;
         }
     }
-
-    private bool IsMultiFilament { get; set; } // Whether the printer supports multi-filament, e.g., 2 or more extruders
-
-    public string? PreviousStatus { get; private set; } // Previous status of the printer, used to track changes
     
-    private string? _status = "None"; // Default status is Offline, can be changed to Online, Printing, Done, Idle, etc.
+    public PrinterEnums.Status PreviousStatus { get; private set; } // Previous status of the printer, used to track changes
+    
+    private PrinterEnums.Status _status = PrinterEnums.Status.None; // Default status is Offline, can be changed to Online, Printing, Done, Idle, etc.
 
-    public string? Status
+    public PrinterEnums.Status Status
     {
         get => _status;
         set
@@ -228,4 +216,30 @@ public sealed class PrinterModel : INotifyPropertyChanged
     public int BedTemp { get; set; } = 30;
     public int Speed { get; set; } = 500;
     public object? CurrentJob { get; set; } // Current job being printed, can be a string or a more complex object
+    
+    public bool ShouldUpdate => DateTime.Now - LastUpdate >= RefreshInterval && !UpdateLock;
+
+    public bool UpdateLock { get; set; } = false;
+    public DateTime LastUpdate { get; set; }
+    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
+
+    public void ChangeStatus(PrinterEnums.Status currentStatus)
+    {
+        switch (currentStatus)
+        {
+            case PrinterEnums.Status.Offline:
+                Status = PrinterEnums.Status.Offline;
+                RefreshInterval = TimeSpan.FromSeconds(10);
+                break;
+            case PrinterEnums.Status.StandBy:
+                Status = PrinterEnums.Status.StandBy;
+                RefreshInterval = TimeSpan.FromSeconds(2);
+                break;
+            case PrinterEnums.Status.Printing:
+                Status = PrinterEnums.Status.Printing;
+                RefreshInterval = TimeSpan.FromSeconds(1);
+                break;
+        }
+    }
+
 }

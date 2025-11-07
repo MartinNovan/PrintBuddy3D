@@ -11,6 +11,7 @@ namespace PrintBuddy3D.Services;
 public interface IPrintersService
 {
     Task<ObservableCollection<PrinterModel>> GetPrintersAsync();
+    Task<PrinterEnums.Status> GetPrinterStatusAsync();
 }
 
 public interface IPrinterControlService
@@ -74,31 +75,27 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
         {
             printer.PropertyChanged += Printer_PropertyChanged;
         }
-        // Simulate random status updates at startup (will be replaced with real data fetching from the web)
-        foreach (var printer in printers)
-        {
-            var status = Random.Shared.Next(0, 4);
-            switch (status)
-            {
-                case 0:
-                    printer.Status = "Online";
-                    break;
-                case 1:
-                    printer.Status = "Offline";
-                    break;
-                case 2:
-                    printer.Status = "Printing";
-                    break;
-                case 3:
-                    printer.Status = "Done";
-                    break;
-                case 4:
-                    printer.Status = "Idle";
-                    break;
-            }
-        }
+        
         return Task.FromResult(printers);
     }
+
+    public Task<PrinterEnums.Status> GetPrinterStatusAsync()
+    {
+        var status = Random.Shared.Next(0, 3);
+        switch (status)
+        {
+            case 0:
+                return Task.FromResult(PrinterEnums.Status.StandBy);
+            case 1:
+                return Task.FromResult(PrinterEnums.Status.Offline);
+            case 2:
+                return Task.FromResult(PrinterEnums.Status.Printing);
+            case 3:
+                return Task.FromResult(PrinterEnums.Status.Complete);
+        }
+        return Task.FromResult(PrinterEnums.Status.Error);
+    }
+
     private void Printer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         try
