@@ -76,7 +76,7 @@ public class PrinterMonitoringService(IPrintersService printersService) : IPrint
         try
         {
             printer.UpdateLock = true;
-            var status = await printersService.GetPrinterStatusAsync();
+            var status = await printersService.GetPrinterStatusAsync(printer);
             await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
             {
                 printer.ChangeStatus(status);

@@ -16,14 +16,12 @@ using PrintBuddy3D.Views.Pages;
 using PrintBuddy3D.Views;
 using PrintBuddy3D.ViewModels.Pages;
 
-
-
 namespace PrintBuddy3D;
 
 public class App : Application
 {
-    public static IServiceProvider Services { get; private set; } = default!;
-    public static WindowViews WindowViews { get; private set; } = default!;
+    public static IServiceProvider Services { get; private set; } = null!;
+    public static WindowViews WindowViews { get; private set; } = null!;
 
     public override void Initialize()
     {
@@ -64,7 +62,6 @@ public class App : Application
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
-        services.AddSingleton<PrinterControlViewModel>();
 
         // ViewModels and Views
         windowViews.AddView<MainWindow, MainWindowViewModel>(services);

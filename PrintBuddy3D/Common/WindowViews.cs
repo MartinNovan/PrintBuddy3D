@@ -68,11 +68,6 @@ public class WindowViews
     {
         var viewModelType = typeof(TViewModel);
 
-        if (TryCreateView(provider, viewModelType, out var view))
-        {
-            return view;
-        }
-
-        throw new InvalidOperationException();
+        return TryCreateView(provider, viewModelType, out var view) ? view : throw new InvalidOperationException();
     }
 }

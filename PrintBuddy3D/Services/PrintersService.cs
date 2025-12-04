@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -13,7 +16,7 @@ public interface IPrintersService
     Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default);
     Task UpsertPrinterAsync(PrinterModel printer, CancellationToken ct = default);
     Task RemovePrinterAsync(PrinterModel printer, CancellationToken ct = default);
-    Task<PrinterEnums.Status> GetPrinterStatusAsync();
+    Task<PrinterEnums.Status> GetPrinterStatusAsync(PrinterModel printer, CancellationToken ct = default);
 }
 
 public interface IPrinterControlService
@@ -28,6 +31,7 @@ public interface IPrinterControlService
 public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
 {
     private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
+    private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(2) };
 
     public async Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default)
     {
@@ -121,18 +125,55 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
         await command.ExecuteNonQueryAsync(ct);
     }
 
-    public Task<PrinterEnums.Status> GetPrinterStatusAsync()
+    public async Task<PrinterEnums.Status> GetPrinterStatusAsync(PrinterModel printer, CancellationToken ct = default)
     {
-        var status = Random.Shared.Next(0, 4);
-        return Task.FromResult(PrinterEnums.Status.Offline); // Stop the simulation, soon will be replaced with real algorithm
-        return status switch
+        return printer.Firmware switch
         {
-            // Still simulating the status 
-            0 => Task.FromResult(PrinterEnums.Status.StandBy),
-            1 => Task.FromResult(PrinterEnums.Status.Offline),
-            2 => Task.FromResult(PrinterEnums.Status.Printing),
-            3 => Task.FromResult(PrinterEnums.Status.Complete),
-            _ => Task.FromResult(PrinterEnums.Status.Error)
+            PrinterEnums.Firmware.Klipper => await CheckKlipperStatus(printer, ct),
+            // TODO: Implement status for marlin
+            PrinterEnums.Firmware.Marlin when !string.IsNullOrEmpty(printer.LastSerialPort) => PrinterEnums.Status.StandBy,
+            PrinterEnums.Firmware.Marlin => PrinterEnums.Status.Offline,
+            _ => PrinterEnums.Status.Offline
         };
+    }
+
+    private async Task<PrinterEnums.Status> CheckKlipperStatus(PrinterModel printer, CancellationToken ct)
+    {
+        if (string.IsNullOrEmpty(printer.FullAddress)) return PrinterEnums.Status.Offline;
+
+        try
+        {
+            // Get state from Moonraker API using query
+            var url = $"{printer.FullAddress}/printer/objects/query?print_stats&webhooks";
+            var response = await _httpClient.GetFromJsonAsync<JsonNode>(url, ct);
+
+            if (response?["result"]?["status"] is not JsonNode statusNode) 
+                return PrinterEnums.Status.Error;
+
+            // 1. Get the webhooks state
+            string state = statusNode["webhooks"]?["state"]?.ToString()?.ToLower() ?? "unknown";
+            
+            // 2. Get the print state
+            string printState = statusNode["print_stats"]?["state"]?.ToString()?.ToLower() ?? "";
+            
+            if (state == "shutdown") return PrinterEnums.Status.ShutDown;
+            if (state == "startup") return PrinterEnums.Status.StartUp;
+            if (state == "error") return PrinterEnums.Status.Error;
+            
+            if (state == "ready")
+            {
+                if (printState == "printing") return PrinterEnums.Status.Printing;
+                if (printState == "paused") return PrinterEnums.Status.Busy; // take Paused as Busy
+                if (printState == "complete") return PrinterEnums.Status.Complete;
+                
+                return PrinterEnums.Status.StandBy;
+            }
+
+            return PrinterEnums.Status.StandBy;
+        }
+        catch
+        {
+            return PrinterEnums.Status.Offline;
+        }
     }
 }
