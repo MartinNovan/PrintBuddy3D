@@ -2,22 +2,80 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:dockControls="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsDockView"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="dockControls:MovementControlViewModel"
+             xmlns:vm="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsDockView"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             x:DataType="vm:MovementControlViewModel"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlsDockView.MovementControlView">
-    <TextBlock HorizontalAlignment="Left" Margin="15,12" FontSize="13" Foreground="{DynamicResource SukiLowText}" >
-        Build: Dock.Model.Avalonia.Controls.Tool, Id='SolutionExplorer'<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run>SolutionExplorer, Dock.Avalonia.Controls.ToolContentControl<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers+PointerDeferredContent`1[Avalonia.Controls.Control], DockXamlSample.SolutionExplore<LineBreak></LineBreak>
-        Build: Dock.Model.Avalonia.Controls.Document, Id='Document1'<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Document1, Dock.Avalonia.Controls.DocumentContentControl<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers+PointerDeferredContent`1[Avalonia.Controls.Control], Avalonia.Controls.TextBlock<LineBreak></LineBreak>
-        Build: Dock.Model.Avalonia.Controls.Tool, Id='Properties'<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Properties, Dock.Avalonia.Controls.ToolContentControl<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers+PointerDeferredContent`1[Avalonia.Controls.Control], DockXamlSample.propertiesview<LineBreak></LineBreak>
-        Build: Dock.Model.Avalonia.Controls.Tool, Id='Output'<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Output, Dock.Avalonia.Controls.ToolContentControl<LineBreak></LineBreak>
-        <Run Foreground="Green"> [Added] </Run> Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers+PointerDeferredContent`1[Avalonia.Controls.Control], Avalonia.Controls.TextBlock<LineBreak></LineBreak>
-    </TextBlock>
+
+    <ScrollViewer>
+        <StackPanel Spacing="15" Margin="10">
+            <suki:GlassCard>
+                <StackPanel>
+                    <TextBlock Text="Home axis" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*,*,*,*">
+                        <Button Grid.Column="0" Content="ALL" Command="{Binding HomeCommand}" CommandParameter="all" Classes="Flat" Margin="2"/>
+                        <Button Grid.Column="1" Content="X" Command="{Binding HomeCommand}" CommandParameter="X" Classes="Basic" Margin="2"/>
+                        <Button Grid.Column="2" Content="Y" Command="{Binding HomeCommand}" CommandParameter="Y" Classes="Basic" Margin="2"/>
+                        <Button Grid.Column="3" Content="Z" Command="{Binding HomeCommand}" CommandParameter="Z" Classes="Basic" Margin="2"/>
+                        <Button Grid.Column="4" Command="{Binding DisableMotorsCommand}" Classes="Basic" Margin="2">
+                            <material:MaterialIcon Kind="MotorOff"/>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </suki:GlassCard>
+
+            <suki:GlassCard>
+                <StackPanel>
+                    <TextBlock Text="Move axis" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*, Auto, *" RowDefinitions="Auto, Auto">
+                        <Grid Grid.Column="0" RowDefinitions="50,50,50" ColumnDefinitions="50,50,50" HorizontalAlignment="Center">
+                            <Button Grid.Row="0" Grid.Column="1" Command="{Binding MoveCommand}" CommandParameter="Y+" Classes="Flat">
+                                <material:MaterialIcon Kind="ArrowUp"/>
+                            </Button>
+                            
+                            <Button Grid.Row="1" Grid.Column="0" Command="{Binding MoveCommand}" CommandParameter="X-" Classes="Flat">
+                                <material:MaterialIcon Kind="ArrowLeft"/>
+                            </Button>
+                            
+                            <material:MaterialIcon Grid.Row="1" Grid.Column="1" Kind="AxisArrow" Width="30" Height="30" Foreground="{DynamicResource SukiPrimaryColor}"/>
+                    
+                            <Button Grid.Row="1" Grid.Column="2" Command="{Binding MoveCommand}" CommandParameter="X+" Classes="Flat">
+                                <material:MaterialIcon Kind="ArrowRight"/>
+                            </Button>
+                    
+                            <Button Grid.Row="2" Grid.Column="1" Command="{Binding MoveCommand}" CommandParameter="Y-" Classes="Flat">
+                                <material:MaterialIcon Kind="ArrowDown"/>
+                            </Button>
+                        </Grid>
+                    
+                        <Separator Grid.Column="1" Width="1" Height="150" Margin="20,0" Background="{DynamicResource SukiBorderBrush}"/>
+                    
+                        <Grid Grid.Column="2" RowDefinitions="50,50,50" ColumnDefinitions="50" HorizontalAlignment="Center">
+                            <Button Grid.Row="0" Command="{Binding MoveCommand}" CommandParameter="Z+" Classes="Flat">
+                                <material:MaterialIcon Kind="ArrowUpBold"/>
+                            </Button>
+                            <TextBlock Grid.Row="1" Text="Z" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                            <Button Grid.Row="2" Command="{Binding MoveCommand}" CommandParameter="Z-" Classes="Flat">
+                                <material:MaterialIcon Kind="ArrowDownBold"/>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </suki:GlassCard>
+
+            <suki:GlassCard>
+                <StackPanel>
+                    <TextBlock Text="Step size (mm)" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <RadioButton Grid.Column="0" Content="0.1" Command="{Binding SetStepCommand}" CommandParameter="0.1"/>
+                        <RadioButton Grid.Column="1" Content="1" Command="{Binding SetStepCommand}" CommandParameter="1.0"/>
+                        <RadioButton Grid.Column="2" Content="10" Command="{Binding SetStepCommand}" CommandParameter="10.0" IsChecked="True"/>
+                        <RadioButton Grid.Column="3" Content="100" Command="{Binding SetStepCommand}" CommandParameter="100.0"/>
+                    </Grid>
+                </StackPanel>
+            </suki:GlassCard>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -50,6 +50,14 @@ public partial class FilamentsViewModel : ObservableObject
         };
         await _printMaterialService.UpsertFilamentAsync(fil);
         fil.DbHash = fil.Hash;
+        fil.PropertyChanged += async (_, _) =>
+        {
+            if (fil.Hash != fil.DbHash)
+            {
+                await _printMaterialService.UpsertFilamentAsync(fil);
+                fil.DbHash = fil.Hash;
+            }
+        };
         Filaments.Add(fil);
         // Clear the input fields after adding
         NewFilamentModel = new FilamentModel();

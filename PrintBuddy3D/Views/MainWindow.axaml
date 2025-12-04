@@ -16,7 +16,7 @@
                  BackgroundStyle="{Binding BackgroundStyle}"
                  BackgroundAnimationEnabled="True">
     <suki:SukiWindow.LogoContent>
-        <Image Source="../Assets/avalonia-logo.ico" Height="15"/>
+        <Image Source="../Assets/PrintBuddy3D_no_bg.png" Height="25"/>
     </suki:SukiWindow.LogoContent>
     <suki:SukiWindow.Hosts>
         <suki:SukiToastHost Manager="{Binding ToastManager}" />

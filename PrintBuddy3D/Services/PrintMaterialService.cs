@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,7 +69,7 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
             INSERT INTO Filaments (Id, Hash, Manufacture, Name, Color, Weight, Price, SpoolWeight, Diameter, Density)
             VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price, $spoolWeight, $diameter, $density)
             ON CONFLICT(Id) DO UPDATE SET
-                PrinterId = excluded.PrinterId,
+                Id = excluded.Id,
                 Hash = excluded.Hash,
                 Manufacture = excluded.Manufacture,
                 Name = excluded.Name,

@@ -4,17 +4,79 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:enums="clr-namespace:PrintBuddy3D.Enums"
+             xmlns:theme="https://github.com/kikipoulet/SukiUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="PrintBuddy3D.Views.Pages.PrinterEditorView"
              x:DataType="vm:PrinterEditorViewModel">
+
     <Grid RowDefinitions="Auto, *">
-        <Grid ColumnDefinitions="Auto,*,Auto">
+        <Grid ColumnDefinitions="Auto,*,Auto" Margin="10">
             <Button Classes="Basic" Grid.Column="0" Command="{Binding BackCommand}">
-                <material:MaterialIcon Kind="ArrowBack"/>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <material:MaterialIcon Kind="ArrowBack" />
+                    <TextBlock Text="Back" VerticalAlignment="Center"/>
+                </StackPanel>
             </Button>
+            <TextBlock Grid.Column="1" Text="{Binding EditingPrinter.Name, StringFormat='Editing: {0}'}" 
+                       FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Classes="Flat" Grid.Column="2" Content="Save Printer" Command="{Binding SaveCommand}" />
         </Grid>
-        <StackPanel Grid.Row="1">
-            
-        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="15" Margin="20">
+                
+                <suki:GlassCard>
+                    <StackPanel Spacing="10">
+                        <TextBox Watermark="Printer Name" 
+                                 Text="{Binding EditingPrinter.Name}" />
+                        
+                        <TextBlock Text="Firmware Type" Margin="0,5,0,0" FontWeight="SemiBold"/>
+                        <ComboBox ItemsSource="{Binding FirmwareOptions}" 
+                                  SelectedItem="{Binding EditingPrinter.Firmware}" 
+                                  HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </suki:GlassCard>
+
+                <suki:GlassCard
+                                IsVisible="{Binding EditingPrinter.Firmware, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enums:PrinterEnums+Firmware.Klipper}}">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <ComboBox Grid.Column="0" ItemsSource="{Binding PrefixOptions}" 
+                                      SelectedItem="{Binding EditingPrinter.Prefix}" MinWidth="100"/>
+                            <TextBox Grid.Column="1" Watermark="IP Address / Hostname" 
+                                     Text="{Binding EditingPrinter.Address}" Margin="10,0,0,0"/>
+                        </Grid>
+                        
+                        <TextBox Watermark="SSH Username (for remote access)" 
+                                 Text="{Binding EditingPrinter.HostUserName}" />
+                    </StackPanel>
+                </suki:GlassCard>
+
+                <suki:GlassCard
+                                IsVisible="{Binding EditingPrinter.Firmware, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enums:PrinterEnums+Firmware.Marlin}}">
+                    <StackPanel Spacing="10">
+                        <TextBox Watermark="Serial Port (e.g., COM3 or /dev/ttyUSB0)" 
+                                 Text="{Binding EditingPrinter.LastSerialPort}" />
+                        
+                        <TextBlock Text="Baud Rate" Margin="0,5,0,0" FontWeight="SemiBold"/>
+                        <ComboBox ItemsSource="{Binding BaudRateOptions}" 
+                                  SelectedItem="{Binding EditingPrinter.BaudRate}" 
+                                  HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </suki:GlassCard>
+
+                <suki:GlassCard >
+                    <StackPanel Spacing="10">
+                        <TextBox Watermark="Serial Number (Optional)" 
+                                 Text="{Binding EditingPrinter.SerialNumber}" />
+                        <TextBox Watermark="Image Path (Optional)" 
+                                 Text="{Binding EditingPrinter.ImagePath}" />
+                    </StackPanel>
+                </suki:GlassCard>
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

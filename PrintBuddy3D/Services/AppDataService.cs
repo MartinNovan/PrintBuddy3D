@@ -61,11 +61,13 @@ public class AppDataService : IAppDataService
                    
             CREATE TABLE IF NOT EXISTS Printers (
                 Id GUID PRIMARY KEY,
+                Hash INTEGER,
                 Name TEXT,
-                Firmware TEXT,
-                ConnectionType TEXT,
+                Firmware INTEGER,
+                Prefix INTEGER,
                 Address TEXT,
-                SerailPort TEXT,
+                HostUserName TEXT,
+                LastSerialPort TEXT,
                 BaudRate INTEGER,
                 SerialNumber TEXT,
                 ImagePath TEXT
@@ -76,8 +78,8 @@ public class AppDataService : IAppDataService
                 Hash INTEGER,
                 Manufacture TEXT,
                 Name TEXT,
-                Firmware TEXT,
-                ConnectionType INTEGER,
+                Color TEXT,
+                Weight INTEGER,
                 Price DOUBLE,
                 Diameter DOUBLE,
                 Density DOUBLE,

@@ -4,15 +4,87 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dockControls="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsDockView"
+             xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d"
-             x:DataType="dockControls:MovementControlViewModel"
+             x:DataType="dockControls:TemperatureControlViewModel"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlsDockView.TemperatureControlView">
+    
     <ScrollViewer>
-        <StackPanel>
-            <DataGrid ></DataGrid>
-            <lvc:CartesianChart Background="{DynamicResource SukiCardBackground}" Height="450"/>
+        <StackPanel Spacing="10" Margin="10">
+            
+            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="10" ColumnSpacing="10">
+                
+                <suki:GlassCard Grid.Row="0" Grid.Column="0">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <material:MaterialIcon Kind="Printer3dNozzle" Foreground="{DynamicResource SukiPrimaryColor}" Width="24" Height="24"/>
+                            <TextBlock Text="Nozzle" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Printer.E0Temp, StringFormat='{}{0}°C'}" FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+                        
+                        <Grid ColumnDefinitions="*, Auto" ColumnSpacing="5">
+                            <Slider Grid.Column="0" Minimum="0" Maximum="350" Value="{Binding TargetNozzleTemp}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                            <NumericUpDown Grid.Column="1" Value="{Binding TargetNozzleTemp}" Minimum="0" Maximum="300" Increment="5" Width="120"/>
+                        </Grid>
+                        
+                        <Button Content="Set Nozzle" Command="{Binding SetNozzleCommand}" Classes="Flat" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </suki:GlassCard>
+
+                <suki:GlassCard Grid.Row="0" Grid.Column="1">
+                    <StackPanel Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <material:MaterialIcon Kind="Radiator" Foreground="{DynamicResource SukiPrimaryColor}" Width="24" Height="24"/>
+                            <TextBlock Text="Bed" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Printer.BedTemp, StringFormat='{}{0}°C'}" FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*, Auto" ColumnSpacing="5">
+                            <Slider Grid.Column="0" Minimum="0" Maximum="200" Value="{Binding TargetBedTemp}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                            <NumericUpDown Grid.Column="1" Value="{Binding TargetBedTemp}" Minimum="0" Maximum="120" Increment="5" Width="120"/>
+                        </Grid>
+
+                        <Button Content="Set Bed" Command="{Binding SetBedCommand}" Classes="Flat" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </suki:GlassCard>
+                
+                <suki:GlassCard Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                    <StackPanel>
+                        <TextBlock Text="Quick Presets" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding Presets}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="0,0,10,10" 
+                                            Command="{Binding $parent[UserControl].((dockControls:TemperatureControlViewModel)DataContext).ApplyPresetCommand}" 
+                                            CommandParameter="{Binding}"
+                                            Classes="Basic">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Nozzle, StringFormat='({0}/{1})'}" FontSize="12" Opacity="0.7"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </suki:GlassCard>
+            </Grid>
+
+            <suki:GlassCard>
+                <StackPanel>
+                    <TextBlock Text="Temperature History" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <lvc:CartesianChart Height="300" /> 
+                </StackPanel>
+            </suki:GlassCard>
+            
         </StackPanel>
     </ScrollViewer>
 </UserControl>

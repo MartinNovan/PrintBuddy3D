@@ -40,7 +40,7 @@ public partial class PrintersListViewModel : ObservableObject
     [RelayCommand]
     private void OpenPrinterEditor(PrinterModel? printer)
     {
-        CurrentContent = new PrinterEditorViewModel(printer, GoBack);
+        CurrentContent = new PrinterEditorViewModel(printer, _printersService, GoBack);
     }
     
     [RelayCommand]
@@ -75,11 +75,12 @@ public partial class PrintersListViewModel : ObservableObject
         }
         else if (OperatingSystem.IsLinux())
         {
+            //TODO fix opening in linux (starts as process in background)
             psi = new ProcessStartInfo
             {
                 FileName = "/bin/bash",
                 Arguments = $"-c \"ssh {printer.HostUserName}@{printer.Address}\"",
-                UseShellExecute = false
+                UseShellExecute = true
             };
         }
         Process.Start(psi);
@@ -96,8 +97,8 @@ public partial class PrintersListViewModel : ObservableObject
                 .WithContent($"Are you sure you want to remove the printer '{printer.Name}'?")
                 .WithActionButton("Yes", _ =>
                 {
+                    _printersService.RemovePrinterAsync(printer);
                     Printers.Remove(printer);
-                    //TODO: Implement remove logic from database
                 }, true).WithActionButton("No", _ => { }, true)
                 .Dismiss().ByClickingBackground()
                 .TryShow();

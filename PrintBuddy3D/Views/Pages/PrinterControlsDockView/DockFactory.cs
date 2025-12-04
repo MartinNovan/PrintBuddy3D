@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Avalonia.Threading;
 using Dock.Avalonia.Controls;
 using Dock.Model.Avalonia;
 using Dock.Model.Controls;
@@ -57,16 +58,20 @@ public class DockFactory(PrinterControlViewModel context) : Factory
             Orientation = Orientation.Horizontal,
             VisibleDockables = CreateList<IDockable>(documentDock),
         };
-        
-        var rootDock = CreateRootDock();
-        rootDock.IsCollapsable = true;
-        rootDock.CanFloat = false;
-        rootDock.CanPin = true;
-        rootDock.CanClose = false;
-        rootDock.ActiveDockable = mainLayout;
-        rootDock.DefaultDockable = mainLayout;
-        rootDock.VisibleDockables = CreateList<IDockable>(mainLayout);
 
+        var rootDock = Dispatcher.UIThread.Invoke(() => 
+        {
+            var dock = CreateRootDock();
+            dock.IsCollapsable = true;
+            dock.CanFloat = false;
+            dock.CanPin = true;
+            dock.CanClose = false;
+            dock.ActiveDockable = mainLayout;
+            dock.DefaultDockable = mainLayout;
+            dock.VisibleDockables = CreateList<IDockable>(mainLayout);
+    
+            return dock;
+        });
         _rootDock = rootDock;
         return rootDock;
     }

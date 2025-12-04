@@ -11,5 +11,4 @@ public class ModelBase :  INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
 }

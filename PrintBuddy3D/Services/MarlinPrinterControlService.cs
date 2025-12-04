@@ -10,18 +10,24 @@ public class MarlinPrinterControlService(PrinterModel printer) : IPrinterControl
         Console.WriteLine("Sending marlin a command: " + command + $" using port {printer.LastSerialPort} and baudrate {printer.BaudRate}");
     }
 
-    public void Move()
+    public void Move(string axis, double distance, int speed)
     {
         throw new System.NotImplementedException();
     }
 
-    public void Home()
+    public void Home(string axis)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
-    public void SetTemperature(int temp)
+    public void SetTemperature(int temp, string type = "extruder")
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
+
+    public void DisableMotors()
+    {
+        throw new NotImplementedException();
+    }
+
 }
