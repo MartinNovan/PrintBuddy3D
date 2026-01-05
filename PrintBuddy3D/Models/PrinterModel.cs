@@ -55,6 +55,8 @@ public sealed class PrinterModel : ModelBase
             {
                 _firmware = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(StatusText));
+                OnPropertyChanged(nameof(ImagePath));
             }
         }
     }
@@ -71,7 +73,7 @@ public sealed class PrinterModel : ModelBase
             {
                 _prefix = value;
                 OnPropertyChanged();
-                OnPropertyChanged(FullAddress);
+                OnPropertyChanged(nameof(FullAddress));
             }
         }
     }
@@ -86,7 +88,7 @@ public sealed class PrinterModel : ModelBase
             {
                 _address = value?.Replace("http://", "").Replace("https://", ""); // Ensure no prefix is stored here, it's handled by Prefix property
                 OnPropertyChanged();
-                OnPropertyChanged(FullAddress);
+                OnPropertyChanged(nameof(FullAddress));
             }
         }
     }
@@ -176,6 +178,7 @@ public sealed class PrinterModel : ModelBase
             {
                 _imagePath = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Image));
             }
         }
     }
@@ -208,9 +211,29 @@ public sealed class PrinterModel : ModelBase
                 PreviousStatus = _status;
                 _status = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(StatusText));
             }
         }
-    } // Status of the printer, e.g., "Online", "Printing", "Offline", "Done", "Idle"
+    }
+    
+    public string StatusText
+    {
+        get
+        {
+            if (Firmware == PrinterEnums.Firmware.Marlin) // For marlin use connected/disconnected
+            {
+                if (Status == PrinterEnums.Status.Offline || Status == PrinterEnums.Status.None)
+                    return "Disconnected";
+                
+                return $"Connected - {Status}";
+            }
+
+            if (Status == PrinterEnums.Status.Offline || Status == PrinterEnums.Status.None) // For everything else use Online / offline
+                return "Offline";
+
+            return $"Online - {Status}";
+        }
+    }
     
     public int E0Temp { get; set; } = 30;
     public int BedTemp { get; set; } = 30;
@@ -238,6 +261,26 @@ public sealed class PrinterModel : ModelBase
             case PrinterEnums.Status.Printing:
                 Status = PrinterEnums.Status.Printing;
                 RefreshInterval = TimeSpan.FromSeconds(1);
+                break;
+            case PrinterEnums.Status.Busy:
+                Status = PrinterEnums.Status.Busy;
+                RefreshInterval = TimeSpan.FromSeconds(1);
+                break;
+            case PrinterEnums.Status.Complete:
+                Status = PrinterEnums.Status.Complete;
+                RefreshInterval = TimeSpan.FromSeconds(2);
+                break;
+            case PrinterEnums.Status.Error:
+                Status = PrinterEnums.Status.Error;
+                RefreshInterval = TimeSpan.FromSeconds(3);
+                break;
+            case PrinterEnums.Status.ShutDown:
+                Status = PrinterEnums.Status.ShutDown;
+                RefreshInterval = TimeSpan.FromSeconds(3);
+                break;
+            case PrinterEnums.Status.StartUp:
+                Status = PrinterEnums.Status.StartUp;
+                RefreshInterval = TimeSpan.FromSeconds(2);
                 break;
         }
     }

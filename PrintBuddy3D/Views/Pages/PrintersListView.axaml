@@ -95,11 +95,7 @@
                                                            Source="{Binding Image}"
                                                            VerticalAlignment="Top"/>
                                                     <WrapPanel Grid.Row="2" Orientation="Vertical">
-                                                        <TextBlock Text="{Binding Status}"/>
-                                                        <TextBlock Text="{Binding E0Temp}"/>
-                                                        <!--TextBlock Text="{Binding E1Temp}"/-->
-                                                        <TextBlock Text="{Binding BedTemp}"/>
-                                                        <TextBlock Text="{Binding Speed}"/>
+                                                        <TextBlock Text="{Binding StatusText}"/>
                                                     </WrapPanel>
                                                 </Grid>
                                             </suki:GlassCard>

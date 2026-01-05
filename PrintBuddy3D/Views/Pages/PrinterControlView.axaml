@@ -56,15 +56,23 @@
                         Kind="Reload"/>
                 </Button>
             </StackPanel>
-            <StackPanel Grid.Column="2"  Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding !IsWebModeSupported}">
-                <Label Content="Port:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ComboBox/>
-                <Label Content="Baudrate:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Baudrates}" SelectedItem="{Binding SelectedBaudrate, Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding IsWebModeSupported}">
-                <Label Content="Web mode:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ToggleSwitch Command="{Binding SwitchModesCommand}" IsChecked="False"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Classes="Basic" Foreground="Red" BorderThickness="2" BorderBrush="Red" Margin="5" Command="{Binding EmergencyStopCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <material:MaterialIcon Kind="Alert"/>
+                        <Label Foreground="Red" Content="Emergency stop"/>
+                    </StackPanel>
+                </Button> 
+                <StackPanel Grid.Column="2"  Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding !IsWebModeSupported}">
+                    <Label Content="Port:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox/>
+                    <Label Content="Baudrate:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Baudrates}" SelectedItem="{Binding SelectedBaudrate, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding IsWebModeSupported}">
+                    <Label Content="Web mode:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ToggleSwitch Command="{Binding SwitchModesCommand}" IsChecked="False"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" IsVisible="{Binding !IsWebModeEnabled}" >

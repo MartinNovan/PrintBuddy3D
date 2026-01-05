@@ -33,7 +33,7 @@ public class App : Application
         var (services, windowViews) = ConfigureServices();
         Services = services;
         WindowViews = windowViews;
-        AvaloniaWebViewBuilder.Initialize(default);
+        AvaloniaWebViewBuilder.Initialize(null);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -73,7 +73,6 @@ public class App : Application
         windowViews.AddView<PrinterEditorView, PrinterEditorViewModel>(services);
         
         // Dock control ViewModels and Views
-        windowViews.AddView<MainControlView, MainControlViewModel>(services);
         windowViews.AddView<MovementControlView, MovementControlViewModel>(services);
         windowViews.AddView<TemperatureControlView, TemperatureControlViewModel>(services);
         windowViews.AddView<PrinterConsoleControlView, PrinterConsoleControlViewModel>(services);
@@ -81,7 +80,7 @@ public class App : Application
         return (services.BuildServiceProvider(), windowViews);
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
+    private static void DisableAvaloniaDataAnnotationValidation()
     {
         // Get an array of plugins to remove
         var dataValidationPluginsToRemove =

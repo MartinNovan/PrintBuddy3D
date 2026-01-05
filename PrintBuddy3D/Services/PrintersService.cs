@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -26,8 +27,11 @@ public interface IPrinterControlService
     void Home(string axis);
     void SetTemperature(int temp, string type = "extruder");
     void DisableMotors();
+    void EmergencyStop();
+    
+    Task<List<ConsoleLogItem>> GetConsoleHistoryAsync();
 }
-
+public record ConsoleLogItem(string Message, double Time, ConsoleLogType type);
 public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
 {
     private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
@@ -165,8 +169,6 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
                 if (printState == "printing") return PrinterEnums.Status.Printing;
                 if (printState == "paused") return PrinterEnums.Status.Busy; // take Paused as Busy
                 if (printState == "complete") return PrinterEnums.Status.Complete;
-                
-                return PrinterEnums.Status.StandBy;
             }
 
             return PrinterEnums.Status.StandBy;

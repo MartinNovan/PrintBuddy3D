@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
@@ -30,4 +33,13 @@ public class MarlinPrinterControlService(PrinterModel printer) : IPrinterControl
         throw new NotImplementedException();
     }
 
-}
+    public void EmergencyStop()
+    {
+        SendCommand("M999");
+    }
+
+    public Task<List<ConsoleLogItem>> GetConsoleHistoryAsync()
+    {
+        throw new NotImplementedException();
+    }
+} 

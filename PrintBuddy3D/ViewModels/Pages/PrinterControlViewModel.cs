@@ -70,6 +70,12 @@ public partial class PrinterControlViewModel : ObservableObject
     {
         Printer.BaudRate = value ?? Printer.BaudRate;
     }
+
+    [RelayCommand]
+    private void EmergencyStop()
+    {
+        PrinterControlService.EmergencyStop();
+    }
     
     [RelayCommand]
     private void Back()

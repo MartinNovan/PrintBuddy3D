@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Views;
 
@@ -12,32 +11,14 @@ public class WindowViews
 {
     private readonly Dictionary<Type, Type> _vmToViewMap = [];
 
-    public WindowViews AddView<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView,
+    public void AddView<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TView, 
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TViewModel>(ServiceCollection services)
     {
         var viewType = typeof(TView);
         var viewModelType = typeof(TViewModel);
 
         _vmToViewMap.Add(viewModelType, viewType);
-
-        if (viewModelType.IsAssignableTo(typeof(PageBase)))
-        {
-            services.AddSingleton(typeof(PageBase), viewModelType);
-        }
-        else
-        {
-            services.AddSingleton(viewModelType);
-        }
-
-        return this;
-    }
-
-    public bool TryCreateView(IServiceProvider provider, Type viewModelType, [NotNullWhen(true)] out Control? view)
-    {
-        var viewModel = provider.GetRequiredService(viewModelType);
-
-        return TryCreateView(viewModel, out view);
+        services.AddSingleton(viewModelType);
     }
 
     public bool TryCreateView(object? viewModel, [NotNullWhen(true)] out Control? view)
@@ -62,12 +43,5 @@ public class WindowViews
         }
 
         return view != null;
-    }
-
-    public Control CreateView<TViewModel>(IServiceProvider provider) where TViewModel : ObservableObject
-    {
-        var viewModelType = typeof(TViewModel);
-
-        return TryCreateView(provider, viewModelType, out var view) ? view : throw new InvalidOperationException();
     }
 }

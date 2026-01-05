@@ -4,23 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dockControls="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsDockView"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:PrintBuddy3D.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="dockControls:PrinterConsoleControlViewModel"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlsDockView.PrinterConsoleControlView">
+    <UserControl.Resources>
+        <converters:ConsoleLogTypeToColorConverter x:Key="ConsoleLogTypeToColorConverter"/>
+    </UserControl.Resources>
     <Grid RowDefinitions="Auto, *" Margin="5">
         <TextBox Watermark="Enter command..." Text="{Binding Command, Mode=TwoWay}" KeyDown="OnTextBoxKeyDown">
             <TextBox.InnerRightContent>
-                <Button Classes="Basic" Command="{Binding SendCommandToPrinterCommand}">
-                    <avalonia:MaterialIcon Kind="SubdirectoryArrowLeft" />
-                </Button>
+                <StackPanel Orientation="Horizontal">
+                    <Button Classes="Basic" Command="{Binding SeeHelpCommand}">
+                        <avalonia:MaterialIcon Kind="Help" />
+                    </Button>
+                    <Button Classes="Basic" Command="{Binding SendCommandToPrinterCommand}">
+                        <avalonia:MaterialIcon Kind="SubdirectoryArrowLeft" />
+                    </Button>
+                </StackPanel>
             </TextBox.InnerRightContent>
         </TextBox>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Output}" AutoGenerateColumns="False">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Output}" AutoGenerateColumns="False" HeadersVisibility="None">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Output">
+                <DataGridTemplateColumn Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding Message}" 
+                                       Foreground="{Binding type, Converter={StaticResource ConsoleLogTypeToColorConverter}}"
+                                       TextWrapping="Wrap"
+                                       Margin="5"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
@@ -69,5 +74,67 @@ public class KlipperPrinterControlService : IPrinterControlService
     public void DisableMotors()
     {
         SendCommand("M84");
+    }
+
+    public void EmergencyStop()
+    {
+        SendCommand("M112");
+    }
+    
+    public async Task<List<ConsoleLogItem>> GetConsoleHistoryAsync()
+    {
+        if (string.IsNullOrEmpty(_printer.FullAddress)) return new List<ConsoleLogItem>();
+    
+        try
+        {
+            var url = $"{_printer.FullAddress}/server/gcode_store?count=100";
+            var response = await _httpClient.GetFromJsonAsync<JsonNode>(url);
+    
+            if (response?["result"]?["gcode_store"] is JsonArray store)
+            {
+                var logs = new List<ConsoleLogItem>();
+                foreach (var item in store)
+                {
+                    var rawMsg = item?["message"]?.ToString();
+                    var time = item?["time"]?.GetValue<double>() ?? 0;
+
+                    if (string.IsNullOrEmpty(rawMsg)) continue;
+                    ConsoleLogType type = ConsoleLogType.Command;
+                        
+                    // Klipper logs:
+                    // !! -> Error
+                    // // -> Info
+                    // no prefix -> Command
+                        
+                    if (rawMsg.StartsWith("!!"))
+                    {
+                        type = ConsoleLogType.Error;
+                    }
+                    else if (rawMsg.StartsWith("//"))
+                    {
+                        type = ConsoleLogType.Info;
+                    }
+                    else if (rawMsg.StartsWith("ok"))
+                    {
+                        type = ConsoleLogType.Success;
+                    }
+                    // We need to clean at the start of the line (trim function didnt delete / when it was like this \n//)
+                    var lines = rawMsg.Split('\n');
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        lines[i] = lines[i].TrimStart('!', '/', ' ');
+                    }
+                    string cleanMsg = string.Join("\n", lines);
+                    logs.Add(new ConsoleLogItem(cleanMsg, time, type));
+                }
+                return logs;
+            }
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+
+        return new List<ConsoleLogItem>();
     }
 }

@@ -14,7 +14,7 @@
                  Height="720"
                  TransparencyLevelHint="None"
                  BackgroundStyle="{Binding BackgroundStyle}"
-                 BackgroundAnimationEnabled="True">
+                 BackgroundAnimationEnabled="True" Icon="../Assets/PrintBuddy3D.png">
     <suki:SukiWindow.LogoContent>
         <Image Source="../Assets/PrintBuddy3D_no_bg.png" Height="25"/>
     </suki:SukiWindow.LogoContent>
@@ -43,7 +43,7 @@
                                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
                                         <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="⚙ Settings" FontWeight="Bold" FontSize="20" Margin="0 0 0 10"/>
                                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Theme: " HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
-                                        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Themes.ColorThemes}" SelectedItem="{Binding Themes.ActiveColorTheme}" SelectionChanged="SelectedTheme">
+                                        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Themes.ColorThemes}" SelectedItem="{Binding CurrentTheme, Mode=TwoWay}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding DisplayName}" Foreground="{Binding PrimaryBrush}" />
@@ -51,7 +51,7 @@
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Background: " HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
-                                        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding BackgroundStyles}" SelectedItem="{Binding BackgroundStyle}" SelectionChanged="SelectedBackgroundStyle"/>
+                                        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding BackgroundStyles}" SelectedItem="{Binding BackgroundStyle, Mode=TwoWay}"/>
                                     </Grid>
                                 </StackPanel>
                             </Border>

@@ -21,16 +21,14 @@ public class ViewLocator : IDataTemplate
             return control;
         }
 
-        if (App.WindowViews.TryCreateView(param, out var view))
-        {
-            _controlCache.Add(param, view);
-            return view;
-        }
+        if (!App.WindowViews.TryCreateView(param, out var view))
+            return CreateText($"No View For {param.GetType().Name}.");
+        _controlCache.Add(param, view);
+        return view;
 
-        return CreateText($"No View For {param.GetType().Name}.");
     }
 
     public bool Match(object? data) => data is ObservableObject;
 
-    private static TextBlock CreateText(string text) => new TextBlock { Text = text };
+    private static TextBlock CreateText(string text) => new() { Text = text };
 }

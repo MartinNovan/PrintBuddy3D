@@ -39,7 +39,7 @@
                                 <material:MaterialIcon Kind="ArrowLeft"/>
                             </Button>
                             
-                            <material:MaterialIcon Grid.Row="1" Grid.Column="1" Kind="AxisArrow" Width="30" Height="30" Foreground="{DynamicResource SukiPrimaryColor}"/>
+                            <material:MaterialIcon Grid.Row="1" Grid.Column="1" Kind="ArrowAll" Width="30" Height="30" Foreground="{DynamicResource SukiPrimaryColor}"/>
                     
                             <Button Grid.Row="1" Grid.Column="2" Command="{Binding MoveCommand}" CommandParameter="X+" Classes="Flat">
                                 <material:MaterialIcon Kind="ArrowRight"/>
@@ -56,7 +56,7 @@
                             <Button Grid.Row="0" Command="{Binding MoveCommand}" CommandParameter="Z+" Classes="Flat">
                                 <material:MaterialIcon Kind="ArrowUpBold"/>
                             </Button>
-                            <TextBlock Grid.Row="1" Text="Z" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                            <material:MaterialIcon Grid.Row="1" Kind="ArrowUpDown" Width="30" Height="30" Foreground="{DynamicResource SukiPrimaryColor}" />
                             <Button Grid.Row="2" Command="{Binding MoveCommand}" CommandParameter="Z-" Classes="Flat">
                                 <material:MaterialIcon Kind="ArrowDownBold"/>
                             </Button>
@@ -68,6 +68,13 @@
             <suki:GlassCard>
                 <StackPanel>
                     <TextBlock Text="Step size (mm)" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <RadioButton Grid.Column="0" Content="0.1" Command="{Binding SetStepCommand}" CommandParameter="0.1"/>
+                        <RadioButton Grid.Column="1" Content="1" Command="{Binding SetStepCommand}" CommandParameter="1.0"/>
+                        <RadioButton Grid.Column="2" Content="10" Command="{Binding SetStepCommand}" CommandParameter="10.0" IsChecked="True"/>
+                        <RadioButton Grid.Column="3" Content="100" Command="{Binding SetStepCommand}" CommandParameter="100.0"/>
+                    </Grid>
+                    <TextBlock Text="Step size (mm)" FontWeight="SemiBold" Margin="0,10,0,10"/>
                     <Grid ColumnDefinitions="*,*,*,*">
                         <RadioButton Grid.Column="0" Content="0.1" Command="{Binding SetStepCommand}" CommandParameter="0.1"/>
                         <RadioButton Grid.Column="1" Content="1" Command="{Binding SetStepCommand}" CommandParameter="1.0"/>

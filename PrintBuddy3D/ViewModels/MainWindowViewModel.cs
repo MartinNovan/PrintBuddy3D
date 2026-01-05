@@ -24,6 +24,7 @@ public partial class MainWindowViewModel : ObservableObject
     public ISukiDialogManager DialogManager { get; }
     public ISukiToastManager ToastManager { get; }
     private readonly IAppDataService _appDataService;
+
     public MainWindowViewModel(HomeViewModel viewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
         ToastManager = toastManager;
@@ -34,6 +35,25 @@ public partial class MainWindowViewModel : ObservableObject
         _backgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
         BackgroundStyle = _appDataService.LoadBackground("Background");
         Themes.ChangeColorTheme(_appDataService.LoadTheme("Theme"));
+    }
+    partial void OnBackgroundStyleChanged(SukiBackgroundStyle value)
+    {
+        _appDataService.SaveConfigValue("Background", value.ToString());
+    }
+
+    public SukiColorTheme CurrentTheme
+    {
+        get => Themes.ActiveColorTheme;
+        set
+        {
+            // Pokud se vybraná hodnota liší od aktuální, změníme téma a uložíme
+            if (value != null && value != Themes.ActiveColorTheme)
+            {
+                Themes.ChangeColorTheme(value);
+                _appDataService.SaveConfigValue("Theme", value.DisplayName);
+                OnPropertyChanged(); // Oznámíme UI, že se změna provedla
+            }
+        }
     }
 
     [RelayCommand]
@@ -61,20 +81,5 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var aboutWindow = new Views.AboutWindow();
         aboutWindow.Show();
-    }
-
-    [RelayCommand]
-    public void ChangeTheme(SukiColorTheme theme)
-    {
-        if (theme.DisplayName == Themes.ActiveColorTheme?.DisplayName) return;
-        Themes.ChangeColorTheme(theme);
-        _appDataService.SaveConfigValue("Theme", theme.DisplayName);
-    }
-    
-    [RelayCommand]
-    public void ChangeBackgroundStyle(SukiBackgroundStyle style)
-    {
-        _appDataService.SaveConfigValue("Background", style.ToString());
-        BackgroundStyle = style;
     }
 }

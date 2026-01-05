@@ -13,4 +13,7 @@
                  CanResize="False"
                  Topmost="True"
                  Title="About PrintBuddy3D">
+    <suki:SukiWindow.LogoContent>
+        <Image Source="../Assets/PrintBuddy3D_no_bg.png" Height="25"/>
+    </suki:SukiWindow.LogoContent>
 </suki:SukiWindow>
