@@ -1,4 +1,4 @@
-<h1> <p "font-size:200px;"><img align="left" src="PrintBuddy3D/Assets/PrintBuddy3D.png" width="100">PrinBuddy3D</p> </h1>
+<h1> <p "font-size:200px;"><img align="left" src="PrintBuddy3D/Assets/PrintBuddy3D.png" width="100">PrintBuddy3D</p> </h1>
 Your all-in-one 3D printer companion app for managing assembly guides, troubleshooting, and remote control.
 
 # Overview
