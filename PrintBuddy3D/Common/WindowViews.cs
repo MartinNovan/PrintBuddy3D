@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using PrintBuddy3D.Views;
 
 namespace PrintBuddy3D.Common;
 

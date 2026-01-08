@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             x:Class="PrintBuddy3D.Views.Pages.WikiPage"
+             x:DataType="vm:WikiPageViewModel">
+    <StackPanel>
+        <suki:GlassCard Margin="5">
+            <Grid>
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" />
+                <md:MarkdownScrollViewer Markdown="{Binding Content}" IsVisible="{Binding !IsLoading}"/>
+            </Grid>
+        </suki:GlassCard>
+        <suki:GlassCard Margin="5">
+            <md:MarkdownScrollViewer Markdown="{Binding FooterContent}"/>
+        </suki:GlassCard>
+    </StackPanel>
+</UserControl>

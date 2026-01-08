@@ -15,6 +15,7 @@ using PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 using PrintBuddy3D.Views.Pages;
 using PrintBuddy3D.Views;
 using PrintBuddy3D.ViewModels.Pages;
+using WikiPageViewModel = PrintBuddy3D.ViewModels.Pages.WikiPageViewModel;
 
 namespace PrintBuddy3D;
 
@@ -69,6 +70,7 @@ public class App : Application
         windowViews.AddView<FilamentsView, FilamentsViewModel>(services);
         windowViews.AddView<HomeView, HomeViewModel>(services);
         windowViews.AddView<GuidesView, GuidesViewModel>(services);
+        windowViews.AddView<WikiPage, WikiPageViewModel>(services);
         windowViews.AddView<PrinterControlView, PrinterControlViewModel>(services);
         windowViews.AddView<PrinterEditorView, PrinterEditorViewModel>(services);
         

@@ -1,79 +1,12 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
              xmlns:suki="https://github.com/kikipoulet/SukiUI"
-             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="PrintBuddy3D.Views.Pages.GuidesView">
+             xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             x:Class="PrintBuddy3D.Views.Pages.GuidesView"
+             x:DataType="vm:GuidesViewModel">
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <suki:GlassCard Margin="5">
-            <suki:SukiSideMenu IsSearchEnabled="True">
-                <suki:SukiSideMenu.Items>
-                    <suki:SukiSideMenuItem Classes="Compact" Header="Introduction">
-                        <suki:SukiSideMenuItem.Icon>
-                            <avalonia:MaterialIcon Kind="About"/>
-                        </suki:SukiSideMenuItem.Icon>
-                        <suki:SukiSideMenuItem.PageContent>
-                            <md:MarkdownScrollViewer Source="avares://PrintBuddy3D/Assets/Guides/Introduction.md" />
-                        </suki:SukiSideMenuItem.PageContent>
-                    </suki:SukiSideMenuItem>
-                    <suki:SukiSideMenuItem Classes="Compact" Header="App usage">
-                        <suki:SukiSideMenuItem.Icon>
-                            <avalonia:MaterialIcon Kind="Application"/>
-                        </suki:SukiSideMenuItem.Icon>
-                        <suki:SukiSideMenuItem.PageContent>
-                            <Panel />
-                        </suki:SukiSideMenuItem.PageContent>
-                        <suki:SukiSideMenuItem.Items>
-                            <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
-                                <suki:SukiSideMenuItem.Icon>
-                                </suki:SukiSideMenuItem.Icon>
-                                <suki:SukiSideMenuItem.PageContent>
-                                    <Panel />
-                                </suki:SukiSideMenuItem.PageContent>
-                            </suki:SukiSideMenuItem>
-                        </suki:SukiSideMenuItem.Items>
-                    </suki:SukiSideMenuItem>
-                    <suki:SukiSideMenuItem Classes="Compact" Header="Printer guides">
-                        <suki:SukiSideMenuItem.Icon>
-                            <avalonia:MaterialIcon Kind="Printer3d"/>
-                        </suki:SukiSideMenuItem.Icon>
-                        <suki:SukiSideMenuItem.PageContent>
-                            <Panel />
-                        </suki:SukiSideMenuItem.PageContent>
-                        <suki:SukiSideMenuItem.Items>
-                            <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
-                                <suki:SukiSideMenuItem.Icon>
-                                </suki:SukiSideMenuItem.Icon>
-                                <suki:SukiSideMenuItem.PageContent>
-                                    <Panel />
-                                </suki:SukiSideMenuItem.PageContent>
-                            </suki:SukiSideMenuItem>
-                            
-                        </suki:SukiSideMenuItem.Items>
-                    </suki:SukiSideMenuItem>
-                    <suki:SukiSideMenuItem Classes="Compact" Header="Troubleshooting">
-                        <suki:SukiSideMenuItem.Icon>
-                            <avalonia:MaterialIcon Kind="Screwdriver"/>
-                        </suki:SukiSideMenuItem.Icon>
-                        <suki:SukiSideMenuItem.PageContent>
-                            <Panel />
-                        </suki:SukiSideMenuItem.PageContent>
-                        <suki:SukiSideMenuItem.Items>
-                            <suki:SukiSideMenuItem Classes="Compact" Header="Page Title">
-                                <suki:SukiSideMenuItem.Icon>
-                                </suki:SukiSideMenuItem.Icon>
-                                <suki:SukiSideMenuItem.PageContent>
-                                    <Panel />
-                                </suki:SukiSideMenuItem.PageContent>
-                            </suki:SukiSideMenuItem>
-                            
-                        </suki:SukiSideMenuItem.Items>
-                    </suki:SukiSideMenuItem>
-                </suki:SukiSideMenu.Items>
-            </suki:SukiSideMenu>
+            <suki:SukiSideMenu x:Name="WikiSideMenu" IsSearchEnabled="False" ItemsSource="{Binding WikiPages}"/>
         </suki:GlassCard>
     </ScrollViewer>
 </UserControl>

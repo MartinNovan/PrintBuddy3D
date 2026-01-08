@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PrintBuddy3D.Models;
-using PrintBuddy3D.ViewModels.Pages;
 
 namespace PrintBuddy3D.Services;
 
