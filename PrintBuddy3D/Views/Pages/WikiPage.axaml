@@ -5,15 +5,17 @@
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              x:Class="PrintBuddy3D.Views.Pages.WikiPage"
              x:DataType="vm:WikiPageViewModel">
-    <StackPanel>
-        <suki:GlassCard Margin="5">
-            <Grid>
-                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" />
-                <md:MarkdownScrollViewer Markdown="{Binding Content}" IsVisible="{Binding !IsLoading}"/>
-            </Grid>
-        </suki:GlassCard>
-        <suki:GlassCard Margin="5">
-            <md:MarkdownScrollViewer Markdown="{Binding FooterContent}"/>
-        </suki:GlassCard>
-    </StackPanel>
+    <ScrollViewer>
+        <StackPanel>
+            <suki:GlassCard Margin="5">
+                <Grid>
+                    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" />
+                    <md:MarkdownScrollViewer Markdown="{Binding Content}" IsVisible="{Binding !IsLoading}"/>
+                </Grid>
+            </suki:GlassCard>
+            <suki:GlassCard Margin="5">
+                <md:MarkdownScrollViewer Markdown="{Binding FooterContent}"/>
+            </suki:GlassCard>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -46,44 +46,128 @@ public partial class PrintersListViewModel : ObservableObject
     [RelayCommand]
     private void SshIntoPrinter(PrinterModel printer)
     {
-        var dialog = _dialogManager.CreateDialog()
-            .OfType(NotificationType.Error)
-            .WithTitle("SSH Connection Error")
-            .WithActionButton("Dismiss", _ => { }, true)
-            .Dismiss().ByClickingBackground();
-        if (String.IsNullOrEmpty(printer.Address) || printer.Firmware != PrinterEnums.Firmware.Klipper)
+        try
         {
-            dialog.WithContent("SSH connection is only available for Klipper firmware printers with a valid address. Please check the printer settings.").TryShow();
-            return;
-        }
-
-        if (String.IsNullOrEmpty(printer.HostUserName))
-        {
-            dialog.WithContent("SSH connection requires a valid host username. Please set the host username in the printer settings.").TryShow();
-            return;
-        }
-
-        ProcessStartInfo psi = new ProcessStartInfo();
-        if (OperatingSystem.IsWindows())
-        {
-            psi = new ProcessStartInfo
+            var dialog = _dialogManager.CreateDialog()
+                .OfType(NotificationType.Error)
+                .WithTitle("SSH Connection Error")
+                .WithActionButton("Dismiss", _ => { }, true)
+                .Dismiss().ByClickingBackground();
+            if (String.IsNullOrEmpty(printer.Address) || printer.Firmware != PrinterEnums.Firmware.Klipper)
             {
-                FileName = "powershell.exe",
-                Arguments = $"-NoExit -Command \"ssh {printer.HostUserName}@{printer.Address.Replace("https://", "").Replace("http://", "")}\"",
-                UseShellExecute = false
-            };
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            //TODO fix opening in linux (starts as process in background)
-            psi = new ProcessStartInfo
+                dialog.WithContent(
+                        "SSH connection is only available for Klipper firmware printers with a valid address. Please check the printer settings.")
+                    .TryShow();
+                return;
+            }
+
+            if (String.IsNullOrEmpty(printer.HostUserName))
             {
-                FileName = "/bin/bash",
-                Arguments = $"-c \"ssh {printer.HostUserName}@{printer.Address}\"",
-                UseShellExecute = true
-            };
+                dialog.WithContent(
+                        "SSH connection requires a valid host username. Please set the host username in the printer settings.")
+                    .TryShow();
+                return;
+            }
+
+            string sshCommand =
+                $"ssh {printer.HostUserName}@{printer.Address.Replace("https://", "").Replace("http://", "")}";
+            ProcessStartInfo psi = new ProcessStartInfo();
+            if (OperatingSystem.IsWindows())
+            {
+                psi = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoExit -Command \"{sshCommand}\"",
+                    UseShellExecute = false
+                };
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                // gnome-terminal
+                if (IsProgramInstalled("gnome-terminal"))
+                {
+                    psi.FileName = "gnome-terminal";
+                    psi.Arguments = $"-- {sshCommand}";
+                }
+                // gnome-console
+                else if (IsProgramInstalled("kgx"))
+                {
+                    psi.FileName = "kgx";
+                    psi.Arguments = $"-e {sshCommand}";
+                }
+                // konsole
+                else if (IsProgramInstalled("konsole"))
+                {
+                    psi.FileName = "konsole";
+                    psi.Arguments = $"-e {sshCommand}";
+                }
+                // xfce-terminal
+                else if (IsProgramInstalled("xfce4-terminal"))
+                {
+                    psi.FileName = "xfce4-terminal";
+                    psi.Arguments = $"-e \"{sshCommand}\"";
+                }
+                // xterm
+                else if (IsProgramInstalled("xterm"))
+                {
+                    psi.FileName = "xterm";
+                    psi.Arguments = $"-e {sshCommand}";
+                }
+                // mate-terminal
+                else if (IsProgramInstalled("mate-terminal"))
+                {
+                    psi.FileName = "mate-terminal";
+                    psi.Arguments = $"-x {sshCommand}";
+                }
+                // kitty
+                else if (IsProgramInstalled("kitty"))
+                {
+                    psi.FileName = "kitty";
+                    psi.Arguments = $"-e {sshCommand}";
+                }
+                // alacritty
+                else if (IsProgramInstalled("alacritty"))
+                {
+                    psi.FileName = "alacritty";
+                    psi.Arguments = $"-e {sshCommand}";
+                }
+                else
+                {
+                    // Fallback: try x-terminal-emulator (Debian/Ubuntu system alias)
+                    psi.FileName = "x-terminal-emulator";
+                    psi.Arguments = $"-e {sshCommand}";
+                }
+            }
+
+            Process.Start(psi);
         }
-        Process.Start(psi);
+        catch (Exception ex)
+        {
+            Console.WriteLine($"There was an issue opening a terminal: {ex.Message}");
+        }
+    }
+    
+    private bool IsProgramInstalled(string programName)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "/bin/sh",
+                Arguments = $"-c \"command -v {programName}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+        
+            var proc = Process.Start(psi);
+            proc?.WaitForExit();
+            return proc is { ExitCode: 0 };
+        }
+        catch
+        {
+            return false;
+        }
     }
     
     [RelayCommand]

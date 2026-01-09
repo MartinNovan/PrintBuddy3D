@@ -29,21 +29,23 @@
 - [x] Recieve notification on home screen.
 - [x] Get printer status. (online/offline/printing/...)
 - [x] Add klipper printers and connect to them.
-- [x] SSH into klipper printer on Windows.
+- [x] SSH into klipper printer on Windows and Linux.
+  - note: you need to have installed powershell on windows or one of these on linux: gnome-terminal, gnome-console, konsole, xfce4-terminal, xterm, mate-terminal, kitty, alacritty. 
 - [x] Moving axis on klipper printers.
 - [x] Set tempeature on klipper printers.
 - [x] Send commands using console to klipper printers.
 - [x] Webmode as fallback if widgets fails for klipper printers.
 - [x] Adding filament and manually update it.
 - [x] Docking system for control widgets inside the app.
+- [x] Documentation inside app. (basic troubleshooting, etc.)
+  - needs to be finished on github wiki
+
 ## ⚒️ Features in development
 - [ ] Connect to the marlin printers.
 - [ ] Get printer info. (axis position, tempeature, etc.)
-- [ ] Working SSH on linux.
 - [ ] Automatic fillament tracking.
 - [ ] Adding widgets for controlling printer.
 - [ ] Send print jobs.
-- [ ] Documentation inside app. (basic troubleshooting, etc.)
 
 # 🛠️ Maintenance and Support
 - If you encounter bugs or need help, make a request here on git at issues.

@@ -4,9 +4,7 @@
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              x:Class="PrintBuddy3D.Views.Pages.GuidesView"
              x:DataType="vm:GuidesViewModel">
-    <ScrollViewer VerticalScrollBarVisibility="Hidden">
-        <suki:GlassCard Margin="5">
-            <suki:SukiSideMenu x:Name="WikiSideMenu" IsSearchEnabled="False" ItemsSource="{Binding WikiPages}"/>
-        </suki:GlassCard>
-    </ScrollViewer>
+    <suki:GlassCard Margin="5">
+        <suki:SukiSideMenu IsSearchEnabled="False" SearchText="{Binding SearchText}" ItemsSource="{Binding WikiPages}" />
+    </suki:GlassCard>
 </UserControl>

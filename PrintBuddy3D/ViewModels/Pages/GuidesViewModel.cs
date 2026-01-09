@@ -5,10 +5,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using Avalonia.Controls.Notifications;
+using Avalonia.Threading;
 using Material.Icons;
 using Material.Icons.Avalonia;
 using PrintBuddy3D.Views.Pages;
 using SukiUI.Controls;
+using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
@@ -21,14 +24,18 @@ public class MenuItemDto
     public List<MenuItemDto>? Children { get; set; }
 }
 
-public class GuidesViewModel : ObservableObject
+public partial class GuidesViewModel : ObservableObject
 {
     private ObservableCollection<MenuItemDto> MenuStructure { get; } = new();
 
     public ObservableCollection<SukiSideMenuItem> WikiPages { get; set; } = new();
+    private readonly ISukiToastManager _sukiToastManager;
+    
+    [ObservableProperty] private string _searchText = string.Empty;
 
-    public GuidesViewModel()
+    public GuidesViewModel(ISukiToastManager sukiToastManager)
     {
+        _sukiToastManager = sukiToastManager;
         _ = LoadMenuStructureAsync();
     }
 
@@ -42,17 +49,29 @@ public class GuidesViewModel : ObservableObject
             var json = await client.GetStringAsync(jsonUrl);
 
             var items = JsonSerializer.Deserialize<List<MenuItemDto>>(json);
-            
+
             MenuStructure.Clear();
             if (items != null)
             {
                 foreach (var item in items) MenuStructure.Add(item);
             }
-            BuildMenu();
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Could not load _Menu.json from github wiki.");
+            Console.WriteLine($"Could not load _Menu.json from github wiki: {ex.Message}");
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                _sukiToastManager.CreateToast()
+                    .WithTitle("Error")
+                    .WithContent("Could not load guides from github wiki. \nPlease check your internet connection.")
+                    .OfType(NotificationType.Error)
+                    .Dismiss().ByClicking()
+                    .Dismiss().After(TimeSpan.FromSeconds(30))
+                    .Queue()
+            );
+        }
+        finally
+        {
+            BuildMenu();
         }
     }
     
