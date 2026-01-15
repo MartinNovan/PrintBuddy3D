@@ -5,20 +5,20 @@
              xmlns:vm="clr-namespace:PrintBuddy3D.Views.Pages.PrinterControlsDockView"
              xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:DataType="vm:MovementControlViewModel"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlsDockView.MovementControlView">
 
-    <ScrollViewer>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="15" Margin="10">
             <suki:GlassCard>
                 <StackPanel>
                     <TextBlock Text="Home axis" FontWeight="SemiBold" Margin="0,0,0,10"/>
                     <Grid ColumnDefinitions="*,*,*,*,*">
-                        <Button Grid.Column="0" Content="ALL" Command="{Binding HomeCommand}" CommandParameter="all" Classes="Flat" Margin="2"/>
-                        <Button Grid.Column="1" Content="X" Command="{Binding HomeCommand}" CommandParameter="X" Classes="Basic" Margin="2"/>
-                        <Button Grid.Column="2" Content="Y" Command="{Binding HomeCommand}" CommandParameter="Y" Classes="Basic" Margin="2"/>
-                        <Button Grid.Column="3" Content="Z" Command="{Binding HomeCommand}" CommandParameter="Z" Classes="Basic" Margin="2"/>
+                        <Button Grid.Column="0" Content="ALL" MinWidth="60" Command="{Binding HomeCommand}" CommandParameter="all" Classes="Flat" Margin="2"/>
+                        <Button Grid.Column="1" Content="X" MinWidth="60" Command="{Binding HomeCommand}" CommandParameter="X" Classes="Basic" Margin="2"/>
+                        <Button Grid.Column="2" Content="Y" MinWidth="60" Command="{Binding HomeCommand}" CommandParameter="Y" Classes="Basic" Margin="2"/>
+                        <Button Grid.Column="3" Content="Z" MinWidth="60" Command="{Binding HomeCommand}" CommandParameter="Z" Classes="Basic" Margin="2"/>
                         <Button Grid.Column="4" Command="{Binding DisableMotorsCommand}" Classes="Basic" Margin="2">
                             <material:MaterialIcon Kind="MotorOff"/>
                         </Button>
@@ -27,60 +27,112 @@
             </suki:GlassCard>
 
             <suki:GlassCard>
-                <StackPanel>
-                    <TextBlock Text="Move axis" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                    <Grid ColumnDefinitions="*, Auto, *" RowDefinitions="Auto, Auto">
-                        <Grid Grid.Column="0" RowDefinitions="50,50,50" ColumnDefinitions="50,50,50" HorizontalAlignment="Center">
+                <Grid RowDefinitions="Auto, Auto">
+                    <TextBlock Grid.Row="0" Text="Move axis" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <Grid Grid.Row="1" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MinWidth="150"/>
+                            <ColumnDefinition Width="*" MinWidth="150"/> 
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" RowDefinitions="50,50,50"  ColumnDefinitions="50,50,50" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button Grid.Row="0" Grid.Column="1" Command="{Binding MoveCommand}" CommandParameter="Y+" Classes="Flat">
-                                <material:MaterialIcon Kind="ArrowUp"/>
+                                <material:MaterialIcon Kind="ArrowUp" IconSize="11"/>
                             </Button>
                             
                             <Button Grid.Row="1" Grid.Column="0" Command="{Binding MoveCommand}" CommandParameter="X-" Classes="Flat">
-                                <material:MaterialIcon Kind="ArrowLeft"/>
+                                <material:MaterialIcon Kind="ArrowLeft" IconSize="11"/>
                             </Button>
                             
                             <material:MaterialIcon Grid.Row="1" Grid.Column="1" Kind="ArrowAll" Width="30" Height="30" Foreground="{DynamicResource SukiPrimaryColor}"/>
                     
                             <Button Grid.Row="1" Grid.Column="2" Command="{Binding MoveCommand}" CommandParameter="X+" Classes="Flat">
-                                <material:MaterialIcon Kind="ArrowRight"/>
+                                <material:MaterialIcon Kind="ArrowRight" IconSize="11"/>
                             </Button>
                     
                             <Button Grid.Row="2" Grid.Column="1" Command="{Binding MoveCommand}" CommandParameter="Y-" Classes="Flat">
-                                <material:MaterialIcon Kind="ArrowDown"/>
+                                <material:MaterialIcon Kind="ArrowDown" IconSize="11"/>
                             </Button>
                         </Grid>
-                    
-                        <Separator Grid.Column="1" Width="1" Height="150" Margin="20,0" Background="{DynamicResource SukiBorderBrush}"/>
-                    
-                        <Grid Grid.Column="2" RowDefinitions="50,50,50" ColumnDefinitions="50" HorizontalAlignment="Center">
+                        
+                        <Grid Grid.Column="1" RowDefinitions="50,50,50" ColumnDefinitions="50" HorizontalAlignment="Center">
                             <Button Grid.Row="0" Command="{Binding MoveCommand}" CommandParameter="Z+" Classes="Flat">
-                                <material:MaterialIcon Kind="ArrowUpBold"/>
+                                <material:MaterialIcon Kind="ArrowUpBold" IconSize="11"/>
                             </Button>
                             <material:MaterialIcon Grid.Row="1" Kind="ArrowUpDown" Width="30" Height="30" Foreground="{DynamicResource SukiPrimaryColor}" />
                             <Button Grid.Row="2" Command="{Binding MoveCommand}" CommandParameter="Z-" Classes="Flat">
-                                <material:MaterialIcon Kind="ArrowDownBold"/>
+                                <material:MaterialIcon Kind="ArrowDownBold" IconSize="11"/>
                             </Button>
                         </Grid>
                     </Grid>
-                </StackPanel>
+                </Grid>
             </suki:GlassCard>
 
             <suki:GlassCard>
                 <StackPanel>
                     <TextBlock Text="Step size (mm)" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                    <Grid ColumnDefinitions="*,*,*,*">
-                        <RadioButton Grid.Column="0" Content="0.1" Command="{Binding SetStepCommand}" CommandParameter="0.1"/>
-                        <RadioButton Grid.Column="1" Content="1" Command="{Binding SetStepCommand}" CommandParameter="1.0"/>
-                        <RadioButton Grid.Column="2" Content="10" Command="{Binding SetStepCommand}" CommandParameter="10.0" IsChecked="True"/>
-                        <RadioButton Grid.Column="3" Content="100" Command="{Binding SetStepCommand}" CommandParameter="100.0"/>
-                    </Grid>
-                    <TextBlock Text="Step size (mm)" FontWeight="SemiBold" Margin="0,10,0,10"/>
-                    <Grid ColumnDefinitions="*,*,*,*">
-                        <RadioButton Grid.Column="0" Content="0.1" Command="{Binding SetStepCommand}" CommandParameter="0.1"/>
-                        <RadioButton Grid.Column="1" Content="1" Command="{Binding SetStepCommand}" CommandParameter="1.0"/>
-                        <RadioButton Grid.Column="2" Content="10" Command="{Binding SetStepCommand}" CommandParameter="10.0" IsChecked="True"/>
-                        <RadioButton Grid.Column="3" Content="100" Command="{Binding SetStepCommand}" CommandParameter="100.0"/>
-                    </Grid>
+                    <ScrollViewer>
+                        <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
+                            <RadioButton Grid.Column="0" Content="0,1" Command="{Binding SetStepCommand}" CommandParameter="0.1"/>
+                            <RadioButton Grid.Column="1" Content="1" Command="{Binding SetStepCommand}" CommandParameter="1.0"/>
+                            <RadioButton Grid.Column="2" Content="10" Command="{Binding SetStepCommand}" CommandParameter="10.0" IsChecked="True"/>
+                            <RadioButton Grid.Column="3" Content="100" Command="{Binding SetStepCommand}" CommandParameter="100.0"/>
+                            <RadioButton Grid.Column="4" Command="{Binding SetStepCommand}" CommandParameter="custom">
+                                <RadioButton.Content>
+                                    <TextBox MinWidth="80" IsEnabled="{Binding IsCustomStepEnable}" Text="{Binding StepSize, Mode=TwoWay}">
+                                        <TextBox.InnerRightContent>
+                                            <TextBlock Text="mm" />
+                                        </TextBox.InnerRightContent>
+                                    </TextBox>
+                                </RadioButton.Content>
+                            </RadioButton>
+                        </Grid>
+                    </ScrollViewer>
+                    <Expander ExpandDirection="Down" Header="Advanced settings">
+                        <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto, Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="5" RowSpacing="5">
+                            <TextBlock Text="XY Feedrate:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" MinWidth="100" Text="{Binding FeedRate, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="mm/min" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Z Feedrate:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" MinWidth="100" Text="{Binding ZFeedRate, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="mm/min" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Speed Factor:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" MinWidth="100" Text="{Binding SpeedFactor, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="%" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Velocity:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" MinWidth="100" Text="{Binding Velocity, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="mm/s" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Acceleration:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" MinWidth="100" Text="{Binding Acceleration, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="mm/s²" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Square Corner Velocity:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="5" Grid.Column="1" MinWidth="100" Text="{Binding SquareCornerVelocity, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="mm/s" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Min. Cruise Ratio:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Row="6" Grid.Column="1" MinWidth="100" Text="{Binding MinCruiseRatio, Mode=TwoWay}" >
+                                <TextBox.InnerRightContent>
+                                    <TextBlock Text="%" />
+                                </TextBox.InnerRightContent>
+                            </TextBox>
+                        </Grid>
+                    </Expander>
                 </StackPanel>
             </suki:GlassCard>
         </StackPanel>

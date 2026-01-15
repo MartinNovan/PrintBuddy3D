@@ -10,8 +10,16 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
     private readonly KlipperPrinterControlService? _klipperService = contextPrinterControlService as KlipperPrinterControlService;
     
     [ObservableProperty] private double _stepSize = 10;
-    //TODO make feedrate editable    
-    [ObservableProperty] private int _feedRate = 3000;
+    [ObservableProperty] private bool _isCustomStepEnable;
+    //TODO Take the values under here from printer online (so i need firstly to get them from printer), for now this is only test value, also when value changes send this to the printer
+    [ObservableProperty] private int _feedRate = 6000;
+    [ObservableProperty] private int _zFeedRate = 1500;
+    [ObservableProperty] private int _speedFactor = 100;
+    [ObservableProperty] private int _velocity = 400;
+    [ObservableProperty] private int _acceleration = 4000;
+    [ObservableProperty] private int _squareCornerVelocity = 5;
+    [ObservableProperty] private int _minCruiseRatio = 50;
+    
 
     [RelayCommand]
     private void Move(string axisAndDir)
@@ -24,7 +32,7 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
         double distance = StepSize;
         if (dir == "-") distance *= -1;
 
-        int speed = axis == "Z" ? 600 : FeedRate;
+        int speed = axis == "Z" ? ZFeedRate : FeedRate;
 
         _klipperService.Move(axis, distance, speed);
     }
@@ -46,7 +54,12 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
     {
         if (double.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double result))
         {
+            IsCustomStepEnable = false;
             StepSize = result;
+        }
+        else
+        {
+            IsCustomStepEnable = true;
         }
     }
 }
