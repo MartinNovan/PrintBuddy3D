@@ -14,22 +14,35 @@ public class MarlinPrinterControlService(PrinterModel printer) : IPrinterControl
 
     public void Move(string axis, double distance, int speed)
     {
-        throw new System.NotImplementedException();
+        // G91 = Relative position (move by 10mm, not move to 10mm)
+        // G1 {axis}{distance} F{speed} = the travel
+        // G90 = Back to the absolute position
+        var gcode = $"G91\nG1 {axis}{distance} F{speed}\nG90";
+        SendCommand(gcode);
     }
 
     public void Home(string axis)
     {
-        throw new NotImplementedException();
+        SendCommand(axis.ToLower() == "all" ? "G28" : $"G28 {axis}");
     }
 
     public void SetTemperature(int temp, string type = "extruder")
     {
-        throw new NotImplementedException();
+        string cmd;
+        if (type == "heater_bed")
+        {
+            cmd = $"M140 S{temp}"; // Set bed temp
+        }
+        else
+        {
+            cmd = $"M104 S{temp}"; // Set extruder temp
+        }
+        SendCommand(cmd);
     }
 
     public void DisableMotors()
     {
-        throw new NotImplementedException();
+        SendCommand("M84");
     }
 
     public void EmergencyStop()
@@ -39,6 +52,6 @@ public class MarlinPrinterControlService(PrinterModel printer) : IPrinterControl
 
     public Task<List<ConsoleLogItem>> GetConsoleHistoryAsync()
     {
-        throw new NotImplementedException();
+        return Task.FromResult(new List<ConsoleLogItem>());
     }
 } 

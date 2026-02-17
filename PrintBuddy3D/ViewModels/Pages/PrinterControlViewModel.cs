@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Collections;
@@ -33,9 +34,11 @@ public partial class PrinterControlViewModel : ObservableObject
     [ObservableProperty] private bool _isWebModeSupported;
     [ObservableProperty] private string _errorMessage = "WebView does not load properly!";
     [ObservableProperty] private List<int> _baudrates = new() { 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000 };
+    [ObservableProperty] private List<string>? _ports;
+    [ObservableProperty] private string? _selectedPort;
     [ObservableProperty] private int? _selectedBaudrate;
-    
-    
+
+
     public PrinterControlViewModel(PrinterModel printer, Action goBack)
     {
         _serializer = new DockSerializer(typeof(AvaloniaList<>));
@@ -43,7 +46,16 @@ public partial class PrinterControlViewModel : ObservableObject
         Printer = printer;
         _goBack = goBack;
         IsWebModeSupported = Printer.Firmware == PrinterEnums.Firmware.Klipper;
-        
+        Ports = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
+        if (Baudrates.Contains(Printer.BaudRate))
+        {
+            SelectedBaudrate = Printer.BaudRate;
+        }
+        if (Printer.LastSerialPort != null && Ports.Contains(Printer.LastSerialPort))
+        {
+            SelectedPort = Printer.LastSerialPort;
+        }
+
         PrinterControlService = printer.Firmware switch
         {
             PrinterEnums.Firmware.Marlin => new MarlinPrinterControlService(Printer),
@@ -69,6 +81,11 @@ public partial class PrinterControlViewModel : ObservableObject
     partial void OnSelectedBaudrateChanged(int? value)
     {
         Printer.BaudRate = value ?? Printer.BaudRate;
+    }
+
+    partial void OnSelectedPortChanged(string? value)
+    {
+        Printer.LastSerialPort = value ?? Printer.LastSerialPort;
     }
 
     [RelayCommand]

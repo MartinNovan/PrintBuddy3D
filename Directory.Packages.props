@@ -30,6 +30,7 @@
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
     <PackageVersion Include="SukiUI" Version="6.0.4-nightly20250823" />
     <PackageVersion Include="SukiUI.Dock" Version="6.0.4-nightly20250823" />
+    <PackageVersion Include="System.IO.Ports" Version="10.0.0-preview.7.25380.108" />
     <PackageVersion Include="WebView.Avalonia" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Android" Version="11.0.0.1" />
     <PackageVersion Include="WebView.Avalonia.Desktop" Version="11.0.0.1" />

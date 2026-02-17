@@ -39,6 +39,7 @@
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
         <PackageReference Include="SukiUI" />
         <PackageReference Include="SukiUI.Dock" />
+        <PackageReference Include="System.IO.Ports" />
         <PackageReference Include="WebView.Avalonia" />
         <PackageReference Include="WebView.Avalonia.Desktop" />
     </ItemGroup>

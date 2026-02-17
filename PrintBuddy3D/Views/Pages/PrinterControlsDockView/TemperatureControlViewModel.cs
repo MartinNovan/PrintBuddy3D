@@ -12,7 +12,7 @@ public partial class TemperatureControlViewModel(
     PrinterModel contextPrinter)
     : Tool
 {
-    private readonly KlipperPrinterControlService? _klipperService = contextPrinterControlService as KlipperPrinterControlService;
+    private readonly IPrinterControlService? printerControlService = contextPrinterControlService;
     public PrinterModel Printer { get; } = contextPrinter;
 
     [ObservableProperty] private int _targetNozzleTemp = 0;
@@ -32,13 +32,13 @@ public partial class TemperatureControlViewModel(
     [RelayCommand]
     private void SetNozzle()
     {
-        _klipperService?.SetTemperature(TargetNozzleTemp, "extruder");
+        printerControlService?.SetTemperature(TargetNozzleTemp, "extruder");
     }
 
     [RelayCommand]
     private void SetBed()
     {
-        _klipperService?.SetTemperature(TargetBedTemp, "heater_bed");
+        printerControlService?.SetTemperature(TargetBedTemp, "heater_bed");
     }
 
     [RelayCommand]

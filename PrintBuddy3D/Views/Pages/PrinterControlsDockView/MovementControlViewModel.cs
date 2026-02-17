@@ -7,7 +7,9 @@ namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
 public partial class MovementControlViewModel(IPrinterControlService contextPrinterControlService) : Tool
 {
-    private readonly KlipperPrinterControlService? _klipperService = contextPrinterControlService as KlipperPrinterControlService;
+    private readonly IPrinterControlService printerControlService =  contextPrinterControlService;
+    //private readonly KlipperPrinterControlService? printerControlService = contextPrinterControlService as KlipperPrinterControlService;
+    //private readonly MarlinPrinterControlService? _marlinService = contextPrinterControlService as MarlinPrinterControlService;
     
     [ObservableProperty] private double _stepSize = 10;
     [ObservableProperty] private bool _isCustomStepEnable;
@@ -24,7 +26,7 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
     [RelayCommand]
     private void Move(string axisAndDir)
     {
-        if (_klipperService == null) return;
+        if (printerControlService == null) return;
 
         string axis = axisAndDir.Substring(0, 1);
         string dir = axisAndDir.Substring(1, 1);
@@ -34,19 +36,19 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
 
         int speed = axis == "Z" ? ZFeedRate : FeedRate;
 
-        _klipperService.Move(axis, distance, speed);
+        printerControlService.Move(axis, distance, speed);
     }
 
     [RelayCommand]
     private void Home(string axis)
     {
-        _klipperService?.Home(axis);
+        printerControlService?.Home(axis);
     }
     
     [RelayCommand]
     private void DisableMotors()
     {
-        _klipperService?.DisableMotors();
+        printerControlService?.DisableMotors();
     }
     
     [RelayCommand]

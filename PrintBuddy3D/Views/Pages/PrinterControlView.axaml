@@ -65,7 +65,7 @@
                 </Button> 
                 <StackPanel Grid.Column="2"  Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding !IsWebModeSupported}">
                     <Label Content="Port:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ComboBox/>
+                    <ComboBox ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort, Mode=TwoWay}" />
                     <Label Content="Baudrate:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <ComboBox ItemsSource="{Binding Baudrates}" SelectedItem="{Binding SelectedBaudrate, Mode=TwoWay}" />
                 </StackPanel>
