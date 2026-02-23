@@ -10,7 +10,7 @@ using PrintBuddy3D.Services;
 
 namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
-public partial class PrinterConsoleControlViewModel : Tool
+public partial class PrinterConsoleControlViewModel : Tool, IDisposable
 {
     private readonly IPrinterControlService _printerControlService;
     private readonly DispatcherTimer _timer;
@@ -30,7 +30,14 @@ public partial class PrinterConsoleControlViewModel : Tool
         _timer.Tick += async (sender, e) => await FetchLogs();
         _timer.Start();
     }
-
+    
+    public void Dispose()
+    {
+        if (_timer.IsEnabled)
+        {
+            _timer.Stop();
+        }
+    }
     private async Task FetchLogs()
     {
         var logs = await _printerControlService.GetConsoleHistoryAsync();

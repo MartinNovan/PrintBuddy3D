@@ -12,7 +12,7 @@ using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
 
-public interface IPrintersService
+public interface IPrintersService : IDisposable
 {
     Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default);
     Task UpsertPrinterAsync(PrinterModel printer, CancellationToken ct = default);
@@ -30,6 +30,7 @@ public interface IPrinterControlService
     void EmergencyStop();
     
     Task<List<ConsoleLogItem>> GetConsoleHistoryAsync();
+    void Dispose();
 }
 public record ConsoleLogItem(string Message, double Time, ConsoleLogType type);
 public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
@@ -37,6 +38,8 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
     private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
     private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(2) };
 
+    
+    public void Dispose() { }
     public async Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default)
     {
         var printers = new ObservableCollection<PrinterModel>();
@@ -178,4 +181,5 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
             return PrinterEnums.Status.Offline;
         }
     }
+
 }

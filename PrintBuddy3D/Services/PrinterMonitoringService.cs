@@ -8,7 +8,7 @@ using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
 
-public interface IPrinterMonitoringService
+public interface IPrinterMonitoringService : IDisposable
 {
     void Start(ObservableCollection<PrinterModel> printers);
     void Stop(); // mby will use stop somewhere in debug setting or something like that
@@ -19,6 +19,12 @@ public class PrinterMonitoringService(IPrintersService printersService) : IPrint
     private ObservableCollection<PrinterModel>? _printers;
     private readonly SemaphoreSlim _semaphore = new(10); // max 10 update at the same time 
     private bool _running;
+    
+    public void Dispose()
+    {
+        Stop();
+        _semaphore?.Dispose();
+    }
 
     public void Start(ObservableCollection<PrinterModel> printers)
     {

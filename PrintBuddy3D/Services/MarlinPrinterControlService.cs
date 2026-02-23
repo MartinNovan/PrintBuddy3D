@@ -1,15 +1,130 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
+using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
 
-public class MarlinPrinterControlService(PrinterModel printer) : IPrinterControlService
+public class MarlinPrinterControlService : IPrinterControlService, IDisposable
 {
+    private SerialPort _serialPort;
+    private readonly PrinterModel _printer;
+    private CancellationTokenSource? _cts;
+    private readonly List<ConsoleLogItem> _history = new();
+    private readonly StringBuilder _readBuffer = new();
+    public MarlinPrinterControlService(PrinterModel printer)
+    {
+        _printer = printer;
+        InitializeConnection();
+    }
+
+    private void InitializeConnection()
+    {
+        var avaiablePorts = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
+        if (string.IsNullOrEmpty(_printer.LastSerialPort) || !avaiablePorts.Contains(_printer.LastSerialPort)) return;
+        _serialPort = new SerialPort(_printer.LastSerialPort, _printer.BaudRate, Parity.None, 8, StopBits.One)
+        {
+            DtrEnable = false,
+            RtsEnable = false,
+            Handshake = Handshake.None,
+            ReadTimeout = 500,
+            WriteTimeout = 2000,
+            NewLine = "\n",
+            Encoding = Encoding.ASCII
+        };
+
+        try
+        {
+            _serialPort.Open();
+            _cts = new CancellationTokenSource();
+            Task.Run(() => ReaderLoop(_cts.Token));
+        }
+        catch (Exception ex)
+        {
+            LogToConsole($"Error with connecting to port: {ex.Message}", ConsoleLogType.Error);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_cts != null)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+        }
+        if (_serialPort.IsOpen)
+        {
+            _serialPort.Close();
+        }
+        _serialPort.Dispose();
+    }
+    private async Task ReaderLoop(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested && _serialPort is { IsOpen: true })
+        {
+            try
+            {
+                int b = _serialPort.BaseStream.ReadByte();
+                if (b < 0)
+                {
+                    await Task.Delay(10, token);
+                    continue;
+                }
+
+                char ch = (char)b;
+                if (ch == '\r') continue;
+                if (ch == '\n')
+                {
+                    string line = _readBuffer.ToString();
+                    _readBuffer.Clear();
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        LogToConsole(line, ConsoleLogType.Info);
+                    }
+                }
+                else _readBuffer.Append(ch);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+    }
+
     public void SendCommand(string command)
     {
-        Console.WriteLine("Sending marlin a command: " + command + $" using port {printer.LastSerialPort} and baudrate {printer.BaudRate}");
+        if (_serialPort is { IsOpen: true })
+        {
+            _serialPort.Write(command.TrimEnd() + "\n");
+            LogToConsole(command, ConsoleLogType.Command);
+        }
+    }
+    public void EmergencyStop()
+    {
+        SendCommand("M112"); 
+        // Reset board if the board supports it
+        _ = PulseDtr();
+    }
+
+    private async Task PulseDtr()
+    {
+        var prev = _serialPort.DtrEnable;
+        _serialPort.DtrEnable = false;
+        await Task.Delay(100);
+        _serialPort.DtrEnable = true;
+        await Task.Delay(100);
+        _serialPort.DtrEnable = prev;
+    }
+
+    private void LogToConsole(string message, ConsoleLogType type)
+    {
+        var item = new ConsoleLogItem(message, DateTime.Now.TimeOfDay.TotalSeconds, type);
+        lock (_history) { _history.Add(item); }
     }
 
     public void Move(string axis, double distance, int speed)
@@ -45,13 +160,11 @@ public class MarlinPrinterControlService(PrinterModel printer) : IPrinterControl
         SendCommand("M84");
     }
 
-    public void EmergencyStop()
-    {
-        SendCommand("M999");
-    }
-
     public Task<List<ConsoleLogItem>> GetConsoleHistoryAsync()
     {
-        return Task.FromResult(new List<ConsoleLogItem>());
+        lock (_history)
+        {
+            return Task.FromResult(_history);
+        }
     }
 } 

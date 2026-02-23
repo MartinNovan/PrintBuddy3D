@@ -24,6 +24,11 @@ public class KlipperPrinterControlService : IPrinterControlService
         }
     }
 
+    public void Dispose()
+    {
+        _httpClient?.Dispose();
+    }
+    
     public async void SendCommand(string command)
     {
         if (string.IsNullOrEmpty(_printer.FullAddress)) return;
@@ -136,4 +141,5 @@ public class KlipperPrinterControlService : IPrinterControlService
 
         return new List<ConsoleLogItem>();
     }
+
 }

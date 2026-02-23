@@ -97,6 +97,7 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void Back()
     {
+        PrinterControlService?.Dispose();
         _goBack();
     }
     [RelayCommand]
