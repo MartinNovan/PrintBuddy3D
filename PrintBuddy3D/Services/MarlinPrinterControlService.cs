@@ -12,7 +12,7 @@ namespace PrintBuddy3D.Services;
 
 public class MarlinPrinterControlService : IPrinterControlService, IDisposable
 {
-    private SerialPort _serialPort;
+    private SerialPort? _serialPort;
     private readonly PrinterModel _printer;
     private CancellationTokenSource? _cts;
     private readonly List<ConsoleLogItem> _history = new();
@@ -57,11 +57,11 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
             _cts.Cancel();
             _cts.Dispose();
         }
-        if (_serialPort.IsOpen)
+        if (_serialPort is { IsOpen: true })
         {
             _serialPort.Close();
         }
-        _serialPort.Dispose();
+        _serialPort?.Dispose();
     }
     private async Task ReaderLoop(CancellationToken token)
     {
@@ -113,6 +113,7 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
 
     private async Task PulseDtr()
     {
+        if (_serialPort == null) return;
         var prev = _serialPort.DtrEnable;
         _serialPort.DtrEnable = false;
         await Task.Delay(100);
@@ -143,15 +144,7 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
 
     public void SetTemperature(int temp, string type = "extruder")
     {
-        string cmd;
-        if (type == "heater_bed")
-        {
-            cmd = $"M140 S{temp}"; // Set bed temp
-        }
-        else
-        {
-            cmd = $"M104 S{temp}"; // Set extruder temp
-        }
+        var cmd = type == "heater_bed" ? $"M140 S{temp}" : $"M104 S{temp}"; // Set bed and extruder temp
         SendCommand(cmd);
     }
 
