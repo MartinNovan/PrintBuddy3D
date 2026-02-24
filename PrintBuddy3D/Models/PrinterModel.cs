@@ -162,16 +162,7 @@ public sealed class PrinterModel : ModelBase
     private string? _imagePath;
     public string? ImagePath
     {
-        get
-        {
-            if (_imagePath == null && !File.Exists(_imagePath))
-            {
-                if (Firmware == PrinterEnums.Firmware.Klipper) return "avares://PrintBuddy3D/Assets/klipper-logo.png";
-                if (Firmware == PrinterEnums.Firmware.Marlin) return "avares://PrintBuddy3D/Assets/marlin-outrun-nf-500.png";
-                return "avares://PrintBuddy3D/Assets/other-printer-logo.png";
-            }
-            return _imagePath;
-        }
+        get => _imagePath;
         set
         {
             if (_imagePath != value)
@@ -183,17 +174,34 @@ public sealed class PrinterModel : ModelBase
         }
     }
 
+    private Bitmap? _image;
+    private string? _imagePathCached;
     public Bitmap? Image {
         get
         {
-            if (ImagePath != null && ImagePath.StartsWith("avares://"))
+            string? imagePath = ImagePath;
+            if (string.IsNullOrWhiteSpace(imagePath) || (!File.Exists(imagePath) && !imagePath.StartsWith("avares://")))
             {
-                var uri = new Uri(ImagePath);
-                using var stream = AssetLoader.Open(uri);
-                return new Bitmap(stream);
+                switch (Firmware)
+                {
+                    case PrinterEnums.Firmware.Klipper: imagePath = "avares://PrintBuddy3D/Assets/klipper-logo.png"; break;
+                    case PrinterEnums.Firmware.Marlin: imagePath = "avares://PrintBuddy3D/Assets/marlin-outrun-nf-500.png"; break;
+                    default: imagePath = "avares://PrintBuddy3D/Assets/other-printer-logo.png"; break;
+                }
             }
-            if (File.Exists(ImagePath)) return new Bitmap(ImagePath);
-            return null;
+            if (imagePath != _imagePathCached)
+            {
+                _image?.Dispose();
+                if (imagePath.StartsWith("avares://"))
+                {
+                    var uri = new Uri(imagePath);
+                    using var stream = AssetLoader.Open(uri);
+                    _image = new Bitmap(stream);
+                }
+                else _image = new Bitmap(imagePath);
+                _imagePathCached = imagePath;
+            }
+            return _image;
         }
     }
     
