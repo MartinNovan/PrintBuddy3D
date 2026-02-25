@@ -11,7 +11,6 @@
                  Height="200"
                  CanMaximize="False"
                  CanResize="False"
-                 Topmost="True"
                  Title="About PrintBuddy3D"
                  Icon="../Assets/PrintBuddy3D.png">
     <suki:SukiWindow.LogoContent>

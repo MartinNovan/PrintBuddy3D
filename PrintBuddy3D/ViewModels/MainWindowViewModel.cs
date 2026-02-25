@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Services;
 using PrintBuddy3D.ViewModels.Pages;
+using PrintBuddy3D.Views;
 using SukiUI;
 using SukiUI.Dialogs;
 using SukiUI.Enums;
@@ -24,6 +25,7 @@ public partial class MainWindowViewModel : ObservableObject
     public ISukiDialogManager DialogManager { get; }
     public ISukiToastManager ToastManager { get; }
     private readonly IAppDataService _appDataService;
+    private AboutWindow? _aboutWindow;
 
     public MainWindowViewModel(HomeViewModel viewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
@@ -79,7 +81,13 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void AboutWindowShow()
     {
-        var aboutWindow = new Views.AboutWindow();
-        aboutWindow.Show();
+        if (_aboutWindow != null)
+        {
+            _aboutWindow.Activate();
+            return;
+        }
+        _aboutWindow = new AboutWindow();
+        _aboutWindow.Closed += (_, _) => _aboutWindow = null;
+        _aboutWindow.Show();
     }
 }
