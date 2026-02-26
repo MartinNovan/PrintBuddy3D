@@ -3,18 +3,18 @@
 
 # Overview
 ## 🚀 Main features
-- Recieve notification on home screen.
-- Controling klipper and marlin printers.
+- Receive notification on home screen.
+- Controlling klipper and marlin printers.
 - SSH into klipper printer.
 - Webmode as fallback if widgets fails for klipper printers.
 - Adding filament and automatically track it.
 - Custom layout with docking system for control widgets inside the app.
-![Home page](image-2.png)
-![Printer Page](image-1.png)
-![Printer Control Page](image-3.png)
-![Filament Page](image.png)
+![Home page](/assets/image-2.png)
+![Printer Page](/assets/image-1.png)
+![Printer Control Page](/assets/image-3.png)
+![Filament Page](/assets/image.png)
 ---
-# 🔨 Instalation
+# 🔨 Installation
 ## Windows
 `Dependencies: WebView2`
 
@@ -26,23 +26,23 @@
 # ⚠️ Work in progress
 - This project is currently in developing. Features will be implemented will be implemented as soon as possible.
 ## ✅ Working features
-- [x] Recieve notification on home screen.
+- [x] Receive notification on home screen.
 - [x] Get printer status. (online/offline/printing/...)
 - [x] Add klipper printers and connect to them.
 - [x] SSH into klipper printer on Windows and Linux.
   - note: you need to have installed powershell on windows or one of these on linux: gnome-terminal, gnome-console, konsole, xfce4-terminal, xterm, mate-terminal, kitty, alacritty. 
 - [x] Moving axis on klipper printers.
-- [x] Set tempeature on klipper printers.
+- [x] Set temperature on klipper printers.
 - [x] Send commands using console to klipper printers.
 - [x] Webmode as fallback if widgets fails for klipper printers.
 - [x] Adding filament and manually update it.
 - [x] Docking system for control widgets inside the app.
 - [x] Documentation inside app. (basic troubleshooting, etc.)
   - needs to be finished on github wiki
+- [x] Connect to the marlin printers.
 
 ## ⚒️ Features in development
-- [ ] Connect to the marlin printers.
-- [ ] Get printer info. (axis position, tempeature, etc.)
+- [ ] Get printer info. (axis position, temperature, etc.)
 - [ ] Automatic fillament tracking.
 - [ ] Adding widgets for controlling printer.
 - [ ] Send print jobs.
@@ -51,4 +51,4 @@
 - If you encounter bugs or need help, make a request here on git at issues.
 
 # 🌟 Acknowledgements
-- Thank you for using PrinBuddy3D! We appreciate your support and hope that the application will make it easier for you to manage your 3D printers.
+- Thank you for using PrintBuddy3D! We appreciate your support and hope that the application will make it easier for you to manage your 3D printers.
