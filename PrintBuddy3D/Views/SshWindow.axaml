@@ -1,0 +1,33 @@
+<suki:SukiWindow xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:vm="using:PrintBuddy3D.ViewModels"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+                 mc:Ignorable="d"
+                 x:Class="PrintBuddy3D.Views.SshWindow"
+                 x:DataType="vm:SshWindowViewModel"
+                 Width="800"
+                 Height="400"
+                 Title="{Binding WindowTitle}"
+                 Icon="../Assets/PrintBuddy3D.png">
+    <suki:GlassCard Margin="5">
+        <Grid RowDefinitions="*,Auto">
+            <ScrollViewer Grid.Row="0" x:Name="OutputScroll">
+                <TextBlock x:Name="OutputText"
+                           Text="{Binding Output}"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" >
+                <TextBox Grid.Column="0"
+                         Text="{Binding Input}"
+                         Watermark="Command..."
+                         PasswordChar="{Binding PasswordChar}">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Return" Command="{Binding SendCommandCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+            </Grid>
+        </Grid>
+    </suki:GlassCard>
+</suki:SukiWindow>

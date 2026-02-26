@@ -37,6 +37,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
         <PackageReference Include="SkiaSharp" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+        <PackageReference Include="SSH.NET" />
         <PackageReference Include="SukiUI" />
         <PackageReference Include="SukiUI.Dock" />
         <PackageReference Include="System.IO.Ports" />

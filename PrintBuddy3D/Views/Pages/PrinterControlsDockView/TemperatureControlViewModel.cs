@@ -15,8 +15,8 @@ public partial class TemperatureControlViewModel(
     private readonly IPrinterControlService? printerControlService = contextPrinterControlService;
     public PrinterModel Printer { get; } = contextPrinter;
 
-    [ObservableProperty] private int _targetNozzleTemp = 0;
-    [ObservableProperty] private int _targetBedTemp = 0;
+    [ObservableProperty] private int _targetNozzleTemp;
+    [ObservableProperty] private int _targetBedTemp;
 
     // Preset list
     // TODO Make this editable (mby take it from the rpi) idk we will see

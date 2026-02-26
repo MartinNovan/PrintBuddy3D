@@ -29,8 +29,7 @@
 - [x] Receive notification on home screen.
 - [x] Get printer status. (online/offline/printing/...)
 - [x] Add klipper printers and connect to them.
-- [x] SSH into klipper printer on Windows and Linux.
-  - note: you need to have installed powershell on windows or one of these on linux: gnome-terminal, gnome-console, konsole, xfce4-terminal, xterm, mate-terminal, kitty, alacritty. 
+- [x] SSH into klipper printer on Windows and Linux. 
 - [x] Moving axis on klipper printers.
 - [x] Set temperature on klipper printers.
 - [x] Send commands using console to klipper printers.

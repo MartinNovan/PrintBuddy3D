@@ -14,7 +14,7 @@ public partial class PrinterConsoleControlViewModel : Tool, IDisposable
 {
     private readonly IPrinterControlService _printerControlService;
     private readonly DispatcherTimer _timer;
-    private double _lastLogTime = 0; // Časová značka poslední přijaté zprávy
+    private double _lastLogTime;
 
     [ObservableProperty] private string? _command;
     [ObservableProperty] private ObservableCollection<ConsoleLogItem>? _output = new();
@@ -22,7 +22,6 @@ public partial class PrinterConsoleControlViewModel : Tool, IDisposable
     {
         _printerControlService = printerControlService;
         
-        // Nastavení časovače pro stahování logů každou vteřinu
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)

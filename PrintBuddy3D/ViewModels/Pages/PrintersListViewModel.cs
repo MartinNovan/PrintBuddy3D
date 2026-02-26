@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 using PrintBuddy3D.Services;
+using PrintBuddy3D.Views;
 using SukiUI.Dialogs;
 
 namespace PrintBuddy3D.ViewModels.Pages;
@@ -18,7 +18,7 @@ public partial class PrintersListViewModel : ObservableObject
     private readonly IPrintersService _printersService;
     private readonly IPrinterMonitoringService _printerMonitoringService;
 
-    [ObservableProperty] private ObservableCollection<PrinterModel> _printers;
+    [ObservableProperty] private ObservableCollection<PrinterModel>? _printers;
     [ObservableProperty] private object? _currentContent;
     
     public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService)
@@ -68,112 +68,21 @@ public partial class PrintersListViewModel : ObservableObject
                     .TryShow();
                 return;
             }
-
-            string sshCommand =
-                $"ssh {printer.HostUserName}@{printer.Address.Replace("https://", "").Replace("http://", "")}";
-            ProcessStartInfo psi = new ProcessStartInfo();
-            if (OperatingSystem.IsWindows())
-            {
-                psi = new ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Arguments = $"-NoExit -Command \"{sshCommand}\"",
-                    UseShellExecute = false
-                };
-            }
-            else if (OperatingSystem.IsLinux())
-            {
-                // gnome-terminal
-                if (IsProgramInstalled("gnome-terminal"))
-                {
-                    psi.FileName = "gnome-terminal";
-                    psi.Arguments = $"-- {sshCommand}";
-                }
-                // gnome-console
-                else if (IsProgramInstalled("kgx"))
-                {
-                    psi.FileName = "kgx";
-                    psi.Arguments = $"-e {sshCommand}";
-                }
-                // konsole
-                else if (IsProgramInstalled("konsole"))
-                {
-                    psi.FileName = "konsole";
-                    psi.Arguments = $"-e {sshCommand}";
-                }
-                // xfce-terminal
-                else if (IsProgramInstalled("xfce4-terminal"))
-                {
-                    psi.FileName = "xfce4-terminal";
-                    psi.Arguments = $"-e \"{sshCommand}\"";
-                }
-                // xterm
-                else if (IsProgramInstalled("xterm"))
-                {
-                    psi.FileName = "xterm";
-                    psi.Arguments = $"-e {sshCommand}";
-                }
-                // mate-terminal
-                else if (IsProgramInstalled("mate-terminal"))
-                {
-                    psi.FileName = "mate-terminal";
-                    psi.Arguments = $"-x {sshCommand}";
-                }
-                // kitty
-                else if (IsProgramInstalled("kitty"))
-                {
-                    psi.FileName = "kitty";
-                    psi.Arguments = $"-e {sshCommand}";
-                }
-                // alacritty
-                else if (IsProgramInstalled("alacritty"))
-                {
-                    psi.FileName = "alacritty";
-                    psi.Arguments = $"-e {sshCommand}";
-                }
-                else
-                {
-                    // Fallback: try x-terminal-emulator (Debian/Ubuntu system alias)
-                    psi.FileName = "x-terminal-emulator";
-                    psi.Arguments = $"-e {sshCommand}";
-                }
-            }
-
-            Process.Start(psi);
+            
+            var vm = new SshWindowViewModel(printer.Address.Replace("https://", "").Replace("http://", ""), printer.HostUserName);
+            var window = new SshWindow { DataContext = vm };
+            window.Show();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"There was an issue opening a terminal: {ex.Message}");
         }
     }
-    
-    private bool IsProgramInstalled(string programName)
-    {
-        try
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "/bin/sh",
-                Arguments = $"-c \"command -v {programName}\"",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-        
-            var proc = Process.Start(psi);
-            proc?.WaitForExit();
-            return proc is { ExitCode: 0 };
-        }
-        catch
-        {
-            return false;
-        }
-    }
-    
+
     [RelayCommand]
     private void RemovePrinter(PrinterModel printer)
     {
-        if (Printers.Contains(printer))
+        if (Printers != null && Printers.Contains(printer))
         {
             _dialogManager.CreateDialog()
                 .OfType(NotificationType.Warning)

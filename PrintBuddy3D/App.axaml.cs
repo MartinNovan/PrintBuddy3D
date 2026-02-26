@@ -66,6 +66,7 @@ public class App : Application
 
         // ViewModels and Views
         windowViews.AddView<MainWindow, MainWindowViewModel>(services);
+        windowViews.AddView<SshWindow, SshWindowViewModel>(services);
         windowViews.AddView<PrintersListView, PrintersListViewModel>(services);
         windowViews.AddView<FilamentsView, FilamentsViewModel>(services);
         windowViews.AddView<HomeView, HomeViewModel>(services);

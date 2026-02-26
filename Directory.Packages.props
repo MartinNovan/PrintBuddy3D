@@ -28,6 +28,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.7.25380.108" />
     <PackageVersion Include="SkiaSharp" Version="3.119.0" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+    <PackageVersion Include="SSH.NET" Version="2025.1.0" />
     <PackageVersion Include="SukiUI" Version="6.0.4-nightly20250823" />
     <PackageVersion Include="SukiUI.Dock" Version="6.0.4-nightly20250823" />
     <PackageVersion Include="System.IO.Ports" Version="10.0.0-preview.7.25380.108" />
