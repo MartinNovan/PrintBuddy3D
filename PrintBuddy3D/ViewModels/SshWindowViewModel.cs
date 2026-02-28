@@ -17,9 +17,8 @@ public partial class SshWindowViewModel : ObservableObject, IDisposable
 
     private TaskCompletionSource<string>? _passwordTcs;
     private bool _waitingForPassword;
-    private bool _isConnected;
 
-    [ObservableProperty] private string _windowTitle = "SSH";
+    [ObservableProperty] private string _windowTitle;
     [ObservableProperty] private string _output = string.Empty;
     [ObservableProperty] private string _input = string.Empty;
     [ObservableProperty] private bool _isPasswordMode;
@@ -37,7 +36,17 @@ public partial class SshWindowViewModel : ObservableObject, IDisposable
         _port = port;
         _windowTitle = $"SSH → {host}";
 
-        Dispatcher.UIThread.Post(async () => await ConnectAsync(), DispatcherPriority.Loaded);
+        Dispatcher.UIThread.Post(async void () =>
+        {
+            try
+            {
+                await ConnectAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error connecting to SSH server: " + ex.Message);
+            }
+        }, DispatcherPriority.Loaded);
     }
 
     private static string CleanOutput(string text)
@@ -48,27 +57,41 @@ public partial class SshWindowViewModel : ObservableObject, IDisposable
     }
     private async Task ConnectAsync()
     {
-        try
+        const int maxAttempts = 3;
+    
+        for (int attempt = 1; attempt <= maxAttempts; attempt++)
         {
-            var password = await WaitForPasswordAsync();
+            try
+            {
+                var password = await WaitForPasswordAsync();
 
-            AppendOutput("Connecting...\n");
-            _client = new SshClient(_host, _port, _username, password);
+                AppendOutput("Connecting...\n");
+                _client = new SshClient(_host, _port, _username, password);
+                await Task.Run(() => _client.Connect());
 
-            await Task.Run(() => _client.Connect());
+                _shellStream = _client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
 
-            _shellStream = _client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
-            _isConnected = true;
-
-            _cts = new CancellationTokenSource();
-            _ = ReadOutputLoopAsync(_cts.Token);
-        }
-        catch (Exception ex)
-        {
-            AppendOutput($"{ex.Message}\n");
-            _isConnected = false;
-            // Probably bad password
-            await ConnectAsync();
+                _cts = new CancellationTokenSource();
+                _ = ReadOutputLoopAsync(_cts.Token);
+                return; // User connected
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("Permission denied"))
+                {
+                    if (attempt >= maxAttempts)
+                    {
+                        AppendOutput($"Connection failed after 3 failed attempts.\n");
+                        return; // Stop after 3 failed attemps
+                    }
+                    AppendOutput($"Authentication failed, try again: {ex.Message} \n");
+                }
+                else
+                {
+                    AppendOutput($"Error connecting to SSH server: {ex.Message} \n");
+                    return;
+                }
+            }
         }
     }
 
@@ -127,15 +150,11 @@ public partial class SshWindowViewModel : ObservableObject, IDisposable
             try
             {
                 await Task.Delay(50, ct);
-                if (_shellStream.DataAvailable)
-                {
-                    int count = _shellStream.Read(buffer, 0, buffer.Length);
-                    if (count > 0)
-                    {
-                        var clean = CleanOutput(Encoding.UTF8.GetString(buffer, 0, count));
-                        AppendOutput(clean);
-                    }
-                }
+                if (!_shellStream.DataAvailable) continue;
+                int count = _shellStream.Read(buffer, 0, buffer.Length);
+                if (count <= 0) continue;
+                var clean = CleanOutput(Encoding.UTF8.GetString(buffer, 0, count));
+                AppendOutput(clean);
             }
             catch (OperationCanceledException) { break; }
         }

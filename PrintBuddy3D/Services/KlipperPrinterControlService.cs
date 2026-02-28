@@ -42,7 +42,7 @@ public class KlipperPrinterControlService : IPrinterControlService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Chyba při odesílání příkazu: {ex.Message}");
+            Console.WriteLine($"Error sending command: {ex.Message}");
         }
     }
 
