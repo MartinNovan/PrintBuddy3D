@@ -96,13 +96,22 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
         }
     }
 
-    public void SendCommand(string command)
+    public Task SendCommand(string command)
     {
-        if (_serialPort is { IsOpen: true })
+        try
         {
-            _serialPort.Write(command.TrimEnd() + "\n");
-            LogToConsole(command, ConsoleLogType.Command);
+            if (_serialPort is { IsOpen: true })
+            {
+                _serialPort.Write(command.TrimEnd() + "\n");
+                LogToConsole(command, ConsoleLogType.Command);
+            }
         }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error sending command: {ex.Message}");
+        }
+
+        return Task.CompletedTask;
     }
     public void EmergencyStop()
     {

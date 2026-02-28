@@ -23,7 +23,7 @@ public partial class SshWindowViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _output = string.Empty;
     [ObservableProperty] private string _input = string.Empty;
     [ObservableProperty] private bool _isPasswordMode;
-    public char PasswordChar => _isPasswordMode ? '*' : '\0';
+    public char PasswordChar => IsPasswordMode ? '*' : '\0';
     
     private readonly string _host;
     private readonly string _username;

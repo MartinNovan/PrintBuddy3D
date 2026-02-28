@@ -2,7 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Threading; // Důležité pro DispatcherTimer
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Mvvm.Controls;
@@ -55,15 +55,15 @@ public partial class PrinterConsoleControlViewModel : Tool, IDisposable
     private void SeeHelp()
     {
         Command = "help";
-        SendCommandToPrinter();
+        _ = SendCommandToPrinter();
     }
     
     [RelayCommand]
-    private void SendCommandToPrinter()
+    private async Task SendCommandToPrinter()
     {
         if (!string.IsNullOrEmpty(Command))
         {
-            _printerControlService.SendCommand(Command);
+            await _printerControlService.SendCommand(Command);
         }
         Command = string.Empty;
     }

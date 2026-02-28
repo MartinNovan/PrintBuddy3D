@@ -22,7 +22,7 @@ public interface IPrintersService : IDisposable
 
 public interface IPrinterControlService
 {
-    void SendCommand(string command);
+    Task SendCommand(string command);
     void Move(string axis, double distance, int speed);
     void Home(string axis);
     void SetTemperature(int temp, string type = "extruder");

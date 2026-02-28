@@ -29,9 +29,9 @@ public class KlipperPrinterControlService : IPrinterControlService
         _httpClient?.Dispose();
     }
     
-    public async void SendCommand(string command)
+    public async Task SendCommand(string command)
     {
-        if (string.IsNullOrEmpty(_printer.FullAddress)) return;
+        if (string.IsNullOrEmpty(_printer.FullAddress)) return ;
 
         try
         {
@@ -52,12 +52,12 @@ public class KlipperPrinterControlService : IPrinterControlService
         // G1 {axis}{distance} F{speed} = the travel
         // G90 = Back to the absolute position
         var gcode = $"G91\nG1 {axis}{distance} F{speed}\nG90";
-        SendCommand(gcode);
+        _ = SendCommand(gcode);
     }
 
     public void Home(string axis = "all")
     {
-        SendCommand(axis.ToLower() == "all" ? "G28" : $"G28 {axis}");
+        _ = SendCommand(axis.ToLower() == "all" ? "G28" : $"G28 {axis}");
     }
 
     //TODO: Make support for multi extruder printer
@@ -72,17 +72,17 @@ public class KlipperPrinterControlService : IPrinterControlService
         {
             cmd = $"M104 S{temp}"; // Set extruder temp
         }
-        SendCommand(cmd);
+        _ = SendCommand(cmd);
     }
 
     public void DisableMotors()
     {
-        SendCommand("M84");
+        _ = SendCommand("M84");
     }
 
     public void EmergencyStop()
     {
-        SendCommand("M112");
+        _ = SendCommand("M112");
     }
     
     public async Task<List<ConsoleLogItem>> GetConsoleHistoryAsync()
