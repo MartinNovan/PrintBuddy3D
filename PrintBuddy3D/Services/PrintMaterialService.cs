@@ -16,14 +16,14 @@ public interface IPrintMaterialService
 
 public class PrintMaterialService(IAppDataService appDataService) : IPrintMaterialService
 {
-    private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
+    private readonly string _connectionString = appDataService.ConnectionString;
 
     public async Task<ObservableCollection<FilamentModel>> GetFilamentsAsync(CancellationToken ct = default)
     {
         var filaments = new ObservableCollection<FilamentModel>();
-        await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
+        await using var connection = new SqliteConnection(_connectionString); 
+        await connection.OpenAsync(ct);
+        await using var command = connection.CreateCommand();
         command.CommandText = "SELECT * FROM Filaments";
 
         await using var reader = await command.ExecuteReaderAsync(ct);
@@ -60,10 +60,10 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
 
     public async Task UpsertFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default)
     {
-        await _dbConnection.OpenAsync(ct);
-
-        await using var cmd = _dbConnection.CreateCommand();
-        cmd.CommandText = @"
+        await using var connection = new SqliteConnection(_connectionString); 
+        await connection.OpenAsync(ct);
+        await using var command = connection.CreateCommand();
+        command.CommandText = @"
             INSERT INTO Filaments (Id, Hash, Manufacture, Name, Color, Weight, Price, SpoolWeight, Diameter, Density)
             VALUES ($id, $hash, $manufacture, $name, $color, $weight, $price, $spoolWeight, $diameter, $density)
             ON CONFLICT(Id) DO UPDATE SET
@@ -77,25 +77,25 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
                 SpoolWeight = excluded.SpoolWeight,
                 Diameter = excluded.Diameter,
                 Density = excluded.Density;";
-        cmd.Parameters.AddWithValue("$id", filamentModel.Id);
-        cmd.Parameters.AddWithValue("$hash", filamentModel.Hash);
-        cmd.Parameters.AddWithValue("$manufacture", filamentModel.Manufacture);
-        cmd.Parameters.AddWithValue("$name", filamentModel.Name);
-        cmd.Parameters.AddWithValue("$color", filamentModel.Color);
-        cmd.Parameters.AddWithValue("$weight", filamentModel.Weight);
-        cmd.Parameters.AddWithValue("$price", filamentModel.Price);
-        cmd.Parameters.AddWithValue("$spoolWeight", filamentModel.SpoolWeight);
-        cmd.Parameters.AddWithValue("$diameter", filamentModel.Diameter);
-        cmd.Parameters.AddWithValue("$density", filamentModel.Density);
+        command.Parameters.AddWithValue("$id", filamentModel.Id);
+        command.Parameters.AddWithValue("$hash", filamentModel.Hash);
+        command.Parameters.AddWithValue("$manufacture", filamentModel.Manufacture);
+        command.Parameters.AddWithValue("$name", filamentModel.Name);
+        command.Parameters.AddWithValue("$color", filamentModel.Color);
+        command.Parameters.AddWithValue("$weight", filamentModel.Weight);
+        command.Parameters.AddWithValue("$price", filamentModel.Price);
+        command.Parameters.AddWithValue("$spoolWeight", filamentModel.SpoolWeight);
+        command.Parameters.AddWithValue("$diameter", filamentModel.Diameter);
+        command.Parameters.AddWithValue("$density", filamentModel.Density);
 
-        await cmd.ExecuteNonQueryAsync(ct);
+        await command.ExecuteNonQueryAsync(ct);
     }
 
     public async Task RemoveFilamentAsync(FilamentModel filamentModel, CancellationToken ct = default)
     {
-        await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
+        await using var connection = new SqliteConnection(_connectionString); 
+        await connection.OpenAsync(ct);
+        await using var command = connection.CreateCommand();
         command.CommandText = "DELETE FROM Filaments WHERE Id = $id";
         command.Parameters.AddWithValue("$id", filamentModel.Id);
         await command.ExecuteNonQueryAsync(ct);

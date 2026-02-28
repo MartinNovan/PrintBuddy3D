@@ -35,7 +35,7 @@ public interface IPrinterControlService
 public record ConsoleLogItem(string Message, double Time, ConsoleLogType type);
 public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
 {
-    private readonly SqliteConnection _dbConnection = appDataService.DbConnection;
+    private readonly string _connectionString = appDataService.ConnectionString;
     private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(2) };
 
     
@@ -43,9 +43,9 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
     public async Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default)
     {
         var printers = new ObservableCollection<PrinterModel>();
-        await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
+        await using var connection = new SqliteConnection(_connectionString); 
+        await connection.OpenAsync(ct);
+        await using var command = connection.CreateCommand();
         command.CommandText = "SELECT * FROM Printers";
 
         await using var reader = await command.ExecuteReaderAsync(ct);
@@ -87,11 +87,10 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
 
     public async Task UpsertPrinterAsync(PrinterModel printer, CancellationToken ct = default)
     {
-        if (_dbConnection.State != System.Data.ConnectionState.Open)
-            await _dbConnection.OpenAsync(ct);
-
-        await using var cmd = _dbConnection.CreateCommand();
-        cmd.CommandText = @"
+        await using var connection = new SqliteConnection(_connectionString); 
+        await connection.OpenAsync(ct);
+        await using var command = connection.CreateCommand();
+        command.CommandText = @"
             INSERT INTO Printers (Id, Hash, Name, Firmware, Prefix, Address, HostUserName, LastSerialPort, BaudRate, SerialNumber, ImagePath)
             VALUES ($id, $hash, $name, $firmware, $prefix, $address, $hostUser, $port, $baud, $serial, $image)
             ON CONFLICT(Id) DO UPDATE SET
@@ -106,27 +105,26 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
                 SerialNumber = excluded.SerialNumber,
                 ImagePath = excluded.ImagePath;";
 
-        cmd.Parameters.AddWithValue("$id", printer.Id);
-        cmd.Parameters.AddWithValue("$hash", printer.Hash);
-        cmd.Parameters.AddWithValue("$name", printer.Name ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("$firmware", (int)(printer.Firmware ?? 0));
-        cmd.Parameters.AddWithValue("$prefix", (int)(printer.Prefix ?? 0));
-        cmd.Parameters.AddWithValue("$address", printer.Address ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("$hostUser", printer.HostUserName ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("$port", printer.LastSerialPort ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("$baud", printer.BaudRate);
-        cmd.Parameters.AddWithValue("$serial", printer.SerialNumber ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("$image", printer.ImagePath ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$id", printer.Id);
+        command.Parameters.AddWithValue("$hash", printer.Hash);
+        command.Parameters.AddWithValue("$name", printer.Name ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$firmware", (int)(printer.Firmware ?? 0));
+        command.Parameters.AddWithValue("$prefix", (int)(printer.Prefix ?? 0));
+        command.Parameters.AddWithValue("$address", printer.Address ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$hostUser", printer.HostUserName ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$port", printer.LastSerialPort ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$baud", printer.BaudRate);
+        command.Parameters.AddWithValue("$serial", printer.SerialNumber ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("$image", printer.ImagePath ?? (object)DBNull.Value);
 
-        await cmd.ExecuteNonQueryAsync(ct);
+        await command.ExecuteNonQueryAsync(ct);
     }
 
     public async Task RemovePrinterAsync(PrinterModel printer, CancellationToken ct = default)
     {
-        if (_dbConnection.State != System.Data.ConnectionState.Open)
-            await _dbConnection.OpenAsync(ct);
-
-        await using var command = _dbConnection.CreateCommand();
+        await using var connection = new SqliteConnection(_connectionString); 
+        await connection.OpenAsync(ct);
+        await using var command = connection.CreateCommand();
         command.CommandText = "DELETE FROM Printers WHERE Id = $id";
         command.Parameters.AddWithValue("$id", printer.Id);
         await command.ExecuteNonQueryAsync(ct);
@@ -139,7 +137,6 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
             PrinterEnums.Firmware.Klipper => await CheckKlipperStatus(printer, ct),
             // TODO: Implement status for marlin
             PrinterEnums.Firmware.Marlin when !string.IsNullOrEmpty(printer.LastSerialPort) => PrinterEnums.Status.StandBy,
-            PrinterEnums.Firmware.Marlin => PrinterEnums.Status.Offline,
             _ => PrinterEnums.Status.Offline
         };
     }
