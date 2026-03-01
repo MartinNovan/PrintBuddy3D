@@ -5,13 +5,14 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class HomeViewModel : ObservableObject
+public partial class HomeViewModel : PageBase
 {
     [ObservableProperty] private int _offlinePrintersCount;
     [ObservableProperty] private int _standByPrintersCount;
@@ -20,12 +21,11 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<string> _notificationMessages = new();
 
     private readonly ISukiToastManager _sukiToastManager;
-
-    public HomeViewModel(ISukiToastManager toastManager)
+    public HomeViewModel(ISukiToastManager toastManager) : base("Home", MaterialIconKind.Home, 0)
     {
         _sukiToastManager = toastManager;
     }
-
+    
     [RelayCommand]
     private void RemoveNotification(string message)
     {

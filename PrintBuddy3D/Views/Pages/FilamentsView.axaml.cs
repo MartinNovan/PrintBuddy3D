@@ -9,6 +9,5 @@ public partial class FilamentsView : UserControl
     public FilamentsView()
     {
         InitializeComponent();
-        DataContext = App.Services.GetRequiredService<FilamentsViewModel>();
     }
 }

@@ -9,6 +9,5 @@ public partial class GuidesView : UserControl
     public GuidesView()
     {
         InitializeComponent();
-        DataContext = App.Services.GetRequiredService<GuidesViewModel>();
     }
 }

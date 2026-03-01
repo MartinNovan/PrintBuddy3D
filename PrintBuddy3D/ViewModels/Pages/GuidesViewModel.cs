@@ -24,7 +24,7 @@ public class MenuItemDto
     public List<MenuItemDto>? Children { get; set; }
 }
 
-public partial class GuidesViewModel : ObservableObject
+public partial class GuidesViewModel : PageBase
 {
     private ObservableCollection<MenuItemDto> MenuStructure { get; } = new();
 
@@ -33,7 +33,7 @@ public partial class GuidesViewModel : ObservableObject
     
     [ObservableProperty] private string _searchText = string.Empty;
 
-    public GuidesViewModel(ISukiToastManager sukiToastManager)
+    public GuidesViewModel(ISukiToastManager sukiToastManager) : base("Guides", MaterialIconKind.Book, 3)
     {
         _sukiToastManager = sukiToastManager;
         _ = LoadMenuStructureAsync();

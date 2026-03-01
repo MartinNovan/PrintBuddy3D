@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,7 +17,9 @@ namespace PrintBuddy3D.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    [ObservableProperty] private ObservableObject _currentPage;
+    public IAvaloniaReadOnlyList<PageBase> Pages { get; }
+    
+    [ObservableProperty] private PageBase _activePage;
     [ObservableProperty] private bool _isAlwaysOnTop;
     [ObservableProperty] private SukiBackgroundStyle _backgroundStyle;
     [ObservableProperty] private SukiTheme _themes;
@@ -27,12 +30,17 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly IAppDataService _appDataService;
     private AboutWindow? _aboutWindow;
 
-    public MainWindowViewModel(HomeViewModel viewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
+    public MainWindowViewModel(HomeViewModel homeViewModel, PrintersListViewModel printersListViewModel, FilamentsViewModel filamentsViewModel,
+        GuidesViewModel guidesViewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
     {
+        Pages = new AvaloniaList<PageBase>(
+            new PageBase[] { homeViewModel, printersListViewModel, filamentsViewModel, guidesViewModel }
+                .OrderBy(p => p.Index)
+        );
+        _activePage = Pages[0];
         ToastManager = toastManager;
         DialogManager = dialogManager;
         _appDataService = appDataService;
-        CurrentPage = viewModel;
         _themes = SukiTheme.GetInstance();
         _backgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
         BackgroundStyle = _appDataService.LoadBackground("Background");

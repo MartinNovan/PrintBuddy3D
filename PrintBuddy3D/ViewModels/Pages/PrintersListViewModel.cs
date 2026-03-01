@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 using PrintBuddy3D.Services;
@@ -12,7 +13,7 @@ using SukiUI.Dialogs;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class PrintersListViewModel : ObservableObject
+public partial class PrintersListViewModel : PageBase
 {
     private readonly ISukiDialogManager _dialogManager;
     private readonly IPrintersService _printersService;
@@ -21,7 +22,7 @@ public partial class PrintersListViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<PrinterModel>? _printers;
     [ObservableProperty] private object? _currentContent;
     
-    public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService)
+    public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService) : base("Printers", MaterialIconKind.Printer3d, 1)
     {
         _dialogManager = dialogManager;
         _printersService = printersService;

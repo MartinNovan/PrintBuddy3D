@@ -3,12 +3,13 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks; // added
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
 using PrintBuddy3D.Models;
 using PrintBuddy3D.Services;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class FilamentsViewModel : ObservableObject
+public partial class FilamentsViewModel : PageBase
 {
     [ObservableProperty]
     private ObservableCollection<FilamentModel> _filaments = new();
@@ -16,7 +17,7 @@ public partial class FilamentsViewModel : ObservableObject
     private FilamentModel _newFilamentModel = new();
     
     private readonly IPrintMaterialService _printMaterialService;
-    public FilamentsViewModel(IPrintMaterialService printMaterialService)
+    public FilamentsViewModel(IPrintMaterialService printMaterialService) : base("Filaments", MaterialIconKind.FreehandLine, 2)
     {
         _printMaterialService = printMaterialService;
         LoadFilaments();

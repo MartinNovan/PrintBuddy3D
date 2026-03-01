@@ -9,6 +9,5 @@ public partial class PrintersListView : UserControl
     public PrintersListView()
     {
         InitializeComponent();
-        DataContext = App.Services.GetRequiredService<PrintersListViewModel>();
     }
 }
