@@ -64,4 +64,8 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
             IsCustomStepEnable = true;
         }
     }
+
+    public void Dispose()
+    {
+    }
 }

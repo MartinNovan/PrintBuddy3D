@@ -27,7 +27,7 @@ public partial class PrinterControlViewModel : ObservableObject
     public readonly IPrinterControlService PrinterControlService;
     private readonly Action _goBack;
     private readonly IDockSerializer _serializer;
-    private readonly IFactory _factory;
+    private readonly DockFactory _factory;
     
     [ObservableProperty] private IRootDock? _layout;
     [ObservableProperty] private bool _isWebModeEnabled;
@@ -97,6 +97,7 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void Back()
     {
+        _factory.Dispose();
         PrinterControlService?.Dispose();
         _goBack();
     }
@@ -109,6 +110,7 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void ResetLayout()
     {
+        _factory.Dispose();
         Layout = _factory.CreateLayout();
         if (Layout != null)
         {

@@ -10,12 +10,15 @@ using PrintBuddy3D.ViewModels.Pages;
 
 namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
-public class DockFactory(PrinterControlViewModel context) : Factory
+public class DockFactory(PrinterControlViewModel context) : Factory, IDisposable
 {
     private IRootDock? _rootDock;
+    private MovementControlViewModel? _movementViewModel;
+    private TemperatureControlViewModel? _temperatureViewModel;
+    private PrinterConsoleControlViewModel? _consoleViewModel;
     public override IRootDock CreateLayout()
     {
-        var movementControlViewModel = new MovementControlViewModel(context.PrinterControlService)
+        _movementViewModel = new MovementControlViewModel(context.PrinterControlService)
         { 
             Id = "MovementControl",
             Title = "Movement Control",
@@ -24,7 +27,7 @@ public class DockFactory(PrinterControlViewModel context) : Factory
             CanClose = false,
         };
 
-        var temperatureControlViewModel = new TemperatureControlViewModel(context.PrinterControlService, context.Printer)
+        _temperatureViewModel = new TemperatureControlViewModel(context.PrinterControlService, context.Printer)
         { 
             Id = "TemperatureControl",
             Title = "Temperature Control",
@@ -33,7 +36,7 @@ public class DockFactory(PrinterControlViewModel context) : Factory
             CanClose = false,
         };
 
-        var consoleControlViewModel = new PrinterConsoleControlViewModel(context.PrinterControlService)
+        _consoleViewModel = new PrinterConsoleControlViewModel(context.PrinterControlService)
         {
             Id = "Console",
             Title = "Printer Console",
@@ -45,8 +48,8 @@ public class DockFactory(PrinterControlViewModel context) : Factory
         var documentDock = new ToolDock()
         {
             IsCollapsable = true,
-            ActiveDockable = movementControlViewModel,
-            VisibleDockables = CreateList<IDockable>(movementControlViewModel, temperatureControlViewModel, consoleControlViewModel),
+            ActiveDockable = _movementViewModel,
+            VisibleDockables = CreateList<IDockable>(_movementViewModel, _temperatureViewModel, _consoleViewModel),
             CanClose = false,
             Title = "Document Control",
             Alignment = Alignment.Top,
@@ -76,6 +79,15 @@ public class DockFactory(PrinterControlViewModel context) : Factory
         return rootDock;
     }
 
+    public void Dispose()
+    {
+        _movementViewModel?.Dispose();
+        _temperatureViewModel?.Dispose();
+        _consoleViewModel?.Dispose();
+        _movementViewModel = null;
+        _temperatureViewModel = null;
+        _consoleViewModel = null;
+    }
     public override void InitLayout(IDockable layout)
     {
         ContextLocator = new Dictionary<string, Func<object?>>

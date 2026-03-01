@@ -50,5 +50,9 @@ public partial class TemperatureControlViewModel(
         SetNozzle();
         SetBed();
     }
+
+    public void Dispose()
+    {
+    }
 }
 public record TemperaturePreset(string Name, int Nozzle, int Bed);
