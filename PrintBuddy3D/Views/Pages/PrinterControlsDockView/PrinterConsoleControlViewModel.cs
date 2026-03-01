@@ -26,7 +26,17 @@ public partial class PrinterConsoleControlViewModel : Tool, IDisposable
         {
             Interval = TimeSpan.FromSeconds(1)
         };
-        _timer.Tick += async (sender, e) => await FetchLogs();
+        _timer.Tick += async (_, _) =>
+        {
+            try
+            {
+                await FetchLogs();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching logs: {ex.Message}");
+            }
+        };
         _timer.Start();
     }
     
