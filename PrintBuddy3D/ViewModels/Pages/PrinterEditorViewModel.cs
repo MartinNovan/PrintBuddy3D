@@ -14,16 +14,18 @@ public partial class PrinterEditorViewModel : ObservableObject
     public PrinterModel EditingPrinter { get; }
     
     private readonly IPrintersService _printersService;
-    private readonly Action _goBack;
-
+    private readonly Action _goBack;    
+    private readonly Action<PrinterModel> _onSave; 
+    
     // ComboBox
     public PrinterEnums.Firmware[] FirmwareOptions { get; } = Enum.GetValues<PrinterEnums.Firmware>();
     public PrinterEnums.Prefix[] PrefixOptions { get; } = Enum.GetValues<PrinterEnums.Prefix>();
     public int[] BaudRateOptions { get; } = { 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000 };
     
-    public PrinterEditorViewModel(PrinterModel? printer, IPrintersService printersService, Action goBack)
+    public PrinterEditorViewModel(PrinterModel? printer, IPrintersService printersService, Action goBack, Action<PrinterModel> save)
     {
         EditingPrinter = printer ?? new PrinterModel();
+        _onSave = save;
         _printersService = printersService;
         _goBack = goBack;
         
@@ -47,13 +49,7 @@ public partial class PrinterEditorViewModel : ObservableObject
     private async Task Save()
     {
         await _printersService.UpsertPrinterAsync(EditingPrinter);
-
-        var listVm = App.Services.GetRequiredService<PrintersListViewModel>();
-        if (!listVm.Printers.Contains(EditingPrinter))
-        {
-            listVm.Printers.Add(EditingPrinter);
-        }
-        
+        _onSave(EditingPrinter);
         _goBack();
     }
 }

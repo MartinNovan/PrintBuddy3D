@@ -41,7 +41,11 @@ public partial class PrintersListViewModel : PageBase
     [RelayCommand]
     private void OpenPrinterEditor(PrinterModel? printer)
     {
-        CurrentContent = new PrinterEditorViewModel(printer, _printersService, GoBack);
+        CurrentContent = new PrinterEditorViewModel(printer, _printersService, GoBack, savedPrinter => // callback onSave
+        {
+            if (!Printers!.Contains(savedPrinter))
+                Printers.Add(savedPrinter);
+        });
     }
     
     [RelayCommand]
