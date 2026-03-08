@@ -6,7 +6,7 @@ using PrintBuddy3D.Enums;
 
 namespace PrintBuddy3D.Models;
 
-public sealed class PrinterModel : ModelBase
+public sealed class PrinterModel : ModelBase, IDisposable
 {
     public Guid Id { get; init; } = Guid.NewGuid(); // Unique identifier for each printer
     
@@ -189,18 +189,18 @@ public sealed class PrinterModel : ModelBase
                     default: imagePath = "avares://PrintBuddy3D/Assets/other-printer-logo.png"; break;
                 }
             }
-            if (imagePath != _imagePathCached)
+
+            if (imagePath == _imagePathCached) return _image;
+            
+            _image?.Dispose();
+            if (imagePath.StartsWith("avares://"))
             {
-                _image?.Dispose();
-                if (imagePath.StartsWith("avares://"))
-                {
-                    var uri = new Uri(imagePath);
-                    using var stream = AssetLoader.Open(uri);
-                    _image = new Bitmap(stream);
-                }
-                else _image = new Bitmap(imagePath);
-                _imagePathCached = imagePath;
+                var uri = new Uri(imagePath);
+                using var stream = AssetLoader.Open(uri);
+                _image = new Bitmap(stream);
             }
+            else _image = new Bitmap(imagePath);
+            _imagePathCached = imagePath;
             return _image;
         }
     }
@@ -230,13 +230,13 @@ public sealed class PrinterModel : ModelBase
         {
             if (Firmware == PrinterEnums.Firmware.Marlin) // For marlin use connected/disconnected
             {
-                if (Status == PrinterEnums.Status.Offline || Status == PrinterEnums.Status.None)
+                if (Status is PrinterEnums.Status.Offline or PrinterEnums.Status.None)
                     return "Disconnected";
                 
                 return $"Connected - {Status}";
             }
 
-            if (Status == PrinterEnums.Status.Offline || Status == PrinterEnums.Status.None) // For everything else use Online / offline
+            if (Status is PrinterEnums.Status.Offline or PrinterEnums.Status.None) // For everything else use Online / offline
                 return "Offline";
 
             return $"Online - {Status}";
@@ -252,7 +252,7 @@ public sealed class PrinterModel : ModelBase
 
     public bool UpdateLock { get; set; } = false;
     public DateTime LastUpdate { get; set; }
-    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
+    private TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
 
     public void ChangeStatus(PrinterEnums.Status currentStatus)
     {
@@ -290,7 +290,21 @@ public sealed class PrinterModel : ModelBase
                 Status = PrinterEnums.Status.StartUp;
                 RefreshInterval = TimeSpan.FromSeconds(2);
                 break;
+            case PrinterEnums.Status.Paused:
+                Status = PrinterEnums.Status.Paused;
+                RefreshInterval = TimeSpan.FromSeconds(1);
+                break;
+            case PrinterEnums.Status.None: // Should not happen, it's only used at initialization of the app 
+                Status = PrinterEnums.Status.None;
+                RefreshInterval = TimeSpan.FromSeconds(30); 
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(currentStatus), currentStatus, null);
         }
     }
-
+    public void Dispose()
+    {
+        _image?.Dispose();
+        _image = null;
+    }
 }
