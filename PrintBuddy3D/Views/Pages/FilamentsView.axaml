@@ -16,7 +16,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Manufacture" Binding="{Binding Manufacture}" />
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Firmware" Binding="{Binding Color}" />
+                    <DataGridTextColumn Header="Color" Binding="{Binding Color}" />
                     <DataGridTextColumn Header="Remaining Length ~" Binding="{Binding Length}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Remaining weight ~" Binding="{Binding RemainingWeight}" IsReadOnly="True" />
                     <DataGridTextColumn Header="Diameter" Binding="{Binding Diameter}" />
