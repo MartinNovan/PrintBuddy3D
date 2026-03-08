@@ -252,7 +252,7 @@ public sealed class PrinterModel : ModelBase, IDisposable
 
     public bool UpdateLock { get; set; } = false;
     public DateTime LastUpdate { get; set; }
-    private TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
+    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
 
     public void ChangeStatus(PrinterEnums.Status currentStatus)
     {

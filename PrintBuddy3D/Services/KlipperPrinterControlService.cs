@@ -18,7 +18,7 @@ public class KlipperPrinterControlService : IPrinterControlService
     public KlipperPrinterControlService(PrinterModel printer)
     {
         _printer = printer;
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(20) }; // Timeout 20s instead of default 100s to not block the update loop 
         if (!string.IsNullOrEmpty(_printer.FullAddress))
         {
             _httpClient.BaseAddress = new Uri(_printer.FullAddress);
