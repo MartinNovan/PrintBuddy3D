@@ -18,15 +18,17 @@ public partial class PrintersListViewModel : PageBase
     private readonly ISukiDialogManager _dialogManager;
     private readonly IPrintersService _printersService;
     private readonly IPrinterMonitoringService _printerMonitoringService;
+    private readonly IPrinterControlServiceFactory _printerControlServiceFactory;
 
     [ObservableProperty] private ObservableCollection<PrinterModel>? _printers;
     [ObservableProperty] private object? _currentContent;
     
-    public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService) : base("Printers", MaterialIconKind.Printer3d, 1)
+    public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService, IPrinterControlServiceFactory printerControlServiceFactory) : base("Printers", MaterialIconKind.Printer3d, 1)
     {
         _dialogManager = dialogManager;
         _printersService = printersService;
         _printerMonitoringService = printerMonitoringService;
+        _printerControlServiceFactory = printerControlServiceFactory;
         CurrentContent = this;
         _ = LoadPrinters();
     }
@@ -35,7 +37,7 @@ public partial class PrintersListViewModel : PageBase
     [RelayCommand]
     private void OpenPrinterControl(PrinterModel printer)
     {
-        CurrentContent = new PrinterControlViewModel(printer, GoBack);
+        CurrentContent = new PrinterControlViewModel(printer, _printerControlServiceFactory, GoBack);
     }
     
     [RelayCommand]

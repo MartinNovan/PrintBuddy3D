@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -30,15 +27,15 @@ public interface IPrinterControlService
     void EmergencyStop();
     
     Task<List<ConsoleLogItem>> GetConsoleHistoryAsync();
+    Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default);
+
     void Dispose();
 }
-public record ConsoleLogItem(string Message, double Time, ConsoleLogType type);
-public class PrintersService(IAppDataService appDataService, INotificationService notificationService) : IPrintersService
+public record ConsoleLogItem(string Message, double Time, ConsoleLogType Type);
+public class PrintersService(IAppDataService appDataService, INotificationService notificationService, IPrinterControlServiceFactory printerControlServiceFactory) : IPrintersService
 {
     private readonly string _connectionString = appDataService.ConnectionString;
-    private readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(2) };
 
-    
     public void Dispose() { }
     public async Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default)
     {
@@ -70,6 +67,16 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
             {
                 if (printer.Hash != printer.DbHash)
                 {
+                    if (e.PropertyName is 
+                        nameof(PrinterModel.LastSerialPort) or
+                        nameof(PrinterModel.BaudRate) or
+                        nameof(PrinterModel.Address) or
+                        nameof(PrinterModel.Prefix) or
+                        nameof(PrinterModel.Firmware))
+                    {
+                        printerControlServiceFactory.Invalidate(printer);
+                    }
+                    
                     await UpsertPrinterAsync(printer, CancellationToken.None);
                     printer.DbHash = printer.Hash;
                 }
@@ -78,7 +85,6 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
                     notificationService.UpdateStatus(printer);
                 }
             };
-
             printers.Add(printer);
         }
 
@@ -122,6 +128,7 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
 
     public async Task RemovePrinterAsync(PrinterModel printer, CancellationToken ct = default)
     {
+        printerControlServiceFactory.Invalidate(printer); // removed cached service
         await using var connection = new SqliteConnection(_connectionString); 
         await connection.OpenAsync(ct);
         await using var command = connection.CreateCommand();
@@ -132,51 +139,7 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
 
     public async Task<PrinterEnums.Status> GetPrinterStatusAsync(PrinterModel printer, CancellationToken ct = default)
     {
-        return printer.Firmware switch
-        {
-            PrinterEnums.Firmware.Klipper => await CheckKlipperStatus(printer, ct),
-            // TODO: Implement status for marlin
-            PrinterEnums.Firmware.Marlin when !string.IsNullOrEmpty(printer.LastSerialPort) => PrinterEnums.Status.StandBy,
-            _ => PrinterEnums.Status.Offline
-        };
+        var service = printerControlServiceFactory.Create(printer);
+        return await service.GetStatusAsync(ct);
     }
-
-    private async Task<PrinterEnums.Status> CheckKlipperStatus(PrinterModel printer, CancellationToken ct)
-    {
-        if (string.IsNullOrEmpty(printer.FullAddress)) return PrinterEnums.Status.Offline;
-
-        try
-        {
-            // Get state from Moonraker API using query
-            var url = $"{printer.FullAddress}/printer/objects/query?print_stats&webhooks";
-            var response = await _httpClient.GetFromJsonAsync<JsonNode>(url, ct);
-
-            if (response?["result"]?["status"] is not JsonNode statusNode) 
-                return PrinterEnums.Status.Error;
-
-            // 1. Get the webhooks state
-            string state = statusNode["webhooks"]?["state"]?.ToString()?.ToLower() ?? "unknown";
-            
-            // 2. Get the print state
-            string printState = statusNode["print_stats"]?["state"]?.ToString()?.ToLower() ?? "";
-            
-            if (state == "shutdown") return PrinterEnums.Status.ShutDown;
-            if (state == "startup") return PrinterEnums.Status.StartUp;
-            if (state == "error") return PrinterEnums.Status.Error;
-            
-            if (state == "ready")
-            {
-                if (printState == "printing") return PrinterEnums.Status.Printing;
-                if (printState == "paused") return PrinterEnums.Status.Busy; // take Paused as Busy
-                if (printState == "complete") return PrinterEnums.Status.Complete;
-            }
-
-            return PrinterEnums.Status.StandBy;
-        }
-        catch
-        {
-            return PrinterEnums.Status.Offline;
-        }
-    }
-
 }

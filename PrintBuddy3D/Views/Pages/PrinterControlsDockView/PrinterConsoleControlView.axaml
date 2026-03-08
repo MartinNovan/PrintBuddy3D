@@ -30,7 +30,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Message}" 
-                                       Foreground="{Binding type, Converter={StaticResource ConsoleLogTypeToColorConverter}}"
+                                       Foreground="{Binding Type, Converter={StaticResource ConsoleLogTypeToColorConverter}}"
                                        TextWrapping="Wrap"
                                        Margin="5"/>
                         </DataTemplate>

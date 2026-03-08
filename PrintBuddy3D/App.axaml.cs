@@ -59,6 +59,7 @@ public class App : Application
         services.AddSingleton<IAppDataService, AppDataService>();
         services.AddSingleton<IPrintMaterialService, PrintMaterialService>();
         services.AddSingleton<IPrintersService, PrintersService>();
+        services.AddSingleton<IPrinterControlServiceFactory, PrinterControlServiceFactory>();
         services.AddSingleton<IPrinterMonitoringService, PrinterMonitoringService>();
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();

@@ -27,6 +27,7 @@ public class PrinterEnums
         ShutDown, //Used when u turn off printer or press emergency stop
         //United Statuses
         Printing,
+        Paused,
         Complete,
         None, //Used at startup app
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
+using System.Threading;
 using System.Threading.Tasks;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
@@ -21,6 +22,45 @@ public class KlipperPrinterControlService : IPrinterControlService
         if (!string.IsNullOrEmpty(_printer.FullAddress))
         {
             _httpClient.BaseAddress = new Uri(_printer.FullAddress);
+        }
+    }
+
+    public async Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default)
+    {
+        if (string.IsNullOrEmpty(_printer.FullAddress)) return PrinterEnums.Status.Error; // show error to not confuse users about their config (if offline they would not suspect their config is bad)
+
+        try
+        {
+            // Get state from Moonraker API using query
+            var url = $"{_printer.FullAddress}/printer/objects/query?print_stats&webhooks";
+            var response = await _httpClient.GetFromJsonAsync<JsonNode>(url, ct);
+
+            if (response?["result"]?["status"] is not JsonNode statusNode) 
+                return PrinterEnums.Status.Error;
+
+            // 1. Get the webhooks state
+            string state = statusNode["webhooks"]?["state"]?.ToString()?.ToLower() ?? "unknown";
+            
+            // 2. Get the print state
+            string printState = statusNode["print_stats"]?["state"]?.ToString()?.ToLower() ?? "";
+            
+            if (state == "shutdown") return PrinterEnums.Status.ShutDown;
+            if (state == "startup") return PrinterEnums.Status.StartUp;
+            if (state == "error") return PrinterEnums.Status.Error;
+            
+            if (state == "ready")
+            {
+                if (printState == "printing") return PrinterEnums.Status.Printing;
+                if (printState == "paused") return PrinterEnums.Status.Paused;
+                if (printState == "complete") return PrinterEnums.Status.Complete;
+            }
+
+            return PrinterEnums.Status.StandBy;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine("Error getting klipper printer status: " + ex.Message);
+            return PrinterEnums.Status.Offline; // printer is most probably turned off
         }
     }
 

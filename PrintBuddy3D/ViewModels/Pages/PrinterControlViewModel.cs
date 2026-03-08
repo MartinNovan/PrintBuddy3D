@@ -39,7 +39,7 @@ public partial class PrinterControlViewModel : ObservableObject
     [ObservableProperty] private int? _selectedBaudrate;
 
 
-    public PrinterControlViewModel(PrinterModel printer, Action goBack)
+    public PrinterControlViewModel(PrinterModel printer, IPrinterControlServiceFactory factory, Action goBack)
     {
         _serializer = new DockSerializer(typeof(AvaloniaList<>));
         _factory = new DockFactory(this);
@@ -55,13 +55,7 @@ public partial class PrinterControlViewModel : ObservableObject
         {
             SelectedPort = Printer.LastSerialPort;
         }
-
-        PrinterControlService = printer.Firmware switch
-        {
-            PrinterEnums.Firmware.Marlin => new MarlinPrinterControlService(Printer),
-            PrinterEnums.Firmware.Klipper => new KlipperPrinterControlService(Printer),
-            _ => throw new NotSupportedException("Unsupported firmware")
-        };
+        PrinterControlService = factory.Create(printer);
         
         Layout = _factory.CreateLayout();
 
@@ -77,7 +71,7 @@ public partial class PrinterControlViewModel : ObservableObject
             root.Navigate.Execute("Home");
         }
     }
-    
+
     partial void OnSelectedBaudrateChanged(int? value)
     {
         Printer.BaudRate = value ?? Printer.BaudRate;

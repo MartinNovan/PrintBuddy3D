@@ -50,6 +50,24 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
         }
     }
 
+    public async Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default)
+    {
+        if (string.IsNullOrEmpty(_printer.LastSerialPort)) return PrinterEnums.Status.Error;
+        try
+        {
+            var avaiablePorts = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
+            if(!avaiablePorts.Contains(_printer.LastSerialPort)) return PrinterEnums.Status.Offline; // Port is not connected, or is connected to different port
+            // for future, check the uuid using M115
+
+            return PrinterEnums.Status.StandBy;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine("Error getting marlin printer status: " + ex.Message);
+            return PrinterEnums.Status.Offline;
+        }
+    }
+
     public void Dispose()
     {
         if (_cts != null)
