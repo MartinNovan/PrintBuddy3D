@@ -2,11 +2,12 @@
 using System.IO;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using PrintBuddy3D.Common;
 using PrintBuddy3D.Enums;
 
 namespace PrintBuddy3D.Models;
 
-public sealed class PrinterModel : ModelBase, IDisposable
+public sealed class PrinterModel : ModelBase
 {
     public Guid Id { get; init; } = Guid.NewGuid(); // Unique identifier for each printer
     
@@ -174,34 +175,20 @@ public sealed class PrinterModel : ModelBase, IDisposable
         }
     }
 
-    private Bitmap? _image;
-    private string? _imagePathCached;
-    public Bitmap? Image {
+    public Bitmap Image {
         get
         {
-            string? imagePath = ImagePath;
+            var imagePath = ImagePath;
             if (string.IsNullOrWhiteSpace(imagePath) || (!File.Exists(imagePath) && !imagePath.StartsWith("avares://")))
             {
-                switch (Firmware)
+                imagePath = Firmware switch
                 {
-                    case PrinterEnums.Firmware.Klipper: imagePath = "avares://PrintBuddy3D/Assets/klipper-logo.png"; break;
-                    case PrinterEnums.Firmware.Marlin: imagePath = "avares://PrintBuddy3D/Assets/marlin-outrun-nf-500.png"; break;
-                    default: imagePath = "avares://PrintBuddy3D/Assets/other-printer-logo.png"; break;
-                }
+                    PrinterEnums.Firmware.Klipper => "avares://PrintBuddy3D/Assets/klipper-logo.png",
+                    PrinterEnums.Firmware.Marlin => "avares://PrintBuddy3D/Assets/marlin-outrun-nf-500.png",
+                    _ => "avares://PrintBuddy3D/Assets/other-printer-logo.png"
+                };
             }
-
-            if (imagePath == _imagePathCached) return _image;
-            
-            _image?.Dispose();
-            if (imagePath.StartsWith("avares://"))
-            {
-                var uri = new Uri(imagePath);
-                using var stream = AssetLoader.Open(uri);
-                _image = new Bitmap(stream);
-            }
-            else _image = new Bitmap(imagePath);
-            _imagePathCached = imagePath;
-            return _image;
+            return BitmapCache.Get(imagePath);
         }
     }
     
@@ -238,6 +225,9 @@ public sealed class PrinterModel : ModelBase, IDisposable
 
             if (Status is PrinterEnums.Status.Offline or PrinterEnums.Status.None) // For everything else use Online / offline
                 return "Offline";
+            
+            if (Status is PrinterEnums.Status.Error)
+                return "Error";
 
             return $"Online - {Status}";
         }
@@ -301,10 +291,5 @@ public sealed class PrinterModel : ModelBase, IDisposable
             default:
                 throw new ArgumentOutOfRangeException(nameof(currentStatus), currentStatus, null);
         }
-    }
-    public void Dispose()
-    {
-        _image?.Dispose();
-        _image = null;
     }
 }
