@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using PrintBuddy3D.Enums;
@@ -18,95 +21,86 @@ public interface IPrinterMonitoringService : IDisposable
 
 public class PrinterMonitoringService(IPrintersService printersService) : IPrinterMonitoringService
 {
-    private readonly Dictionary<Guid, CancellationTokenSource> _loops = new();
+    private const int DispatchIntervalMs = 200;
+
     private ObservableCollection<PrinterModel>? _printers;
-    private readonly SemaphoreSlim _httpSemaphore = new(20);
+    private readonly CancellationTokenSource _cts = new();
+
+    private readonly ConcurrentDictionary<Guid, bool> _activeChecks = new();
 
     public void Start(ObservableCollection<PrinterModel> printers)
     {
         _printers = printers;
-        _printers.CollectionChanged += OnCollectionChanged;
-        foreach (var printer in printers)
-            StartLoop(printer);
+        Task.Run(() => SchedulerLoopAsync(_cts.Token));
     }
 
-    public void Stop()
-    {
-        if (_printers != null)
-            _printers.CollectionChanged -= OnCollectionChanged;
-        foreach (var cts in _loops.Values)
-            cts.Cancel();
-        _loops.Clear();
-    }
+    public void Stop() => _cts.Cancel();
 
     public void Dispose()
     {
         Stop();
-        _httpSemaphore.Dispose();
+        _cts.Dispose();
     }
 
-    private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-            foreach (PrinterModel p in e.NewItems) StartLoop(p);
-        if (e.OldItems != null)
-            foreach (PrinterModel p in e.OldItems) StopLoop(p);
-    }
-
-    private void StartLoop(PrinterModel printer)
-    {
-        var cts = new CancellationTokenSource();
-        _loops[printer.Id] = cts;
-        Task.Run(() => PrinterLoopAsync(printer, cts.Token));
-    }
-
-    private void StopLoop(PrinterModel printer)
-    {
-        if (_loops.TryGetValue(printer.Id, out var cts))
-        {
-            cts.Cancel();
-            cts.Dispose();
-            _loops.Remove(printer.Id);
-        }
-    }
-
-    private async Task PrinterLoopAsync(PrinterModel printer, CancellationToken ct)
+    private async Task SchedulerLoopAsync(CancellationToken ct)
     {
         while (!ct.IsCancellationRequested)
         {
-            try
-            {
-                PrinterEnums.Status status;
+            if (_printers == null) break;
+            
+            var toCheck = _printers
+                .Where(p => p.ShouldUpdate && !_activeChecks.ContainsKey(p.Id))
+                .OrderBy(p => p.LastUpdate)
+                .ToList();
 
-                await _httpSemaphore.WaitAsync(ct);
-                try
-                {
-                    status = await printersService.GetPrinterStatusAsync(printer, ct);
-                }
-                finally
-                {
-                    _httpSemaphore.Release();
-                }
-                if (status != printer.Status)
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        printer.ChangeStatus(status);
-                        printer.LastUpdate = DateTime.Now;
-                    }, DispatcherPriority.Background, ct);
-                }
-            }
-            catch (OperationCanceledException) { break; }
-            catch (Exception ex)
+            if (toCheck.Count == 0)
             {
-                Console.WriteLine($"[Monitor] {printer.Name}: {ex.Message}");
+                await Task.Delay(DispatchIntervalMs, ct);
+                continue;
             }
 
-            try
+            foreach (var printer in toCheck)
             {
-                await Task.Delay(printer.RefreshInterval, ct);
+                if (ct.IsCancellationRequested) break;
+
+                if (_activeChecks.ContainsKey(printer.Id))
+                {
+                    continue;
+                }
+
+                _ = CheckPrinterAsync(printer, ct);
+
+                await Task.Delay(DispatchIntervalMs, ct);
             }
-            catch (OperationCanceledException) { break; }
+        }
+    }
+    private async Task CheckPrinterAsync(PrinterModel printer, CancellationToken ct)
+    {
+        if (!_activeChecks.TryAdd(printer.Id, true)) return; 
+        try
+        {
+            var status = await printersService.GetPrinterStatusAsync(printer, ct);
+
+            printer.LastUpdate = DateTime.Now;
+
+            if (status != printer.Status)
+            {
+                await Dispatcher.UIThread.InvokeAsync(
+                    () => printer.ChangeStatus(status),
+                    DispatcherPriority.Background, ct);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            //ignore
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Monitor] {printer.Name}: {ex.Message}");
+        }
+        finally
+        {
+            _activeChecks.TryRemove(printer.Id, out _);
         }
     }
 }

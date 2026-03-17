@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
@@ -14,30 +15,23 @@ public interface IPrinterControlServiceFactory
 
 public class PrinterControlServiceFactory : IPrinterControlServiceFactory
 {
-    private readonly Dictionary<Guid, IPrinterControlService> _cache = new();
+    private readonly ConcurrentDictionary<Guid, IPrinterControlService> _cache = new();
 
     public IPrinterControlService Create(PrinterModel printer)
     {
-        if (_cache.TryGetValue(printer.Id, out var value))
-            return value;
-
-        var service = printer.Firmware switch
+        return _cache.GetOrAdd(printer.Id, _ => printer.Firmware switch
         {
-            PrinterEnums.Firmware.Marlin  => (IPrinterControlService)new MarlinPrinterControlService(printer),
+            PrinterEnums.Firmware.Marlin  => new MarlinPrinterControlService(printer),
             PrinterEnums.Firmware.Klipper => new KlipperPrinterControlService(printer),
             _ => throw new NotSupportedException($"Firmware {printer.Firmware} is not supported")
-        };
-
-        _cache[printer.Id] = service;
-        return service;
+        });
     }
 
     public void Invalidate(PrinterModel printer)
     {
-        if (_cache.TryGetValue(printer.Id, out var service))
+        if (_cache.TryRemove(printer.Id, out var service))
         {
             service.Dispose();
-            _cache.Remove(printer.Id);
         }
     }
 

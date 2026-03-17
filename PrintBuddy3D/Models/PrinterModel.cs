@@ -246,50 +246,24 @@ public sealed class PrinterModel : ModelBase
 
     public void ChangeStatus(PrinterEnums.Status currentStatus)
     {
-        switch (currentStatus)
+        RefreshInterval = currentStatus switch
         {
-            case PrinterEnums.Status.Offline:
-                Status = PrinterEnums.Status.Offline;
-                RefreshInterval = TimeSpan.FromSeconds(10);
-                break;
-            case PrinterEnums.Status.StandBy:
-                Status = PrinterEnums.Status.StandBy;
-                RefreshInterval = TimeSpan.FromSeconds(2);
-                break;
-            case PrinterEnums.Status.Printing:
-                Status = PrinterEnums.Status.Printing;
-                RefreshInterval = TimeSpan.FromSeconds(1);
-                break;
-            case PrinterEnums.Status.Busy:
-                Status = PrinterEnums.Status.Busy;
-                RefreshInterval = TimeSpan.FromSeconds(1);
-                break;
-            case PrinterEnums.Status.Complete:
-                Status = PrinterEnums.Status.Complete;
-                RefreshInterval = TimeSpan.FromSeconds(2);
-                break;
-            case PrinterEnums.Status.Error:
-                Status = PrinterEnums.Status.Error;
-                RefreshInterval = TimeSpan.FromSeconds(3);
-                break;
-            case PrinterEnums.Status.ShutDown:
-                Status = PrinterEnums.Status.ShutDown;
-                RefreshInterval = TimeSpan.FromSeconds(3);
-                break;
-            case PrinterEnums.Status.StartUp:
-                Status = PrinterEnums.Status.StartUp;
-                RefreshInterval = TimeSpan.FromSeconds(2);
-                break;
-            case PrinterEnums.Status.Paused:
-                Status = PrinterEnums.Status.Paused;
-                RefreshInterval = TimeSpan.FromSeconds(1);
-                break;
-            case PrinterEnums.Status.None: // Should not happen, it's only used at initialization of the app 
-                Status = PrinterEnums.Status.None;
-                RefreshInterval = TimeSpan.FromSeconds(30); 
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(currentStatus), currentStatus, null);
+            PrinterEnums.Status.Offline  => TimeSpan.FromSeconds(20),
+            PrinterEnums.Status.StandBy  => TimeSpan.FromSeconds(2),
+            PrinterEnums.Status.Printing => TimeSpan.FromSeconds(1),
+            PrinterEnums.Status.Busy     => TimeSpan.FromSeconds(1),
+            PrinterEnums.Status.Complete => TimeSpan.FromSeconds(2),
+            PrinterEnums.Status.Error    => TimeSpan.FromSeconds(3),
+            PrinterEnums.Status.ShutDown => TimeSpan.FromSeconds(3),
+            PrinterEnums.Status.StartUp  => TimeSpan.FromSeconds(2),
+            PrinterEnums.Status.Paused   => TimeSpan.FromSeconds(1),
+            PrinterEnums.Status.None     => TimeSpan.FromSeconds(60),
+            _ => throw new ArgumentOutOfRangeException(nameof(currentStatus))
+        };
+
+        if (Status != currentStatus)
+        {
+            Status = currentStatus;
         }
     }
 }

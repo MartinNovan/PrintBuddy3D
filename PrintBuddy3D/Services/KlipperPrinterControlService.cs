@@ -18,16 +18,14 @@ public class KlipperPrinterControlService : IPrinterControlService
     public KlipperPrinterControlService(PrinterModel printer)
     {
         _printer = printer;
-        _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(20) }; // Timeout 20s instead of default 100s to not block the update loop 
-        if (!string.IsNullOrEmpty(_printer.FullAddress))
-        {
-            _httpClient.BaseAddress = new Uri(_printer.FullAddress);
-        }
+        _httpClient = new HttpClient();
+        if (string.IsNullOrEmpty(_printer.FullAddress) || string.IsNullOrEmpty(_printer.Address) || _printer.Prefix == null) return;
+        _httpClient.BaseAddress = new Uri(_printer.FullAddress);
     }
 
     public async Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(_printer.FullAddress)) return PrinterEnums.Status.Error; // show error to not confuse users about their config (if offline they would not suspect their config is bad)
+        if (string.IsNullOrEmpty(_printer.FullAddress) || string.IsNullOrEmpty(_printer.Address) || _printer.Prefix == null) return PrinterEnums.Status.Error; // show error to not confuse users about their config (if offline they would not suspect their config is bad)
 
         try
         {
@@ -59,7 +57,7 @@ public class KlipperPrinterControlService : IPrinterControlService
         }
         catch(Exception ex)
         {
-            Console.WriteLine("Error getting klipper printer status: " + ex.Message);
+            Console.WriteLine($"Error getting klipper printer status for printer {_printer.Name}: " + ex.Message);
             return PrinterEnums.Status.Offline; // printer is most probably turned off
         }
     }

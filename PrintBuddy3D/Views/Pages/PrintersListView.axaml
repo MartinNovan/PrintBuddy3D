@@ -21,7 +21,7 @@
                                 <Button Content="➕ Add Printer" Command="{Binding OpenPrinterEditorCommand}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                             </Grid>
                             <ScrollViewer Grid.Row="1">
-                                <ItemsRepeater ItemsSource="{Binding Printers}" VerticalCacheLength="0" HorizontalCacheLength="0">
+                                <ItemsRepeater ItemsSource="{Binding Printers}">
                                     <ItemsRepeater.Layout>
                                         <UniformGridLayout 
                                             MinItemWidth="310" 
