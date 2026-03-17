@@ -51,58 +51,56 @@ public partial class HomeViewModel : PageBase
 
     public void UpdateStatus(PrinterModel printer)
     {
-        if (_statusMessages.TryGetValue(printer.Status, out var template))
+        if (!_statusMessages.TryGetValue(printer.Status, out var template)) return;
+        switch (printer.Status)
         {
-            switch (printer.Status)
+            case PrinterEnums.Status.StandBy:
+                StandByPrintersCount++;
+                break;
+            case PrinterEnums.Status.Offline:
+                OfflinePrintersCount++;
+                break;
+            case PrinterEnums.Status.Printing:
+                PrintingPrintersCount++;
+                break;
+            case PrinterEnums.Status.Complete:
+                DonePrintersCount++;
+                break;
+        }
+
+        if (_statusMessages.TryGetValue(printer.PreviousStatus, out _))
+        {
+            switch (printer.PreviousStatus)
             {
                 case PrinterEnums.Status.StandBy:
-                    StandByPrintersCount++;
+                    StandByPrintersCount--;
                     break;
                 case PrinterEnums.Status.Offline:
-                    OfflinePrintersCount++;
+                    OfflinePrintersCount--;
                     break;
                 case PrinterEnums.Status.Printing:
-                    PrintingPrintersCount++;
+                    PrintingPrintersCount--;
                     break;
                 case PrinterEnums.Status.Complete:
-                    DonePrintersCount++;
+                    DonePrintersCount--;
                     break;
             }
-
-            if (_statusMessages.TryGetValue(printer.PreviousStatus, out _))
-            {
-                switch (printer.PreviousStatus)
-                {
-                    case PrinterEnums.Status.StandBy:
-                        StandByPrintersCount--;
-                        break;
-                    case PrinterEnums.Status.Offline:
-                        OfflinePrintersCount--;
-                        break;
-                    case PrinterEnums.Status.Printing:
-                        PrintingPrintersCount--;
-                        break;
-                    case PrinterEnums.Status.Complete:
-                        DonePrintersCount--;
-                        break;
-                }
-            }
-
-            if (printer is { Status: PrinterEnums.Status.Offline, PreviousStatus: PrinterEnums.Status.None })
-                return;
-
-            string message = string.Format(template, printer.CurrentJob);
-            NotificationMessages.Insert(0, printer.Name + $": {DateTime.Now}\n" + message);
-
-            Dispatcher.UIThread.InvokeAsync(() =>
-                _sukiToastManager.CreateToast()
-                    .WithTitle(printer.Name ?? "Unnamed printer")
-                    .WithContent(message)
-                    .OfType(NotificationType.Information)
-                    .Dismiss().ByClicking()
-                    .Dismiss().After(TimeSpan.FromSeconds(10))
-                    .Queue()
-            );
         }
+
+        if (printer is { Status: PrinterEnums.Status.Offline, PreviousStatus: PrinterEnums.Status.None })
+            return;
+
+        var message = string.Format(template, printer.CurrentJob);
+        NotificationMessages.Insert(0, printer.Name + $": {DateTime.Now}\n" + message);
+
+        Dispatcher.UIThread.InvokeAsync(() =>
+            _sukiToastManager.CreateToast()
+                .WithTitle(printer.Name ?? "Unnamed printer")
+                .WithContent(message)
+                .OfType(NotificationType.Information)
+                .Dismiss().ByClicking()
+                .Dismiss().After(TimeSpan.FromSeconds(10))
+                .Queue()
+        );
     }
 }

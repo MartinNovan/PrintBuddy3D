@@ -45,11 +45,9 @@ public class PrintMaterialService(IAppDataService appDataService) : IPrintMateri
 
             filament.PropertyChanged += async (_, _) =>
             {
-                if (filament.Hash != filament.DbHash)
-                {
-                    await UpsertFilamentAsync(filament, ct);
-                    filament.DbHash = filament.Hash;
-                }
+                if (filament.Hash == filament.DbHash) return;
+                await UpsertFilamentAsync(filament, ct);
+                filament.DbHash = filament.Hash;
             };
 
             filaments.Add(filament);

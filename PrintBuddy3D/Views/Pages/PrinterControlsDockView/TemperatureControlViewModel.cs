@@ -12,7 +12,7 @@ public partial class TemperatureControlViewModel(
     PrinterModel contextPrinter)
     : Tool
 {
-    private readonly IPrinterControlService? printerControlService = contextPrinterControlService;
+    private readonly IPrinterControlService? _printerControlService = contextPrinterControlService;
     public PrinterModel Printer { get; } = contextPrinter;
 
     [ObservableProperty] private int _targetNozzleTemp;
@@ -20,25 +20,25 @@ public partial class TemperatureControlViewModel(
 
     // Preset list
     // TODO Make this editable (mby take it from the rpi) idk we will see
-    public ObservableCollection<TemperaturePreset> Presets { get; } = new()
-    {
-        new TemperaturePreset("PLA", 210, 60),
-        new TemperaturePreset("PETG", 240, 80),
-        new TemperaturePreset("ABS", 250, 100),
-        new TemperaturePreset("ASA", 260, 105),
-        new TemperaturePreset("Cooldown", 0, 0)
-    };
+    public ObservableCollection<TemperaturePreset> Presets { get; } =
+    [
+        new("PLA", 210, 60),
+        new("PETG", 240, 80),
+        new("ABS", 250, 100),
+        new("ASA", 260, 105),
+        new("Cooldown", 0, 0)
+    ];
 
     [RelayCommand]
     private void SetNozzle()
     {
-        printerControlService?.SetTemperature(TargetNozzleTemp, "extruder");
+        _printerControlService?.SetTemperature(TargetNozzleTemp);
     }
 
     [RelayCommand]
     private void SetBed()
     {
-        printerControlService?.SetTemperature(TargetBedTemp, "heater_bed");
+        _printerControlService?.SetTemperature(TargetBedTemp, "heater_bed");
     }
 
     [RelayCommand]

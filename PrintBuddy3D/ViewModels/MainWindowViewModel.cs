@@ -51,17 +51,16 @@ public partial class MainWindowViewModel : ObservableObject
         _appDataService.SaveConfigValue("Background", value.ToString());
     }
 
-    public SukiColorTheme CurrentTheme
+    public SukiColorTheme? CurrentTheme
     {
         get => Themes.ActiveColorTheme;
         set
         {
-            // Pokud se vybraná hodnota liší od aktuální, změníme téma a uložíme
             if (value != null && value != Themes.ActiveColorTheme)
             {
                 Themes.ChangeColorTheme(value);
                 _appDataService.SaveConfigValue("Theme", value.DisplayName);
-                OnPropertyChanged(); // Oznámíme UI, že se změna provedla
+                OnPropertyChanged();
             }
         }
     }

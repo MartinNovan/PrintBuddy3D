@@ -63,7 +63,7 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
                 ImagePath = reader.IsDBNull(reader.GetOrdinal("ImagePath")) ? null : reader.GetString(reader.GetOrdinal("ImagePath"))
             };
             
-            printer.PropertyChanged += async (s, e) =>
+            printer.PropertyChanged += async (_, e) =>
             {
                 if (printer.Hash != printer.DbHash)
                 {

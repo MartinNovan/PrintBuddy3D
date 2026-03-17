@@ -50,21 +50,21 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
         }
     }
 
-    public async Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default)
+    public Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(_printer.LastSerialPort)) return PrinterEnums.Status.Error;
+        if (string.IsNullOrEmpty(_printer.LastSerialPort)) return Task.FromResult(PrinterEnums.Status.Error);
         try
         {
             var avaiablePorts = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
-            if(!avaiablePorts.Contains(_printer.LastSerialPort)) return PrinterEnums.Status.Offline; // Port is not connected, or is connected to different port
+            if(!avaiablePorts.Contains(_printer.LastSerialPort)) return Task.FromResult(PrinterEnums.Status.Offline); // Port is not connected, or is connected to different port
             // for future, check the uuid using M115
 
-            return PrinterEnums.Status.StandBy;
+            return Task.FromResult(PrinterEnums.Status.StandBy);
         }
         catch(Exception ex)
         {
             Console.WriteLine("Error getting marlin printer status: " + ex.Message);
-            return PrinterEnums.Status.Offline;
+            return Task.FromResult(PrinterEnums.Status.Offline);
         }
     }
 
@@ -87,7 +87,7 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
         {
             try
             {
-                int b = _serialPort.BaseStream.ReadByte();
+                var b = _serialPort.BaseStream.ReadByte();
                 if (b < 0)
                 {
                     await Task.Delay(10, token);
@@ -95,17 +95,25 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
                 }
 
                 char ch = (char)b;
-                if (ch == '\r') continue;
-                if (ch == '\n')
+                switch (ch)
                 {
-                    string line = _readBuffer.ToString();
-                    _readBuffer.Clear();
-                    if (!string.IsNullOrWhiteSpace(line))
+                    case '\r':
+                        continue;
+                    case '\n':
                     {
-                        LogToConsole(line, ConsoleLogType.Info);
+                        string line = _readBuffer.ToString();
+                        _readBuffer.Clear();
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            LogToConsole(line, ConsoleLogType.Info);
+                        }
+
+                        break;
                     }
+                    default:
+                        _readBuffer.Append(ch);
+                        break;
                 }
-                else _readBuffer.Append(ch);
             }
             catch
             {

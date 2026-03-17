@@ -33,14 +33,14 @@ public class KlipperPrinterControlService : IPrinterControlService
             var url = $"{_printer.FullAddress}/printer/objects/query?print_stats&webhooks";
             var response = await _httpClient.GetFromJsonAsync<JsonNode>(url, ct);
 
-            if (response?["result"]?["status"] is not JsonNode statusNode) 
+            if (response?["result"]?["status"] is not { } statusNode) 
                 return PrinterEnums.Status.Error;
 
             // 1. Get the webhooks state
-            string state = statusNode["webhooks"]?["state"]?.ToString()?.ToLower() ?? "unknown";
+            string state = statusNode["webhooks"]?["state"]?.ToString().ToLower() ?? "unknown";
             
             // 2. Get the print state
-            string printState = statusNode["print_stats"]?["state"]?.ToString()?.ToLower() ?? "";
+            string printState = statusNode["print_stats"]?["state"]?.ToString().ToLower() ?? "";
             
             if (state == "shutdown") return PrinterEnums.Status.ShutDown;
             if (state == "startup") return PrinterEnums.Status.StartUp;
@@ -64,7 +64,7 @@ public class KlipperPrinterControlService : IPrinterControlService
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _httpClient.Dispose();
     }
     
     public async Task SendCommand(string command)

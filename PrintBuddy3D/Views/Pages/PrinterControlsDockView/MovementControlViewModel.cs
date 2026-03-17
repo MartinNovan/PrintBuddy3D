@@ -7,10 +7,6 @@ namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
 public partial class MovementControlViewModel(IPrinterControlService contextPrinterControlService) : Tool
 {
-    private readonly IPrinterControlService printerControlService =  contextPrinterControlService;
-    //private readonly KlipperPrinterControlService? printerControlService = contextPrinterControlService as KlipperPrinterControlService;
-    //private readonly MarlinPrinterControlService? _marlinService = contextPrinterControlService as MarlinPrinterControlService;
-    
     [ObservableProperty] private double _stepSize = 10;
     [ObservableProperty] private bool _isCustomStepEnable;
     //TODO Take the values under here from printer online (so i need firstly to get them from printer), for now this is only test value, also when value changes send this to the printer
@@ -26,35 +22,33 @@ public partial class MovementControlViewModel(IPrinterControlService contextPrin
     [RelayCommand]
     private void Move(string axisAndDir)
     {
-        if (printerControlService == null) return;
-
-        string axis = axisAndDir.Substring(0, 1);
-        string dir = axisAndDir.Substring(1, 1);
+        var axis = axisAndDir.Substring(0, 1);
+        var dir = axisAndDir.Substring(1, 1);
         
-        double distance = StepSize;
+        var distance = StepSize;
         if (dir == "-") distance *= -1;
 
-        int speed = axis == "Z" ? ZFeedRate : FeedRate;
+        var speed = axis == "Z" ? ZFeedRate : FeedRate;
 
-        printerControlService.Move(axis, distance, speed);
+        contextPrinterControlService.Move(axis, distance, speed);
     }
 
     [RelayCommand]
     private void Home(string axis)
     {
-        printerControlService?.Home(axis);
+        contextPrinterControlService.Home(axis);
     }
     
     [RelayCommand]
     private void DisableMotors()
     {
-        printerControlService?.DisableMotors();
+        contextPrinterControlService.DisableMotors();
     }
     
     [RelayCommand]
     private void SetStep(string value)
     {
-        if (double.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double result))
+        if (double.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var result))
         {
             IsCustomStepEnable = false;
             StepSize = result;

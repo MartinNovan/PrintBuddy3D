@@ -92,7 +92,7 @@ public partial class PrinterControlViewModel : ObservableObject
     private void Back()
     {
         _factory.Dispose();
-        PrinterControlService?.Dispose();
+        PrinterControlService.Dispose();
         _goBack();
     }
     [RelayCommand]
@@ -201,20 +201,22 @@ public partial class PrinterControlViewModel : ObservableObject
 
         public static IStorageProvider? GetStorageProvider()
         {
-            if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window })
+            switch (Avalonia.Application.Current?.ApplicationLifetime)
             {
-                return window.StorageProvider;
-            }
-
-            if (Avalonia.Application.Current?.ApplicationLifetime is ISingleViewApplicationLifetime 
+                case IClassicDesktopStyleApplicationLifetime { MainWindow: { } window }:
+                    return window.StorageProvider;
+                case ISingleViewApplicationLifetime 
                 {
                     MainView: { } mainView
-                })
-            {
-                var visualRoot = mainView.GetVisualRoot();
-                if (visualRoot is TopLevel topLevel)
+                }:
                 {
-                    return topLevel.StorageProvider;
+                    var visualRoot = mainView.GetVisualRoot();
+                    if (visualRoot is TopLevel topLevel)
+                    {
+                        return topLevel.StorageProvider;
+                    }
+
+                    break;
                 }
             }
             return null;

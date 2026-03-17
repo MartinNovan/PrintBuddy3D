@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 using PrintBuddy3D.Services;
@@ -29,14 +28,12 @@ public partial class PrinterEditorViewModel : ObservableObject
         _printersService = printersService;
         _goBack = goBack;
         
-        // Default values for printer
-        if (printer == null)
-        {
-            EditingPrinter.Name = "New Printer";
-            EditingPrinter.Firmware = PrinterEnums.Firmware.Klipper;
-            EditingPrinter.Prefix = PrinterEnums.Prefix.Http;
-            EditingPrinter.BaudRate = 115200;
-        }
+        if (printer != null) return;
+        // Default values for new printer
+        EditingPrinter.Name = "New Printer";
+        EditingPrinter.Firmware = PrinterEnums.Firmware.Klipper;
+        EditingPrinter.Prefix = PrinterEnums.Prefix.Http;
+        EditingPrinter.BaudRate = 115200;
     }
     
     [RelayCommand]

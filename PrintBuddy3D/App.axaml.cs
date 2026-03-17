@@ -21,7 +21,7 @@ namespace PrintBuddy3D;
 
 public class App : Application
 {
-    public static IServiceProvider Services { get; private set; } = null!;
+    private static IServiceProvider Services { get; set; } = null!;
     public static WindowViews WindowViews { get; private set; } = null!;
 
     public override void Initialize()

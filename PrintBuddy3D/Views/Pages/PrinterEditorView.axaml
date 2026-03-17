@@ -6,7 +6,6 @@
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
              xmlns:enums="clr-namespace:PrintBuddy3D.Enums"
-             xmlns:theme="https://github.com/kikipoulet/SukiUI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="PrintBuddy3D.Views.Pages.PrinterEditorView"
              x:DataType="vm:PrinterEditorViewModel">

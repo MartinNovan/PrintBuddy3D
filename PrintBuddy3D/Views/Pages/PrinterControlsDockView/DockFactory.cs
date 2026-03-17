@@ -95,7 +95,7 @@ public class DockFactory(PrinterControlViewModel context) : Factory, IDisposable
             ["Home"] = () => context
         };
 
-        DockableLocator = new Dictionary<string, Func<IDockable?>>()
+        DockableLocator = new Dictionary<string, Func<IDockable?>>
         {
             ["Home"] = () => _rootDock,
         };

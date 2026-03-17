@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using PrintBuddy3D.Common;
 using PrintBuddy3D.Enums;
 
@@ -217,19 +216,15 @@ public sealed class PrinterModel : ModelBase
         {
             if (Firmware == PrinterEnums.Firmware.Marlin) // For marlin use connected/disconnected
             {
-                if (Status is PrinterEnums.Status.Offline or PrinterEnums.Status.None)
-                    return "Disconnected";
-                
-                return $"Connected - {Status}";
+                return Status is PrinterEnums.Status.Offline or PrinterEnums.Status.None ? "Disconnected" : $"Connected - {Status}";
             }
 
-            if (Status is PrinterEnums.Status.Offline or PrinterEnums.Status.None) // For everything else use Online / offline
-                return "Offline";
-            
-            if (Status is PrinterEnums.Status.Error)
-                return "Error";
-
-            return $"Online - {Status}";
+            return Status switch
+            {
+                PrinterEnums.Status.Offline or PrinterEnums.Status.None => "Offline",
+                PrinterEnums.Status.Error => "Error",
+                _ => $"Online - {Status}"
+            };
         }
     }
     
@@ -238,11 +233,10 @@ public sealed class PrinterModel : ModelBase
     public int Speed { get; set; } = 500;
     public object? CurrentJob { get; set; } // Current job being printed, can be a string or a more complex object
     
-    public bool ShouldUpdate => DateTime.Now - LastUpdate >= RefreshInterval && !UpdateLock;
+    public bool ShouldUpdate => DateTime.Now - LastUpdate >= RefreshInterval;
 
-    public bool UpdateLock { get; set; } = false;
     public DateTime LastUpdate { get; set; }
-    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
+    private TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
 
     public void ChangeStatus(PrinterEnums.Status currentStatus)
     {

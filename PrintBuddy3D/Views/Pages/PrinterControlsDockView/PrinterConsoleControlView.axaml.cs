@@ -11,10 +11,8 @@ public partial class PrinterConsoleControlView : UserControl
     }
     private void OnTextBoxKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter && DataContext is PrinterConsoleControlViewModel vm)
-        {
-            if (vm.SendCommandToPrinterCommand.CanExecute(null))
-                vm.SendCommandToPrinterCommand.Execute(null);
-        }
+        if (e.Key != Key.Enter || DataContext is not PrinterConsoleControlViewModel vm) return;
+        if (vm.SendCommandToPrinterCommand.CanExecute(null))
+            vm.SendCommandToPrinterCommand.Execute(null);
     }
 }
