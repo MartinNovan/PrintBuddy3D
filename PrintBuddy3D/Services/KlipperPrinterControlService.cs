@@ -18,7 +18,7 @@ public class KlipperPrinterControlService : IPrinterControlService
     public KlipperPrinterControlService(PrinterModel printer)
     {
         _printer = printer;
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10)};
         if (string.IsNullOrEmpty(_printer.FullAddress) || string.IsNullOrEmpty(_printer.Address) || _printer.Prefix == null) return;
         _httpClient.BaseAddress = new Uri(_printer.FullAddress);
     }

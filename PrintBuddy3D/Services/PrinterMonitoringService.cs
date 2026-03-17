@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using PrintBuddy3D.Enums;
 using PrintBuddy3D.Models;
 
 namespace PrintBuddy3D.Services;
