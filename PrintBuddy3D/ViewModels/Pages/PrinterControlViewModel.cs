@@ -27,7 +27,8 @@ public partial class PrinterControlViewModel : ObservableObject
     public readonly IPrinterControlService PrinterControlService;
     private readonly Action _goBack;
     private readonly IDockSerializer _serializer;
-    private readonly DockFactory _factory;
+    private readonly DockFactory _dockFactory;
+    private readonly IPrinterControlServiceFactory _serviceFactory;
     
     [ObservableProperty] private IRootDock? _layout;
     [ObservableProperty] private bool _isWebModeEnabled;
@@ -42,9 +43,10 @@ public partial class PrinterControlViewModel : ObservableObject
     public PrinterControlViewModel(PrinterModel printer, IPrinterControlServiceFactory factory, Action goBack)
     {
         _serializer = new DockSerializer(typeof(AvaloniaList<>));
-        _factory = new DockFactory(this);
+        _dockFactory = new DockFactory(this);
         Printer = printer;
         _goBack = goBack;
+        _serviceFactory = factory;
         IsWebModeSupported = Printer.Firmware == PrinterEnums.Firmware.Klipper;
         Ports = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
         if (Baudrates.Contains(Printer.BaudRate))
@@ -55,16 +57,16 @@ public partial class PrinterControlViewModel : ObservableObject
         {
             SelectedPort = Printer.LastSerialPort;
         }
-        PrinterControlService = factory.Create(printer);
+        PrinterControlService = _serviceFactory.Create(printer);
         
-        Layout = _factory.CreateLayout();
+        Layout = _dockFactory.CreateLayout();
 
         if (Layout is null)
         {
             return;
         }
 
-        _factory.InitLayout(Layout);
+        _dockFactory.InitLayout(Layout);
 
         if (Layout is { } root)
         {
@@ -91,8 +93,8 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void Back()
     {
-        _factory.Dispose();
-        PrinterControlService.Dispose();
+        _dockFactory.Dispose();
+        _serviceFactory.Invalidate(Printer);
         _goBack();
     }
     [RelayCommand]
@@ -104,11 +106,11 @@ public partial class PrinterControlViewModel : ObservableObject
     [RelayCommand]
     private void ResetLayout()
     {
-        _factory.Dispose();
-        Layout = _factory.CreateLayout();
+        _dockFactory.Dispose();
+        Layout = _dockFactory.CreateLayout();
         if (Layout != null)
         {
-            _factory.InitLayout(Layout);
+            _dockFactory.InitLayout(Layout);
             if (Layout is { } root)
             {
                 root.Navigate.Execute("Home");
@@ -172,7 +174,7 @@ public partial class PrinterControlViewModel : ObservableObject
 
                 if (layout is not null)
                 {
-                    _factory.InitLayout(layout);
+                    _dockFactory.InitLayout(layout);
                     Layout = layout;
                 }
             }
