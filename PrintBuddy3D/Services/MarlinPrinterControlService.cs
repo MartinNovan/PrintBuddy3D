@@ -192,7 +192,7 @@ public class MarlinPrinterControlService : IPrinterControlService, IDisposable
     {
         lock (_history)
         {
-            return Task.FromResult(_history);
+            return Task.FromResult(new List<ConsoleLogItem>(_history));
         }
     }
 } 
