@@ -28,8 +28,7 @@ public partial class PrinterControlViewModel : ObservableObject
     private readonly Action _goBack;
     private readonly IDockSerializer _serializer;
     private readonly DockFactory _dockFactory;
-    private readonly IPrinterControlServiceFactory _serviceFactory;
-    
+
     [ObservableProperty] private IRootDock? _layout;
     [ObservableProperty] private bool _isWebModeEnabled;
     [ObservableProperty] private bool _isWebModeSupported;
@@ -46,7 +45,6 @@ public partial class PrinterControlViewModel : ObservableObject
         _dockFactory = new DockFactory(this);
         Printer = printer;
         _goBack = goBack;
-        _serviceFactory = factory;
         IsWebModeSupported = Printer.Firmware == PrinterEnums.Firmware.Klipper;
         Ports = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
         if (Baudrates.Contains(Printer.BaudRate))
@@ -57,7 +55,7 @@ public partial class PrinterControlViewModel : ObservableObject
         {
             SelectedPort = Printer.LastSerialPort;
         }
-        PrinterControlService = _serviceFactory.Create(printer);
+        PrinterControlService = factory.Create(printer);
         
         Layout = _dockFactory.CreateLayout();
 
@@ -94,7 +92,6 @@ public partial class PrinterControlViewModel : ObservableObject
     private void Back()
     {
         _dockFactory.Dispose();
-        _serviceFactory.Invalidate(Printer);
         _goBack();
     }
     [RelayCommand]
