@@ -10,7 +10,7 @@ using PrintBuddy3D.Services;
 
 namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
-public partial class PrinterConsoleControlViewModel : Tool, IDisposable
+public partial class PrinterConsoleControlViewModel : Document, IDisposable
 {
     private readonly IPrinterControlService _printerControlService;
     private readonly DispatcherTimer _timer;

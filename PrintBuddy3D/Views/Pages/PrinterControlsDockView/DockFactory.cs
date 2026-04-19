@@ -45,21 +45,24 @@ public class DockFactory(PrinterControlViewModel context) : Factory, IDisposable
             CanClose = false,
         };
 
-        var documentDock = new ToolDock()
+        var documentDock = new DocumentDock() 
         {
+            Id = "MainDocumentDock",
             IsCollapsable = true,
             ActiveDockable = _movementViewModel,
             VisibleDockables = CreateList<IDockable>(_movementViewModel, _temperatureViewModel, _consoleViewModel),
             CanClose = false,
-            Title = "Document Control",
-            Alignment = Alignment.Top,
+            CanFloat = false,
+            Title = "Document Control"
         };
 
         var mainLayout = new ProportionalDock()
         {
+            Id = "MainLayout",
             IsCollapsable = true,
             Orientation = Orientation.Horizontal,
             VisibleDockables = CreateList<IDockable>(documentDock),
+            CanFloat = false,
         };
 
         var rootDock = Dispatcher.UIThread.Invoke(() => 
@@ -98,12 +101,6 @@ public class DockFactory(PrinterControlViewModel context) : Factory, IDisposable
         DockableLocator = new Dictionary<string, Func<IDockable?>>
         {
             ["Home"] = () => _rootDock,
-        };
-
-
-        HostWindowLocator = new Dictionary<string, Func<IHostWindow?>>
-        {
-            [nameof(IDockWindow)] = () => new HostWindow()
         };
 
         base.InitLayout(layout);

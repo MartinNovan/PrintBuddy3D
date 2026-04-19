@@ -5,7 +5,7 @@ using PrintBuddy3D.Services;
 
 namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
-public partial class MovementControlViewModel(IPrinterControlService contextPrinterControlService) : Tool
+public partial class MovementControlViewModel(IPrinterControlService contextPrinterControlService) : Document
 {
     [ObservableProperty] private double _stepSize = 10;
     [ObservableProperty] private bool _isCustomStepEnable;

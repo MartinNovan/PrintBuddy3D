@@ -10,7 +10,7 @@ namespace PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 public partial class TemperatureControlViewModel(
     IPrinterControlService contextPrinterControlService,
     PrinterModel contextPrinter)
-    : Tool
+    : Document
 {
     private readonly IPrinterControlService? _printerControlService = contextPrinterControlService;
     public PrinterModel Printer { get; } = contextPrinter;

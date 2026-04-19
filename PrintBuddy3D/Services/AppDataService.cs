@@ -51,8 +51,8 @@ public class AppDataService : IAppDataService
                                   Key TEXT PRIMARY KEY,
                                   Value TEXT
                               );
-                              INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Theme","Blue");
-                              INSERT OR IGNORE INTO Config (Key, Value) VALUES ("Background","Gradient Soft");
+                              INSERT OR IGNORE INTO Config (Key, Value) VALUES ('Theme','Blue');
+                              INSERT OR IGNORE INTO Config (Key, Value) VALUES ('Background','Gradient Soft');
                                      
                               CREATE TABLE IF NOT EXISTS Printers (
                                   Id GUID PRIMARY KEY,
