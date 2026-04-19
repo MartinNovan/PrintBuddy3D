@@ -86,6 +86,7 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
                 }
             };
             printers.Add(printer);
+            notificationService.RegisterPrinter(printer);
         }
 
         return printers;

@@ -11,14 +11,27 @@
     
     <Grid RowDefinitions="Auto,*" RowSpacing="5" Margin="5">
         
-        <suki:GlassCard Grid.Row="0" >
-            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto, Auto" ColumnSpacing="5" RowSpacing="5">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="🖨️ Printers Summary" FontWeight="Bold" FontSize="16" Grid.ColumnSpan="4"/>
-                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"><TextBlock Text="Offline: "/><TextBlock Text="{Binding OfflinePrintersCount}"/></StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"><TextBlock Text="Stand by: "/><TextBlock Text="{Binding StandByPrintersCount}"/></StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal"><TextBlock Text="Printing: "/><TextBlock Text="{Binding PrintingPrintersCount}"/></StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal"><TextBlock Text="Done: "/><TextBlock Text="{Binding DonePrintersCount}"/></StackPanel>
-            </Grid>
+        <suki:GlassCard Grid.Row="0">
+            <StackPanel Spacing="8">
+                <TextBlock Text="🖨️ Printers Summary" FontWeight="Bold" FontSize="16"/>
+                <ItemsControl ItemsSource="{Binding StatusSummary}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <suki:GlassCard Padding="10,20" Margin="5">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="{Binding Label}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Count}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </suki:GlassCard>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </suki:GlassCard>
 
         <suki:GlassCard Grid.Row="1">

@@ -238,8 +238,10 @@ public sealed class PrinterModel : ModelBase
     public DateTime LastUpdate { get; set; }
     private TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(1); // Default interval at init is 1 sec, it will change dynamicly after the first loop of checking updates 
 
+    public bool IsInitialized { get; private set; }
     public void ChangeStatus(PrinterEnums.Status currentStatus)
     {
+        IsInitialized = true;
         RefreshInterval = currentStatus switch
         {
             PrinterEnums.Status.Offline  => TimeSpan.FromSeconds(20),
