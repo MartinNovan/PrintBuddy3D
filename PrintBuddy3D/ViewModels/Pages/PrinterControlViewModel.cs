@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -30,7 +31,6 @@ public partial class PrinterControlViewModel : ObservableObject
     private readonly DockFactory _dockFactory;
 
     [ObservableProperty] private IRootDock? _layout;
-    [ObservableProperty] private bool _isWebModeEnabled;
     [ObservableProperty] private bool _isWebModeSupported;
     [ObservableProperty] private string _errorMessage = "WebView does not load properly!";
     [ObservableProperty] private List<int> _baudrates = new() { 2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000 };
@@ -94,10 +94,16 @@ public partial class PrinterControlViewModel : ObservableObject
         _dockFactory.Dispose();
         _goBack();
     }
+
     [RelayCommand]
-    private void SwitchModes()
+    private void OpenWebInterface()
     {
-        IsWebModeEnabled = !IsWebModeEnabled;
+        if (Printer.FullAddress == null) return;
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = Printer.FullAddress,
+            UseShellExecute = true
+        });
     }
 
     [RelayCommand]

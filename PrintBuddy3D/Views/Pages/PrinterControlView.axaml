@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PrintBuddy3D.ViewModels.Pages"
              xmlns:material="using:Material.Icons.Avalonia"
-             xmlns:controls="clr-namespace:PrintBuddy3D.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PrintBuddy3D.Views.Pages.PrinterControlView"
              x:DataType="vm:PrinterControlViewModel">
@@ -22,7 +21,6 @@
                     Classes="Basic"
                     Width="30"
                     Height="30"
-                    IsVisible="{Binding !IsWebModeEnabled}"
                     Command="{Binding OpenLayoutCommand}">
                     <material:MaterialIcon
                         Width="20"
@@ -34,7 +32,6 @@
                     Classes="Basic"
                     Width="30"
                     Height="30"
-                    IsVisible="{Binding !IsWebModeEnabled}"
                     x:Name="FileSaveLayout"
                     Command="{Binding SaveLayoutCommand}">
                     <material:MaterialIcon
@@ -47,7 +44,6 @@
                     Classes="Basic"
                     Width="30"
                     Height="30"
-                    IsVisible="{Binding !IsWebModeEnabled}"
                     x:Name="ResetLayout"
                     Command="{Binding ResetLayoutCommand}">
                     <material:MaterialIcon
@@ -69,26 +65,13 @@
                     <Label Content="Baudrate:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <ComboBox ItemsSource="{Binding Baudrates}" SelectedItem="{Binding SelectedBaudrate, Mode=TwoWay}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" IsVisible="{Binding IsWebModeSupported}">
-                    <Label Content="Web mode:"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <ToggleSwitch Command="{Binding SwitchModesCommand}" IsChecked="False"/>
-                </StackPanel>
+                <Button Classes="Basic" IsVisible="{Binding IsWebModeSupported}" ToolTip.Tip="Open web interface in browser." Command="{Binding OpenWebInterfaceCommand}">
+                    <material:MaterialIcon Kind="Web"/>
+                </Button>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" IsVisible="{Binding !IsWebModeEnabled}" >
+        <Grid Grid.Row="1">
             <DockControl Layout="{Binding Layout}" Margin="4" />
-        </Grid>
-        <Grid Grid.Row="1" IsVisible="{Binding IsWebModeEnabled}">
-            <OnPlatform>
-                <OnPlatform.Windows>
-                    <WebView Url="{Binding Printer.FullAddress}"/>
-                </OnPlatform.Windows>
-                <OnPlatform.Linux>
-                    <!--Use custom made webview for linux, because none of the nuget packages works-->
-                    <controls:GtkWebView Url="{Binding Printer.FullAddress}"/>
-                </OnPlatform.Linux>
-            </OnPlatform>
-            <Label Content="{Binding ErrorMessage}"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -7,7 +7,6 @@ using Avalonia.Markup.Xaml;
 using PrintBuddy3D.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using PrintBuddy3D.Services;
-using AvaloniaWebView;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using PrintBuddy3D.Common;
@@ -34,7 +33,6 @@ public class App : Application
         var (services, windowViews) = ConfigureServices();
         Services = services;
         WindowViews = windowViews;
-        AvaloniaWebViewBuilder.Initialize(null);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

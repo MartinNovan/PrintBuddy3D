@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using System;
-using Avalonia.WebView.Desktop;
 
 namespace PrintBuddy3D;
 
@@ -18,6 +17,5 @@ internal static class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
-            .LogToTrace()
-            .UseDesktopWebView();
+            .LogToTrace();
 }

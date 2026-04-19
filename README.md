@@ -6,7 +6,6 @@
 - Receive notification on home screen.
 - Controlling klipper and marlin printers.
 - SSH into klipper printer.
-- Webmode as fallback if widgets fails for klipper printers.
 - Adding filament and automatically track it.
 - Custom layout with docking system for control widgets inside the app.
 ![Home page](/assets/image-2.png)
@@ -16,12 +15,12 @@
 ---
 # 🔨 Installation
 ## Windows
-`Dependencies: WebView2`
+- Will be in exe format soon.
+- For now, you can build it from source code. (see [Contributing](./CONTRIBUTING.md))
 
 ## Linux
-`Dependencies: libgtk-3 and libwebkit2gtk-4.1`
->[!NOTE]
->Use this app with x11. Otherwise the app will crash because of the current implement of GtkWebView. This will probably be resolved in the future.
+- Will be in flatpak soon.
+- For now, you can build it from source code. (see [Contributing](./CONTRIBUTING.md))
 
 # ⚠️ Work in progress
 - This project is currently in developing. Features will be implemented will be implemented as soon as possible.
@@ -33,7 +32,6 @@
 - [x] Moving axis on klipper printers.
 - [x] Set temperature on klipper printers.
 - [x] Send commands using console to klipper printers.
-- [x] Webmode as fallback if widgets fails for klipper printers.
 - [x] Adding filament and manually update it.
 - [x] Docking system for control widgets inside the app.
 - [x] Documentation inside app. (basic troubleshooting, etc.)
