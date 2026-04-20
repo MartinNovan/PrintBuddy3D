@@ -81,7 +81,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Chyba při otevírání URL: {ex.Message}");
+            Debug.WriteLine($"Error while loading URL: {ex.Message}");
         }
     }
     
