@@ -29,9 +29,10 @@ public partial class MainWindowViewModel : ObservableObject
     public ISukiToastManager ToastManager { get; }
     private readonly IAppDataService _appDataService;
     private AboutWindow? _aboutWindow;
+    private readonly AboutWindowViewModel _aboutWindowViewModel;
 
     public MainWindowViewModel(HomeViewModel homeViewModel, PrintersListViewModel printersListViewModel, FilamentsViewModel filamentsViewModel,
-        GuidesViewModel guidesViewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager)
+        GuidesViewModel guidesViewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager, AboutWindowViewModel aboutWindowViewModel)
     {
         Pages = new AvaloniaList<PageBase>(
             new PageBase[] { homeViewModel, printersListViewModel, filamentsViewModel, guidesViewModel }
@@ -45,6 +46,7 @@ public partial class MainWindowViewModel : ObservableObject
         _backgroundStyles = new AvaloniaList<SukiBackgroundStyle>(Enum.GetValues<SukiBackgroundStyle>());
         BackgroundStyle = _appDataService.LoadBackground("Background");
         Themes.ChangeColorTheme(_appDataService.LoadTheme("Theme"));
+        _aboutWindowViewModel = aboutWindowViewModel;
     }
     partial void OnBackgroundStyleChanged(SukiBackgroundStyle value)
     {
@@ -93,7 +95,10 @@ public partial class MainWindowViewModel : ObservableObject
             _aboutWindow.Activate();
             return;
         }
-        _aboutWindow = new AboutWindow();
+        _aboutWindow = new AboutWindow
+        {
+            DataContext = _aboutWindowViewModel
+        };
         _aboutWindow.Closed += (_, _) => _aboutWindow = null;
         _aboutWindow.Show();
     }

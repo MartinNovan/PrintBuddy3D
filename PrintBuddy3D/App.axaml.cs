@@ -62,6 +62,7 @@ public class App : Application
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
+        services.AddSingleton<AboutWindowViewModel>();
 
         // ViewModels and Views
         windowViews.AddView<MainWindow, MainWindowViewModel>(services);
