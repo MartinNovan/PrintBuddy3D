@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -22,6 +23,7 @@ public partial class PrintersListViewModel : PageBase
 
     [ObservableProperty] private ObservableCollection<PrinterModel>? _printers;
     [ObservableProperty] private object? _currentContent;
+    public event EventHandler<PageBase>? NavigationRequested;
     
     public PrintersListViewModel(ISukiDialogManager dialogManager, IPrintersService printersService, IPrinterMonitoringService printerMonitoringService, IPrinterControlServiceFactory printerControlServiceFactory) : base("Printers", MaterialIconKind.Printer3d, 1)
     {
@@ -37,7 +39,14 @@ public partial class PrintersListViewModel : PageBase
     [RelayCommand]
     private void OpenPrinterControl(PrinterModel printer)
     {
-        CurrentContent = new PrinterControlViewModel(printer, _printerControlServiceFactory, GoBack);
+        var targetPage = SubPages.OfType<PrinterControlViewModel>()
+            .FirstOrDefault(p => p.Printer == printer);
+        
+        if (targetPage != null)
+        {
+            // 3. Spustíme událost, kterou odchytí MainWindowViewModel
+            NavigationRequested?.Invoke(this, targetPage);
+        }
     }
     
     [RelayCommand]
@@ -114,6 +123,13 @@ public partial class PrintersListViewModel : PageBase
     private async Task LoadPrinters()
     {
         Printers = await _printersService.GetPrintersAsync();
+        SubPages.Clear();
+    
+        foreach (var printer in Printers)
+        {
+            var printerVm = new PrinterControlViewModel(printer, _printerControlServiceFactory);
+            SubPages.Add(printerVm);
+        }
         _printerMonitoringService.Start(Printers);
     }
 }

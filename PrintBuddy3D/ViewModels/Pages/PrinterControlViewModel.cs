@@ -16,17 +16,17 @@ using Dock.Model.Controls;
 using Dock.Model.Core;
 using PrintBuddy3D.Models;
 using Dock.Serializer;
+using Material.Icons;
 using PrintBuddy3D.Enums;
 using PrintBuddy3D.Services;
 using PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class PrinterControlViewModel : ObservableObject
+public partial class PrinterControlViewModel : PageBase
 {
     public PrinterModel Printer { get; }
     public readonly IPrinterControlService PrinterControlService;
-    private readonly Action _goBack;
     private readonly IDockSerializer _serializer;
     private readonly DockFactory _dockFactory;
 
@@ -39,12 +39,11 @@ public partial class PrinterControlViewModel : ObservableObject
     [ObservableProperty] private int? _selectedBaudrate;
 
 
-    public PrinterControlViewModel(PrinterModel printer, IPrinterControlServiceFactory factory, Action goBack)
+    public PrinterControlViewModel(PrinterModel printer, IPrinterControlServiceFactory factory) : base(printer.Name ?? "Unnamed printer", MaterialIconKind.Printer3d, 0)
     {
         _serializer = new DockSerializer(typeof(AvaloniaList<>));
         _dockFactory = new DockFactory(this);
         Printer = printer;
-        _goBack = goBack;
         IsWebModeSupported = Printer.Firmware == PrinterEnums.Firmware.Klipper;
         Ports = SerialPort.GetPortNames().OrderBy(p => p, StringComparer.OrdinalIgnoreCase).ToList();
         if (Baudrates.Contains(Printer.BaudRate))
@@ -86,13 +85,6 @@ public partial class PrinterControlViewModel : ObservableObject
     private void EmergencyStop()
     {
         PrinterControlService.EmergencyStop();
-    }
-    
-    [RelayCommand]
-    private void Back()
-    {
-        _dockFactory.Dispose();
-        _goBack();
     }
 
     [RelayCommand]

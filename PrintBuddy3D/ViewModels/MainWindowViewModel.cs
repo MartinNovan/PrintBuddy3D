@@ -39,6 +39,14 @@ public partial class MainWindowViewModel : ObservableObject
                 .OrderBy(p => p.Index)
         );
         _activePage = Pages[0];
+        printersListViewModel.NavigationRequested += (sender, pageToNavigate) => 
+        {
+            ActivePage = pageToNavigate;
+        };
+        guidesViewModel.NavigationRequested += (sender, pageToNavigate) => 
+        {
+            ActivePage = pageToNavigate;
+        };
         ToastManager = toastManager;
         DialogManager = dialogManager;
         _appDataService = appDataService;

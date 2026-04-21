@@ -5,6 +5,6 @@
              x:Class="PrintBuddy3D.Views.Pages.GuidesView"
              x:DataType="vm:GuidesViewModel">
     <suki:GlassCard Margin="5">
-        <suki:SukiSideMenu IsSearchEnabled="False" SearchText="{Binding SearchText}" ItemsSource="{Binding WikiPages}" />
+        
     </suki:GlassCard>
 </UserControl>

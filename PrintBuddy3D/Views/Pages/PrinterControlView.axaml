@@ -9,9 +9,6 @@
              x:DataType="vm:PrinterControlViewModel">
     <Grid RowDefinitions="Auto, *">
         <Grid ColumnDefinitions="Auto,*,Auto">
-            <Button Classes="Basic" Grid.Column="0" Command="{Binding BackCommand}">
-                <material:MaterialIcon Kind="ArrowBack"/>
-            </Button>
             <StackPanel Grid.Column="1"
                 Orientation="Horizontal"
                 HorizontalAlignment="Left"

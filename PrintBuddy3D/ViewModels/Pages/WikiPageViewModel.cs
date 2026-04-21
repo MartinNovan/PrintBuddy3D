@@ -2,10 +2,11 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Material.Icons;
 
 namespace PrintBuddy3D.ViewModels.Pages;
 
-public partial class WikiPageViewModel : ObservableObject
+public partial class WikiPageViewModel(string displayName, MaterialIconKind icon, int index = 0) : PageBase(displayName, icon, index)
 {
     private static readonly HttpClient Http = new();
     private const string BaseUrl = "https://raw.githubusercontent.com/wiki/MartinNovan/PrintBuddy3D/";

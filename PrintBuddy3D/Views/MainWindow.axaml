@@ -60,17 +60,15 @@
             </Button.Flyout>
         </Button>
     </suki:SukiWindow.RightWindowTitleBarControls>
-    <suki:SukiSideMenu ItemsSource="{Binding Pages}"
-                       SelectedItem="{Binding ActivePage}">
+    <suki:SukiSideMenu ItemsSource="{Binding Pages}" SelectedItem="{Binding ActivePage}" IsSearchEnabled="True" >
         <suki:SukiSideMenu.ItemTemplate>
-            <DataTemplate>
-                <suki:SukiSideMenuItem Classes="Compact" 
-                                       Header="{Binding DisplayName}">
+            <TreeDataTemplate ItemsSource="{Binding SubPages}">
+                <suki:SukiSideMenuItem Classes="Compact" Header="{Binding DisplayName}">
                     <suki:SukiSideMenuItem.Icon>
                         <material:MaterialIcon Kind="{Binding Icon}"/>
                     </suki:SukiSideMenuItem.Icon>
                 </suki:SukiSideMenuItem>
-            </DataTemplate>
+            </TreeDataTemplate>
         </suki:SukiSideMenu.ItemTemplate>
         <suki:SukiSideMenu.FooterContent>
             <StackPanel Orientation="Horizontal" Spacing="8" Margin="8" VerticalAlignment="Center" HorizontalAlignment="Center">

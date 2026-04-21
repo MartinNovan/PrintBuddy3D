@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,9 +7,6 @@ using System.Collections.Generic;
 using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using Material.Icons;
-using Material.Icons.Avalonia;
-using PrintBuddy3D.Views.Pages;
-using SukiUI.Controls;
 using SukiUI.Toasts;
 
 namespace PrintBuddy3D.ViewModels.Pages;
@@ -28,10 +24,8 @@ public partial class GuidesViewModel : PageBase
 {
     private ObservableCollection<MenuItemDto> MenuStructure { get; } = new();
 
-    public ObservableCollection<SukiSideMenuItem> WikiPages { get; set; } = new();
     private readonly ISukiToastManager _sukiToastManager;
-    
-    [ObservableProperty] private string _searchText = string.Empty;
+    public event EventHandler<PageBase>? NavigationRequested; // will be used after recreating UI in guides view
 
     public GuidesViewModel(ISukiToastManager sukiToastManager) : base("Guides", MaterialIconKind.Book, 3)
     {
@@ -77,45 +71,32 @@ public partial class GuidesViewModel : PageBase
     
     private void BuildMenu()
     {
-        WikiPages.Clear();
-
+        SubPages.Clear();
         foreach (var dto in MenuStructure)
         {
-            WikiPages.Add(CreateMenuItem(dto));
+            SubPages.Add(CreateMenuItem(dto));
         }
     }
 
-    private SukiSideMenuItem CreateMenuItem(MenuItemDto dto)
+    private PageBase CreateMenuItem(MenuItemDto dto)
     {
-        var item = new SukiSideMenuItem
+        var iconKind = MaterialIconKind.FileDocumentOutline; 
+        if (!string.IsNullOrEmpty(dto.Icon) && Enum.TryParse(dto.Icon, out MaterialIconKind parsedIcon))
         {
-            Header = dto.Title,
-            Classes = { "Compact" }
-        };
-
-        // Set the icon from loaded json
-        if (!string.IsNullOrEmpty(dto.Icon) && Enum.TryParse(dto.Icon, out MaterialIconKind iconKind))
-        {
-            item.Icon = new MaterialIcon { Kind = iconKind };
+            iconKind = parsedIcon;
         }
-
-        // create wikipage
+        var pageVm = new WikiPageViewModel(dto.Title ?? "Unknown Name", iconKind);
+        
         if (!string.IsNullOrEmpty(dto.Page))
         {
-            var pageVm = new WikiPageViewModel();
             _ = pageVm.LoadAsync(dto.Page);
-            item.PageContent = new WikiPage { DataContext = pageVm };
         }
 
-        // Return if no chlidren
-        if (dto.Children is not { Count: > 0 }) return item;
-        
-        // add children the same way (recursive)
+        if (dto.Children is not { Count: > 0 }) return pageVm;
         foreach (var childDto in dto.Children)
         {
-            item.Items.Add(CreateMenuItem(childDto));
+            pageVm.SubPages.Add(CreateMenuItem(childDto));
         }
-
-        return item;
+        return pageVm;
     }
 }
