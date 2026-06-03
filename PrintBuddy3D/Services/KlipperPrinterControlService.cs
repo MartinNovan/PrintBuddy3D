@@ -13,14 +13,17 @@ namespace PrintBuddy3D.Services;
 public class KlipperPrinterControlService : IPrinterControlService
 {
     private readonly PrinterModel _printer;
-    private readonly HttpClient _httpClient;
+    private static readonly HttpClient SharedClient = new(new SocketsHttpHandler // Create one shared http client 
+    {
+        PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+        ConnectTimeout = TimeSpan.FromSeconds(5),
+    })
+    { Timeout = TimeSpan.FromSeconds(3) };
 
     public KlipperPrinterControlService(PrinterModel printer)
     {
         _printer = printer;
-        _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10)};
         if (string.IsNullOrEmpty(_printer.FullAddress) || string.IsNullOrEmpty(_printer.Address) || _printer.Prefix == null) return;
-        _httpClient.BaseAddress = new Uri(_printer.FullAddress);
     }
 
     public async Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default)
@@ -31,7 +34,7 @@ public class KlipperPrinterControlService : IPrinterControlService
         {
             // Get state from Moonraker API using query
             var url = $"{_printer.FullAddress}/printer/objects/query?print_stats&webhooks";
-            var response = await _httpClient.GetFromJsonAsync<JsonNode>(url, ct);
+            var response = await SharedClient.GetFromJsonAsync<JsonNode>(url, ct);
 
             if (response?["result"]?["status"] is not { } statusNode) 
                 return PrinterEnums.Status.Error;
@@ -64,9 +67,9 @@ public class KlipperPrinterControlService : IPrinterControlService
 
     public void Dispose()
     {
-        _httpClient.Dispose();
+        
     }
-    
+
     public async Task SendCommand(string command)
     {
         if (string.IsNullOrEmpty(_printer.FullAddress)) return ;
@@ -75,8 +78,8 @@ public class KlipperPrinterControlService : IPrinterControlService
         {
             // Moonraker API for sending G-Code
             // Example: http://klipper.local/printer/gcode/script?script=G28 So we just need the last piece and insert gcode
-            var url = $"/printer/gcode/script?script={Uri.EscapeDataString(command)}";
-            await _httpClient.PostAsync(url, null);
+            var url = $"{_printer.FullAddress}/printer/gcode/script?script={Uri.EscapeDataString(command)}";
+            await SharedClient.PostAsync(url, null);
         }
         catch (Exception ex)
         {
@@ -130,7 +133,7 @@ public class KlipperPrinterControlService : IPrinterControlService
         try
         {
             var url = $"{_printer.FullAddress}/server/gcode_store?count=100";
-            var response = await _httpClient.GetFromJsonAsync<JsonNode>(url);
+            var response = await SharedClient.GetFromJsonAsync<JsonNode>(url);
     
             if (response?["result"]?["gcode_store"] is JsonArray store)
             {
