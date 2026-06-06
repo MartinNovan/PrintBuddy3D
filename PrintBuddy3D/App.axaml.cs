@@ -95,4 +95,22 @@ public class App : Application
             BindingPlugins.DataValidators.Remove(plugin);
         }
     }
+
+    private void TrayIcon_Show_Clicked(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        desktop.MainWindow?.Show();
+        desktop.MainWindow?.Activate();
+    }
+
+    private void TrayIcon_Exit_Clicked(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        
+        if (desktop.MainWindow is MainWindow mainWindow)
+        {
+            mainWindow.ForceClose = true;
+        }
+        desktop.Shutdown();
+    }
 }

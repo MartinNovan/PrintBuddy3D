@@ -9,7 +9,19 @@
     <Application.DataTemplates>
         <common:ViewLocator/>
     </Application.DataTemplates>
-  
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="avares://PrintBuddy3D/Assets/PrintBuddy3D_no_bg.png" ToolTipText="PrintBuddy3D">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Open PrintBuddy3D" Click="TrayIcon_Show_Clicked" />
+                        <NativeMenuItemSeparator />
+                        <NativeMenuItem Header="Exit" Click="TrayIcon_Exit_Clicked" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
     <Application.Styles>
         <FluentTheme/> <!--Needed for the dock to render properly-->
         <StyleInclude Source="avares://SukiUI.Dock/Index.axaml" />
