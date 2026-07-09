@@ -8,11 +8,20 @@
 - SSH into klipper printer.
 - Adding filament and automatically track it.
 - Custom layout with docking system for control widgets inside the app.
-![Home page](/assets/image-2.png)
-![Printer Page](/assets/image-1.png)
-![Printer Control Page](/assets/image-3.png)
-![Filament Page](/assets/image.png)
+![Home page](/Assets/image-2.png)
+![Printer Page](/Assets/image-1.png)
+![Printer Control Page](/Assets/image-3.png)
+![Filament Page](/Assets/image.png)
 ---
+
+# 📚 Documentation & Guides
+All our documentation is directly in this repository so it's always up-to-date and synced with the app! (see **[PrintBuddy3D Wiki](https://github.com/MartinNovan/PrintBuddy3D/wiki)**)
+
+>[!Note]
+If you encounter any discrepancies, outdated information, or cannot find what you are looking for, please report it on GitHub in the [issues section](https://github.com/MartinNovan/PrintBuddy3D/issues).
+
+---
+
 # 🔨 Installation
 ## Windows
 - Will be in exe format soon.
@@ -22,8 +31,10 @@
 - Will be in flatpak soon.
 - For now, you can build it from source code. (see [Contributing](./CONTRIBUTING.md))
 
+---
+
 # ⚠️ Work in progress
-- This project is currently in developing. Features will be implemented will be implemented as soon as possible.
+- This project is currently in developing. Features will be implemented as soon as possible.
 ## ✅ Working features
 - [x] Receive notification on home screen.
 - [x] Get printer status. (online/offline/printing/...)
@@ -34,18 +45,21 @@
 - [x] Send commands using console to klipper printers.
 - [x] Adding filament and manually update it.
 - [x] Docking system for control widgets inside the app.
-- [x] Documentation inside app. (basic troubleshooting, etc.)
-  - needs to be finished on github wiki
+- [x] Documentation inside app.
 - [x] Connect to the marlin printers.
 
 ## ⚒️ Features in development
 - [ ] Get printer info. (axis position, temperature, etc.)
-- [ ] Automatic fillament tracking.
+- [ ] Automatic filament tracking.
 - [ ] Adding widgets for controlling printer.
 - [ ] Send print jobs.
 
+---
+
 # 🛠️ Maintenance and Support
 - If you encounter bugs or need help, make a request here on git at issues.
+
+---
 
 # 🌟 Acknowledgements
 - Thank you for using PrintBuddy3D! We appreciate your support and hope that the application will make it easier for you to manage your 3D printers.

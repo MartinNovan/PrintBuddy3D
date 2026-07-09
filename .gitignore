@@ -59,4 +59,4 @@ nunit-*.xml
 .vscode/
 PrintBuddy3D.sln.DotSettings.user
 *.user
-/flatpak-build-dir
+/Flatpak_build_dir
