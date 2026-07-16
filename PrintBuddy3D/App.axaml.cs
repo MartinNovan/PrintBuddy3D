@@ -14,7 +14,6 @@ using PrintBuddy3D.Views.Pages.PrinterControlsDockView;
 using PrintBuddy3D.Views.Pages;
 using PrintBuddy3D.Views;
 using PrintBuddy3D.ViewModels.Pages;
-using WikiPageViewModel = PrintBuddy3D.ViewModels.Pages.WikiPageViewModel;
 
 namespace PrintBuddy3D;
 
@@ -62,6 +61,7 @@ public class App : Application
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
+        services.AddSingleton<IGuidesService, GuidesService>();
         services.AddSingleton<AboutWindowViewModel>();
 
         // ViewModels and Views

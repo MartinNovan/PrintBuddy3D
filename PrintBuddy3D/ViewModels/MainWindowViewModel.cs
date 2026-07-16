@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Avalonia.Collections;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PrintBuddy3D.Services;
@@ -109,5 +110,26 @@ public partial class MainWindowViewModel : ObservableObject
         };
         _aboutWindow.Closed += (_, _) => _aboutWindow = null;
         _aboutWindow.Show();
+    }
+    
+    partial void OnActivePageChanged(PageBase value)
+    {
+        switch (value)
+        {
+            // Auto redirect the Guides View to wiki if possible (Guides View is only for showing error)
+            case GuidesViewModel guidesVm:
+                Dispatcher.UIThread.Post(() =>
+                {
+                    guidesVm.AutoRedirectToHome();
+                });
+                break;
+            // If we are redirecting to the wiki page, load the content if needed
+            case WikiPageViewModel wikiPageVm:
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _ = wikiPageVm.LoadIfNeededAsync();
+                });
+                break;
+        }
     }
 }

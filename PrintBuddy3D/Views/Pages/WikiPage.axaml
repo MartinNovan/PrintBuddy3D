@@ -9,8 +9,7 @@
         <StackPanel>
             <suki:GlassCard Margin="5">
                 <Grid>
-                    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" />
-                    <md:MarkdownScrollViewer Markdown="{Binding Content}" IsVisible="{Binding !IsLoading}"/>
+                    <md:MarkdownScrollViewer Markdown="{Binding Content}"/>
                 </Grid>
             </suki:GlassCard>
             <suki:GlassCard Margin="5">

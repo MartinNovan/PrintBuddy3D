@@ -11,34 +11,32 @@ public interface IAppDataService
     void SaveConfigValue(string key, string value);
     SukiBackgroundStyle LoadBackground(string key);
     SukiColor LoadTheme(string key);
+    string GetAppBasePath();
 }
 
 public class AppDataService : IAppDataService
 {
-    private const string FileName = "appdata.db";
-    private const string BaseFolderName = "MartinNovan/PrintBuddy3D";
-
     public string ConnectionString { get; } 
 
     public AppDataService()
     {
-        string basePath = GetBasePath();
-        string fullFolderPath = Path.Combine(basePath, BaseFolderName);
-
-        if (!Directory.Exists(fullFolderPath))
-            Directory.CreateDirectory(fullFolderPath);
-
-        var dbPath = Path.Combine(fullFolderPath, FileName);
+        string basePath = GetAppBasePath();
+        var dbPath = Path.Combine(basePath, "appdata.db");
         ConnectionString = $"Data Source={dbPath}";
         InitializeDatabase();
     }
 
-    private string GetBasePath()
+    public string GetAppBasePath()
     {
-        var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        if (string.IsNullOrEmpty(path))
-            throw new PlatformNotSupportedException("Unsupported platform.");
-        return path;
+        string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        string basePath = Path.Combine(appData, "MartinNovan", "PrintBuddy3D");
+        
+        if (!Directory.Exists(basePath))
+        {
+            Directory.CreateDirectory(basePath);
+        }
+        
+        return basePath;
     }
 
     private void InitializeDatabase()
