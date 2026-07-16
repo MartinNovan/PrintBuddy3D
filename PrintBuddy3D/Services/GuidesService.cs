@@ -21,7 +21,7 @@ public interface IGuidesService
 public class GuidesService : IGuidesService
 {
     private static readonly HttpClient HttpWikiClient = new() { Timeout = TimeSpan.FromSeconds(5) }; // Shared wiki http client
-    private const string BaseWikiUrl = "https://raw.githubusercontent.com/wiki/MartinNovan/PrintBuddy3D/"; // url where the wiki is (probably gonna add to settings for easy override)
+    private const string BaseWikiUrl = "https://raw.githubusercontent.com/wiki/MartinNovan/PrintBuddy3D/"; // wiki url
     private readonly string _cacheDirectory;
 
     public GuidesService(IAppDataService appDataService)

@@ -127,12 +127,6 @@ public partial class GuidesViewModel : PageBase
         // Create the page viewmodel, pass service and other args
         var pageVm = new WikiPageViewModel(_guidesService ,dto.Title ?? "Unknown Name", iconKind, dto.Page ?? "");
         
-        // todo get rid of this shit
-        //if (!string.IsNullOrEmpty(dto.Page))
-        //{
-        //    _ = pageVm.LoadIfNeededAsync(dto.Page);
-        //}
-
         // if page has no child pages, return this page
         if (dto.Children is not { Count: > 0 }) return pageVm;
         // if page has child pages, recursively create them too
