@@ -33,6 +33,9 @@
         <PackageReference Include="Dock.Serializer" />
         <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" />
         <PackageReference Include="Markdown.Avalonia" />
+        <PackageReference Include="Markdown.Avalonia.Html" />
+        <PackageReference Include="Markdown.Avalonia.Svg" />
+        <PackageReference Include="Markdown.Avalonia.SyntaxHigh" />
         <PackageReference Include="Material.Icons.Avalonia" />
         <PackageReference Include="Microsoft.Data.Sqlite" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
