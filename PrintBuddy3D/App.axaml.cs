@@ -62,11 +62,14 @@ public class App : Application
         services.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         services.AddSingleton<ISukiToastManager, SukiToastManager>();
         services.AddSingleton<IGuidesService, GuidesService>();
-        services.AddSingleton<AboutWindowViewModel>();
+        services.AddSingleton<IFilesService, FilesService>();
 
         // ViewModels and Views
+        // Windows
         windowViews.AddView<MainWindow, MainWindowViewModel>(services);
+        windowViews.AddView<AboutWindow,AboutWindowViewModel>(services);
         windowViews.AddView<SshWindow, SshWindowViewModel>(services);
+        //Views
         windowViews.AddView<PrintersListView, PrintersListViewModel>(services);
         windowViews.AddView<FilamentsView, FilamentsViewModel>(services);
         windowViews.AddView<HomeView, HomeViewModel>(services);
@@ -74,8 +77,8 @@ public class App : Application
         windowViews.AddView<WikiPage, WikiPageViewModel>(services);
         windowViews.AddView<PrinterControlView, PrinterControlViewModel>(services);
         windowViews.AddView<PrinterEditorView, PrinterEditorViewModel>(services);
-        
-        // Dock control ViewModels and Views
+        windowViews.AddView<FilesView, FilesViewModel>(services);
+        // Dock controls
         windowViews.AddView<MovementControlView, MovementControlViewModel>(services);
         windowViews.AddView<TemperatureControlView, TemperatureControlViewModel>(services);
         windowViews.AddView<PrinterConsoleControlView, PrinterConsoleControlViewModel>(services);

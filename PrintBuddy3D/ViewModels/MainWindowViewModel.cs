@@ -32,11 +32,11 @@ public partial class MainWindowViewModel : ObservableObject
     private AboutWindow? _aboutWindow;
     private readonly AboutWindowViewModel _aboutWindowViewModel;
 
-    public MainWindowViewModel(HomeViewModel homeViewModel, PrintersListViewModel printersListViewModel, FilamentsViewModel filamentsViewModel,
+    public MainWindowViewModel(HomeViewModel homeViewModel, PrintersListViewModel printersListViewModel, FilamentsViewModel filamentsViewModel, FilesViewModel filesViewModel,
         GuidesViewModel guidesViewModel, IAppDataService appDataService, ISukiDialogManager dialogManager, ISukiToastManager toastManager, AboutWindowViewModel aboutWindowViewModel)
     {
         Pages = new AvaloniaList<PageBase>(
-            new PageBase[] { homeViewModel, printersListViewModel, filamentsViewModel, guidesViewModel }
+            new PageBase[] { homeViewModel, printersListViewModel, filamentsViewModel, filesViewModel, guidesViewModel }
                 .OrderBy(p => p.Index)
         );
         _activePage = Pages[0];

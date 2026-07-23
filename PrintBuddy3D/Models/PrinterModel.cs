@@ -190,7 +190,7 @@ public sealed class PrinterModel : ModelBase
             return BitmapCache.Get(imagePath);
         }
     }
-    
+    public bool CanReceiveJob => Status == PrinterEnums.Status.StandBy; // Printer can recieve a print job only if its standby (mby will redo this to be litle bit more complex) 
     public PrinterEnums.Status PreviousStatus { get; private set; } // Previous status of the printer, used to track changes
     
     private PrinterEnums.Status _status = PrinterEnums.Status.None; // Default status is Offline, can be changed to Online, Printing, Done, Idle, etc.

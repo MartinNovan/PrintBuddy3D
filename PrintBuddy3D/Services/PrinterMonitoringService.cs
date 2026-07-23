@@ -16,7 +16,7 @@ public interface IPrinterMonitoringService : IDisposable
     void Stop();
 }
 
-public class PrinterMonitoringService(IPrintersService printersService) : IPrinterMonitoringService
+public class PrinterMonitoringService(IPrinterControlServiceFactory printerControlServiceFactory) : IPrinterMonitoringService
 {
     private const int DispatchIntervalMs = 200; // Some small pause between loops of checks
     private readonly SemaphoreSlim _throttle = new(50, 50); // Max 50 printers to check parallel
@@ -99,7 +99,8 @@ public class PrinterMonitoringService(IPrintersService printersService) : IPrint
         await _throttle.WaitAsync(ct); // Add this printer to semaphore to check only 50 printer max at once
         try
         {
-            var status = await printersService.GetPrinterStatusAsync(printer, ct);
+            var controlService = printerControlServiceFactory.Create(printer);
+            var status = await controlService.GetStatusAsync(ct);
             printer.LastUpdate = DateTime.Now;
 
             if (status != printer.Status)

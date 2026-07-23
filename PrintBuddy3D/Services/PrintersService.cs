@@ -14,9 +14,9 @@ public interface IPrintersService : IDisposable
     Task<ObservableCollection<PrinterModel>> GetPrintersAsync(CancellationToken ct = default);
     Task UpsertPrinterAsync(PrinterModel printer, CancellationToken ct = default);
     Task RemovePrinterAsync(PrinterModel printer, CancellationToken ct = default);
-    Task<PrinterEnums.Status> GetPrinterStatusAsync(PrinterModel printer, CancellationToken ct = default);
 }
 
+// One interface for Klipper/Marlin service
 public interface IPrinterControlService
 {
     Task SendCommand(string command);
@@ -26,6 +26,8 @@ public interface IPrinterControlService
     void DisableMotors();
     void EmergencyStop();
     
+    // Upload gcode file to printer, start the print if startPrint is true and return result of the upload
+    Task<(bool IsSuccess, string ErrorMessage)> UploadGcodeAsync(PrinterModel printer, string filePath, bool startPrint);
     Task<List<ConsoleLogItem>> GetConsoleHistoryAsync();
     Task<PrinterEnums.Status> GetStatusAsync(CancellationToken ct = default);
 
@@ -136,11 +138,5 @@ public class PrintersService(IAppDataService appDataService, INotificationServic
         command.CommandText = "DELETE FROM Printers WHERE Id = $id";
         command.Parameters.AddWithValue("$id", printer.Id);
         await command.ExecuteNonQueryAsync(ct);
-    }
-
-    public async Task<PrinterEnums.Status> GetPrinterStatusAsync(PrinterModel printer, CancellationToken ct = default)
-    {
-        var service = printerControlServiceFactory.Create(printer);
-        return await service.GetStatusAsync(ct);
     }
 }

@@ -1,0 +1,151 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:PrintBuddy3D.ViewModels.Pages"
+             xmlns:models="clr-namespace:PrintBuddy3D.Models"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:converters="clr-namespace:PrintBuddy3D.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PrintBuddy3D.Views.Pages.FilesView"
+             x:DataType="pages:FilesViewModel">
+    <UserControl.Resources>
+        <!--Converter for thumbnail-->
+        <converters:FilePathToBitmapConverter x:Key="FilePathToBitmapConverter"/>
+        <!--Card template for this page-->
+        <DataTemplate x:Key="FileCardTemplate" DataType="models:FileModel">
+            <suki:GlassCard Padding="10" Width="160" Height="220" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid RowDefinitions="*, Auto, Auto, Auto">
+                    <!--Default icon-->
+                    <Border Grid.Row="0" Background="#1E1E26" CornerRadius="6" Margin="5" Width="120" Height="120" IsVisible="{Binding !HasThumbNail}">
+                        <avalonia:MaterialIcon Kind="FileDocumentOutline" Width="50" Height="50" Foreground="Gray" />
+                    </Border>
+                    <!--Thumbnail if exists-->
+                    <Border Grid.Row="0" CornerRadius="6" Margin="5" Width="120" Height="120" ClipToBounds="True" IsVisible="{Binding HasThumbNail}">
+                        <Image Source="{Binding ThumbnailPath, Converter={StaticResource FilePathToBitmapConverter}}" 
+                               Stretch="UniformToFill" />
+                    </Border>
+                    <!--Info about the file-->
+                    <TextBlock Grid.Row="1" Text="{Binding FileName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding FileName}"/>
+                    <Grid Grid.Row="2" ColumnDefinitions="*,*">
+                        <TextBlock Grid.Column="0" Text="{Binding FileSizeFormatted}" FontSize="12" Foreground="LightGray" TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding LastModified, StringFormat='{}{0:d}'}" FontSize="12" Foreground="Gray" TextAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                    <!--Default action buttons-->
+                    <Grid Grid.Row="3">
+                        <!--Open in App (models and projects)-->
+                        <Button Foreground="LawnGreen" Height="30" Padding="5" Margin="5" Command="{Binding $parent[UserControl].((pages:FilesViewModel)DataContext).ExecuteFileCommand}"
+                                CommandParameter="{Binding}" IsVisible="{Binding !IsFileGcode}">
+                            <Grid ColumnDefinitions="Auto, *">
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Play" Height="15" Width="15" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                <TextBlock Grid.Column="1" Text="Open file" Height="15" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Button>
+                        <!--Print on printer (gcode)-->
+                        <Button Foreground="LawnGreen" Height="30" Padding="5" Margin="5" Command="{Binding $parent[UserControl].((pages:FilesViewModel)DataContext).PrintFileOnPrinterCommand}"
+                                CommandParameter="{Binding}" IsVisible="{Binding IsFileGcode}">
+                            <Grid ColumnDefinitions="Auto, *">
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Printer3d" Height="15" Width="15" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                <TextBlock Grid.Column="1" Text="Print on printer" Height="15" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Grid>
+                <!--Context menu-->
+                <suki:GlassCard.ContextMenu>
+                    <ContextMenu>
+                        <!--Only in gcode tab-->
+                        <MenuItem Header="Upload to printer" Command="{Binding $parent[UserControl].((pages:FilesViewModel)DataContext).SendFileToPrinterCommand}"
+                                  CommandParameter="{Binding}" IsVisible="{Binding IsFileGcode}">
+                            <MenuItem.Icon>
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Upload"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Open in app" Command="{Binding $parent[UserControl].((pages:FilesViewModel)DataContext).ExecuteFileCommand}"
+                                  CommandParameter="{Binding}" IsVisible="{Binding IsFileGcode}">
+                            <MenuItem.Icon>
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Play"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <!--In every tab-->
+                        <MenuItem Header="Open in folder" Command="{Binding $parent[UserControl].((pages:FilesViewModel)DataContext).OpenFileLocationCommand}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Folder"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Delete file" Foreground="Red" Command="{Binding $parent[UserControl].((pages:FilesViewModel)DataContext).DeleteFileCommand}"
+                                  CommandParameter="{Binding}">
+                            <MenuItem.Icon>
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Trash"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </suki:GlassCard.ContextMenu>
+            </suki:GlassCard>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="10,10,10,0">
+            <!--Search bar for filtering-->
+            <TextBox Grid.Column="0" Text="{Binding SearchText}" Watermark="Search files..." Margin="0,0,10,0" VerticalAlignment="Center">
+                <TextBox.InnerLeftContent>
+                    <avalonia:MaterialIcon Kind="Magnify" Margin="5,0,0,0" Foreground="Gray"/>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            <!--Combo box for sorting-->
+            <ComboBox Grid.Column="1" ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSortOption}" Width="150" VerticalAlignment="Center"/>
+        </Grid>
+        <TabControl Grid.Row="1" Margin="10">
+            <!--3D models tab-->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <avalonia:MaterialIcon Kind="CubeOutline" VerticalAlignment="Center" Width="15" Height="15" />
+                        <TextBlock Text="3D models" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <ItemsRepeater ItemsSource="{Binding ModelsList}" ItemTemplate="{StaticResource FileCardTemplate}" >
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout
+                            MinColumnSpacing="5"
+                            MinRowSpacing="5"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </TabItem>
+            <!--Projects tab-->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <avalonia:MaterialIcon Kind="PackageVariant" Width="15" Height="15" />
+                        <TextBlock Text="Projects" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ItemsRepeater ItemsSource="{Binding ProjectsList}" ItemTemplate="{StaticResource FileCardTemplate}" >
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout
+                            MinColumnSpacing="5"
+                            MinRowSpacing="5"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </TabItem>
+            <!--Gcodes tab-->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <avalonia:MaterialIcon Kind="CodeTags" Width="15" Height="15" />
+                        <TextBlock Text="G-Codes" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <ItemsRepeater ItemsSource="{Binding GcodesList}" ItemTemplate="{StaticResource FileCardTemplate}" >
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout
+                            MinColumnSpacing="5"
+                            MinRowSpacing="5"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

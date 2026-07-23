@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:PrintBuddy3D.Models"
+             x:Class="PrintBuddy3D.Views.Pages.Dialogs.PrinterSelectionDialog">
+             
+    <ListBox x:Name="PrintersListBox" ItemsSource="{ReflectionBinding}" SelectionMode="Multiple" Background="Transparent">
+        <ListBox.ItemContainerTheme>
+            <ControlTheme TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}" x:DataType="models:PrinterModel">
+                <Setter Property="IsEnabled" Value="{Binding CanReceiveJob}"/>
+                <Setter Property="OpacityMask" Value="Black"/>
+                <Setter Property="Opacity" Value="50"/>
+            </ControlTheme>
+        </ListBox.ItemContainerTheme>
+        <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="models:PrinterModel">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding StatusText, StringFormat='- {0}'}" Foreground="Gray" VerticalAlignment="Center"/>
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

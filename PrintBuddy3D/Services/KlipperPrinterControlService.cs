@@ -64,6 +64,12 @@ public class KlipperPrinterControlService : IPrinterControlService
             return PrinterEnums.Status.Offline; // printer is most probably turned off
         }
     }
+    
+    public Task<(bool IsSuccess, string ErrorMessage)> UploadGcodeAsync(PrinterModel printer, string filePath, bool startPrint)
+    {
+        // TODO make logic for sending files and starting the print if start print = true
+        return Task.FromResult((true, ""));
+    }
 
     public void Dispose()
     {
